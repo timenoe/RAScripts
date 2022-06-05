@@ -1615,7 +1615,7 @@ achievement(
 //          0x7da200 = Pac-Dot Pond
 //          0x7c6c80 = Pac-Dot Pond Galaxian Maze
 //          0x7d1880 = Blinky's Killer Frog
-//          0x7e5580 - B-Doing Woods
+//          0x7e5580 = B-Doing Woods
 //          0x7cc500 = B-Doing Woods Galaxian Maze
 //          0x7ef900 = Treewood Forest
 //          0x7c1c00 = Treewood Forest Galaxian Maze
