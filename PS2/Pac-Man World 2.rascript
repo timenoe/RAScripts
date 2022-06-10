@@ -1,7 +1,11 @@
 // Pac-Man World 2
 // #ID = 19097
-// RA Checksum: 8ffd544a22cc814fd340cae387d18eb1 (Pac-Man World 2 (USA) (v1.00))
+// RA Checksum: 8ffd544a22cc814fd340cae387d18eb1
+
 // RAScript by: timenoe
+// Last Edit: June 10, 2022
+
+//Dictionaries
 
 levelName = {
     
@@ -143,11 +147,15 @@ mazeLevelID = {
     
 }
 
+//Functions
+
 function levelID() => byte(0x49BD2C)
 function levelComplete(key) => bit0(levelBase[key])
 function levelCompletion(key) => byte(levelBase[key] + 112)
 function levelToken(key, i) => bit0(levelBase[key] + (64 + (i - 1) * 4))
 function levelTimeTrialToken(key) => bit0(levelBase[key] + 100)
+
+//Achievements
 
 for key in levelBase {
 
@@ -597,9 +605,10 @@ achievement(
 achievement(
     title = "Champion of the Golden Fruit Free", description = "Start a new game, defeat Spooky, and then save your game in under 2 hours!", points = 50,
     trigger = once(byte(0x495B61) == 0 && byte(0x495B62) == 0 && float(0x495B64) == 0.0 && word(0x5BA764) == 13370) && 
-              once(byte(0x49BD2C) == 24 && prev(bit0(0x4975E0)) == 0 && bit0(0x4975E0) == 1) && (float(0x495B64) !=
-               prev(float(0x495B64)) && (byte(0x495B61) * 3600 + byte(0x495B62) * 60 + float(0x495B64)) < 7200) && 
-              never((word(0x5BA764) != 10137 && word(0x5BA764) == 10137))
+              once(byte(0x49BD2C) == 24 && prev(bit0(0x4975E0)) == 0 && bit0(0x4975E0) == 1) && (byte(0x495B61) !=
+               prev(byte(0x495B61)) || byte(0x495B62) != prev(byte(0x495B62)) || float(0x495B64) !=
+               prev(float(0x495B64))) && (byte(0x495B61) * 3600 + byte(0x495B62) * 60 + float(0x495B64)) < 7200 && 
+              never((prev(word(0x3E7082)) == 0 && word(0x3E7082) == 16908))
 )
 
 achievement(
@@ -987,6 +996,10 @@ achievement(
 
 //Code Notes
 
+// $354A10: [32-bit] Misc ID (v2.00)
+//          Cutscenes
+//          0x4556454c = Completed a Level
+//          0x444c4f47 = Collected a Golden Fruit
 // $361E90: [32-bit] Misc ID
 //          Cutscenes
 //          0x4556454c = Completed a Level
@@ -1006,6 +1019,22 @@ achievement(
 // $363474: [Lower4] Power Pellet
 //          1 = Active
 //          2 = Ending Soon
+// $3D9FE0: [Float] X,Y Coordinate Pair (v2.00)
+// $3D9FE4: [Float] Z Coordinate (v2.00)
+// $3D9FE8: [Float] X,Y Coordinate Pair (v2.00)
+// $3DA4F4: [8-bit] User Input - Face Buttons/Bumpers/Triggers (v2.00)
+//          Bit7 = Square
+//          Bit6 = Cross
+//          Bit5 = Cricle
+//          Bit4 = Triangle
+//          Bit3 = RB
+//          Bit2 = LB
+//          Bit1 = RT
+//          Bit0 = LT
+// $3DA512: [16-bit] Game State (v2.00)
+//          0 = Loading/In a Level
+//          0x3e80 = Overworld
+//          0x420c = Title Screen
 // $3E6B50: [Float] X,Y Coordinate Pair
 // $3E6B54: [Float] Z Coordinate
 // $3E6B58: [Float] X,Y Coordinate Pair
@@ -1033,7 +1062,7 @@ achievement(
 //          Bit5 = Right
 //          Bit4 = Up
 // $3E7082: [16-bit] Game State
-//          0 = In a Level
+//          0 = Loading/In a Level
 //          0x3e80 = Overworld
 //          0x420c = Title Screen
 // $464A44: [32-bit] Arcade - Pac-Mania - High Score
@@ -1064,6 +1093,51 @@ achievement(
 //          -Alternatively using a Score-Up Pellet: 400 ->1600 ->7650.
 //          -Earn 100,000 score to obtain an extra life (EXTEND!).
 // $46D210: [Bit0] Magma Opus - Blue Platform Switch (Between Checkpoint 2 & 3)
+// $488EB8: [8-bit] Loaded Slot - Lives (v2.00)
+// $488EC0: [Float] Loaded Slot - Health (v2.00)
+//          0 = Dead
+//          25 = 0 Segments
+//          50 = 1 Segment
+//          75 = 2 Segments
+//          100 = 3 Segments
+// $488EC9: [8-bit] Loaded Slot - Total Time - Hours (v2.00)
+// $488ECA: [8-bit] Loaded Slot - Total Time - Minutes (v2.00)
+// $488ECC: [Float] Loaded Slot - Total Time - Seconds (v2.00)
+// $489D54: [Bit0] Pac-Village - Tall Tree Token (v2.00)
+// $48A048: [32-bit] Butane Pain - Score (v2.00)
+// $48A8C8: [32-bit] Ghost Bayou - Score (v2.00)
+// $48A948: [Bit0] Spooky - Level Complete (v2.00)
+// $48F094: [8-bit] Level ID (v2.00)
+//          0x00 = Pac-Village
+//          0x01 = The Bear Basics
+//          0x02 = Canyon Chaos
+//          0x03 = Pac-Dot Pond
+//          0x04 = Blinky's Frog
+//          0x05 = B-Doing Woods
+//          0x06 = Treewood Forest
+//          0x07 = Butane Pain
+//          0x08 = Inky's Blade-o-Matic
+//          0x09 = Ice River Run
+//          0x0a = Avalanche Alley
+//          0x0b = Blade Mountain
+//          0x0c = Pinky's Revenge
+//          0x0d = Into the Volcano
+//          0x0e = Volcanic Panic
+//          0x0f = Magma Opus
+//          0x10 = Clyde in the Caldera
+//          0x11 = Scuba Duba
+//          0x12 = Shark Attack
+//          0x13 = Yellow Pac-Marine
+//          0x14 = Whale on a Sub
+//          0x15 = Haunted Boardwalk
+//          0x16 = Night Crawling
+//          0x17 = Ghost Bayou
+//          0x18 = Spooky
+//          0x19 = Pac-Village Warp
+//          0x1a = Ghost Bayou Warp
+//          Notes:
+//          -Flips to 0 briefly when the player completes or exits a level.
+//          -This value is also applicable when Pac-Man is standing over the level dot in the overworld.
 // $495B50: [8-bit] Loaded Slot - Lives
 // $495B54: [32-bit] Loaded Slot - Grand Score
 // $495B58: [Float] Loaded Slot - Health
@@ -1582,13 +1656,128 @@ achievement(
 // $57E41C: [32-bit] Arcade - Pac-Attack - Score
 // $57E448: [8-bit] Arcade - Pac-Attack - Best Ghost Chain (Top Number)
 // $57E44E: [8-bit] Arcade - Pac-Attack - Best Line Clear (Middle Number)
-// $5B7400: [24-bit] Fruit Pointer
-//          +0x2a = Pac-Village - Blue Roof Melon
-//          +0x84 = The Bear Basics - Lake Strawberry
-//          +0x44 = Canyon Chaos - Red RGB
-//          +0x58 = Canyon Chaos - Green RGB
-//          +0x5a = Canyon Chaos - Blue RGB
-//          +0x[6d,6e,6f,70,71,72,73,77,7b,7f,80,81,82,83,84] = B-Doing Woods - 15 Fruits in Trampoline Section
+// $5A69F0: [24-bit] Object Pointer (v2.00)
+//          +0x31 = [Bit0] Pac-Village - Tall Tree Token
+//          +0x8b = [Bit0] The Bear Basics - Crate in Right Side of Lake
+// $5A6A0C: [8-bit] Checkpoint (v2.00)
+//          0 = Start of Level
+//          2 = Pre B-Doing Woods Skip
+//          3 = Post B-Doing Woods Skip
+//          6 = Whale on a Sub 1
+// $5A8398: Animation ID (8-bit) (v2.00)
+//          0x00 = Talking with NPC
+//          0x01 = Running
+//          0x02 = Walk
+//          0x03 = Moving Jump
+//          0x04 = 2-Step (Idle)
+//          0x05 = Stationary Butt Bounce
+//          0x06 = Rev Rolling
+//          0x09 = Tip-Toeing
+//          0x0a = Stationary Jump
+//          0x[0e,30] = Hanging on Ledge
+//          0x10 = Swimming
+//          0x11 = Hanging on Ledge (Idle)
+//          0x14 = Treading in Water
+//          0x15 = Jumping Up Out of Water
+//          0x16 = Took Damage
+//          0x19 = Standing (Idle)
+//          0x1a = Stretching (Idle)
+//          0x1b = Slowing Down
+//          0x13 = Gliding on Ice
+//          0x22 = Falling
+//          0x26 = Red Pac-Dot Chain
+//          0x27 = Moving Butt Bounce
+//          0x28 = Charging Rev Roll
+//          0x2b = Landing
+//          0x2d = Looking Around (Idle)
+//          0x2f = Mid-Air Kick
+//          0x33 = Slamming on Ground from Fall
+//          0x35 = Slipping on Ice
+//          0x39 = Crushed by Avalanche
+//          0x3b = Kicking a Pac-Dot (Idle)
+//          0x3d = Preparing for Sleep
+//          0x3e = Sleeping (Idle)
+// $5A872C: [Float] Time Trial Timer (v2.00)
+// $5A9438: [Lower4] Power-Ups (v2.00)
+//          1 = Steel Ball
+//          2 = Shrink Pellet
+// $5A945C: [24-bit] Spooky Pointer (v2.00)
+//          +0x377c = [Lower4] Phase
+//          0 = Start
+//          1 = Second Phase
+//          2 = Final Phase
+//          Notes:
+//          -Spooky has these coordinates during a phase shift cutscene: (0.0, 0.0, -0.557057) (X,Y,Z).
+//          -This is unstable during death/load. Use stored hits.
+// $5A9CFC: [16-bit] Sub-Level ID (v2.00)
+//          Misc.
+//          0x384c = Overworld
+//          Levels
+//          0x366d = Loading Pac-Village
+//          0x367f = Pac-Village
+//          0x35ed = Loading Restored Pac-Village
+//          0x35ff = Restored Pac-Village
+//          0x388d = Loading The Bear Basics
+//          0x389f = The Bear Basics
+//          0x37fc = Loading Canyon Chaos
+//          0x380e = Canyon Chaos
+//          0x37fd = Loading Pac-Dot Pond
+//          0x380f = Pac-Dot Pond
+//          0x37bc = Loading Blinky's Frog
+//          0x3852 = Blinky's Frog
+//          0x38d8 = Loading B-Doing Woods
+//          0x38ea = B-Doing Woods
+//          0x3461 = Loading Treewood Forest
+//          0x3473 = Treewood Forest
+//          0x36cb = Loading Butane Pain
+//          0x36dd = Butane Pain
+//          0x33dc = Loading Inky's Blade-o-Matic
+//          0x34ee = Inky's Blade-o-Matic
+//          0x3484 = Loading Ice River Run
+//          0x3496 = Ice River Run
+//          0x35c6 = Loading Avalanche Alley
+//          0x35d8 = Avalanche Alley
+//          0x35ae = Loading Blade Mountain
+//          0x35c0 = Blade Mountain
+//          0x34ca = Loading Pinky's Revenge
+//          0x34dc = Pinky's Revenge
+//          0x3555 = Loading Into the Volcano
+//          0x3567 = Into the Volcano
+//          0x38df = Loading Volcanic Panic
+//          0x38f1 = Volcanic Panic
+//          0x36b9 = Loading Magma Opus
+//          0x36cb = Magma Opus
+//          0x30c2 = Loading Clyde in the Caldera
+//          0x30d4 = Clyde in the Caldera
+//          0x3d0d = Loading Scuba Duba
+//          0x3d1f = Scuba Duba
+//          0x3ebb = Loading Shark Attack
+//          0x3ecd = Shark Attack
+//          0x2ca7 = Loading Yellow Pac-Marine
+//          0x3279 = Yellow Pac-Marine
+//          0x3497 = Loading Whale on a Sub
+//          0x398d = Whale on a Sub
+//          0x318b = Loading Haunted Boardwalk
+//          0x319d = Haunted Boardwalk
+//          0x3aa5 = Loading Night Crawling
+//          0x3ab7 = Night Crawling
+//          0x35ee = Loading Ghost Bayou
+//          0x3600 = Ghost Bayou
+//          0x32a8 = Loading Spooky
+//          0x34b4 = Spooky
+//          0x2766 = Quit Spooky, Defeated Spooky
+//          Arcade
+//          0x30b2 = Inside Arcade
+// $5AADB0: [16-bit] Cutscene Timer (v2.00)
+//          Note: Resets to 0 and then counts up until the cutscene is done.
+// $5B7400: [24-bit] Fruit/Crate Pointer
+//          +0x2a = [Bit0] Pac-Village - Blue Roof Melon
+//          +0x84 = [Bit0] The Bear Basics - Lake Strawberry
+//          +0x8b = [Bit0] The Bear Basics - Crate in Right Side of Lake
+//          +0x44 = [Bit0] Canyon Chaos - Red RGB
+//          +0x58 = [Bit0] Canyon Chaos - Green RGB
+//          +0x5a = [Bit0] Canyon Chaos - Blue RGB
+//          +0x[6d,6e,6f,70,71,72,73,77,7b,7f,80,81,82,83,84] = [Bit0]  B-Doing Woods - 15 Fruits in Trampoline Section
 // $5B741C: [8-bit] Checkpoint
 //          0 = Start of Level
 //          1 = Ghost Bayou 1
@@ -1737,8 +1926,10 @@ achievement(
 // $5B9E10: [Lower4] Power-Ups
 //          1 = Steel Ball
 //          2 = Shrink Pellet
+// $5B9E88: [Bit0] Pause Menu
 // $5B9F50: [16-bit] Current Pac-Dots
 // $5BA764: [16-bit] Sub-Level ID
+//          Misc.
 //          0x2ccd = Title Screen, Credits
 //          0x2799 = Load Game Screen
 //          0x2f58 = General Loading Screen
@@ -1959,14 +2150,29 @@ achievement(
 //          Note: This value is 0xff when not in a level with fruit.
 // $5F8D84: [8-bit] Current Galaxians
 //          Note: This value is 0xff when not in a level with fruit.
+// $7D8ED4: [Float] Pac-Village Speed (v2.00)
 // $7D9E70: [Float] Pac-Village  - Pac-Man Speed
+// $7EA22C: [Float] Number of Hits on Inky (v2.00)
+//          2 = Phase 2
+//          4 = Phase 3
+//          6 = Dead
 // $7EEAFC: [Lower4] Spooky - Phase
 //          0 = Start
 //          1 = Second Phase
 //          2 = Final Phase
 //          Note: Spooky has these coordinates during a phase shift cutscene: (0.0, 0.0, -0.557057) (X,Y,Z)
+// $7EF978: [8-bit] Number of Hits on Blinky (v2.00)
+//          3 = Phase 2
+//          6 = Dead
+//          0x65 = Overworld
+//          Note: This is unstable during death/load. Use stored hits.
 // $7F2470: [Float] Blade Mountain - Pac-Man Speed
 // $7F3070: [Float] Avalanche Alley - Pac-Man Speed
+// $7F56AC: [Float] Number of Hits on Pinky (v2.00)
+//          2 = Phase 2
+//          4 = Phase 3
+//          7 = Phase 4
+//          10 = Dead
 // $7FAFAC: [Float] Number of Hits on Inky
 //          2 = Phase 2
 //          4 = Phase 3
@@ -1974,11 +2180,17 @@ achievement(
 // $8003F8: [8-bit] Number of Hits on Blinky
 //          3 = Phase 2
 //          6 = Dead
-//          25 = Overworld
+//          0x25 = Overworld
 // $80642C: [Float] Number of Hits on Pinky
 //          2 = Phase 2
 //          4 = Phase 3
 //          7 = Phase 4
+//          10 = Dead
+// $808A2C: [Float] Number of Hits on Clyde (v2.00)
+//          2 = Phase 2
+//          4 = Phase 3
+//          6 = Phase 4
+//          8 = Phase 5
 //          10 = Dead
 // $81A22C: [Float] Number of Hits on Clyde
 //          2 = Phase 2
@@ -1995,5 +2207,7 @@ achievement(
 // $87FC6C: [8-bit] Ghost Bayou - Skeletal Minion Count (Alt)
 //          Note: Not sure what causes it to change to this instead of the previous location.
 // $88D36C: [Bit0] Ghost Bayou - Green Fence Switch
-// $1FFFB34: [Bit0] Exit Level
-//           Note: Flips to 1 for a moment when the player selects "Exit Level".
+// $1FFFB34: [Bit0] Exit/Die In Level (v1.00+v2.00)
+//           Notes:
+//           -Flips to 1 for a moment when the player selects "Exit Level".
+//           -Also flips to 1 for a moment when the player dies in a level.
