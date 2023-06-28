@@ -63,6 +63,7 @@ function stageCoins(s, d)
 	return stageCoinSum
 }
 function stageBossPoint(s) => byte(clearDataBase + 0x58*s + 0x48) == 1
+function stage2ABossPoint(s) => __ornext(byte(clearDataBase + 0x58*s + 0x48) == 1 || byte(clearDataBase + 0x58*s + 0x48) == 2)
 function stageNoDamage(s) => byte(clearDataBase + 0x58*s + 0x4c) == 0
 
 function stageClear() => prev(byte(0x8326a8)) == 0 && byte(0x8326a8) == 1
@@ -127,7 +128,10 @@ for s in range(0, 0x10)
 	badge = badge + 1
 	
 	description = "Clear Stage " + stage[s] + " while killing the boss in one hit"
-	if (s == 2) description = "Clear Stage " + stage[s] + " while killing the bosses in one hit"
+	if (s == 2) description = "Clear Stage " + stage[s] + " while killing the bosses in two hits or less"
+	
+	trigger = byte(0x832aa4) == stageX[s] && byte(0x832aa6) == stageY[s] && stageClear() && stageBossPoint(s)
+	if (s == 2) trigger = byte(0x832aa4) == stageX[s] && byte(0x832aa6) == stageY[s] && stageClear() && stage2ABossPoint(s)
 	
 	achievement
 	(
@@ -136,7 +140,7 @@ for s in range(0, 0x10)
 		title = "Stage " + stage[s] + " - Boss Point",
 		description = description,
 		points = 10,
-		trigger = byte(0x832aa4) == stageX[s] && byte(0x832aa6) == stageY[s] && stageClear() && stageBossPoint(s)
+		trigger = trigger
 	)
 	id = id + 1
 	badge = badge + 1
