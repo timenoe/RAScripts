@@ -78,18 +78,21 @@ for s in range(0, 0x10)
 {
 	if (s != 0xf)
 	{
+		description = "Clear Stage " + stage[s]
+		if (s != 0x10) description = description + " in story mode"
+		
 		points = 5
 		if (s == 0x10) points = 10
 		
-		trigger = byte(0x832aa4) == stageX[s] && byte(0x832aa6) == stageY[s] && prev(byte(0x83228c)) == s && byte(0x83228c) == s + 1
-		if (s == 0x10) trigger = byte(0x832aa4) == stageX[s] && byte(0x832aa6) == stageY[s] && prev(byte(0x83228c)) == s && byte(0x83228c) == s + 2
+		trigger = byte(0x832aa4) == stageX[s] && byte(0x832aa6) == stageY[s] && prev(byte(0x832289)) == s && byte(0x832289) == s + 1
+		if (s == 0x10) trigger = byte(0x832aa4) == stageX[s] && byte(0x832aa6) == stageY[s] && stageClear()
 		
 		achievement
 		(
 			id = id,
 			badge = format("", badge),
 			title = stageAchTitles[s],
-			description = "Clear Stage " + stage[s] + " for the first time",
+			description = description,
 			points = points,
 			trigger = trigger
 		)
@@ -201,7 +204,7 @@ for s in range(0, 0x10)
 		if (any_of(stageCoins, x => x == s)) //if there are coins in the stage
 		{
 			trigger = byte(0x832aa4) == stageX[s] && byte(0x832aa6) == stageY[s] - 1 && prev(sum_of(stageCoins[s], x => x/x)) == length(stageCoins[s]) - 1 && measured(sum_of(stageCoins[s], x => x/x) == length(stageCoins[s]))
-			if (s == 0) trigger = trigger && prev(byte(0x832281)) == 1 
+			if (s == 0) trigger = trigger && prev(bit7(0x832281)) == 1 
 			else if (s == 0xe) trigger = byte(0x832aa4) == stageX[s] && byte(0x832aa6) == stageY[s] && prev(sum_of(stageCoins[s], x => x/x)) == length(stageCoins[s]) - 1 && measured(sum_of(stageCoins[s], x => x/x) == length(stageCoins[s]))
 			
 			achievement
@@ -238,7 +241,7 @@ achievement
 	title = "Restless Soul",
 	description = "Clear the game on Super",
 	points = 50,
-	trigger = byte(0x832aa4) == 8 && byte(0x832aa6) == 3 && byte(0x832AA8) == 3 && prev(byte(0x00832289)) == 0xf && byte(0x00832289) == 0x10
+	trigger = bit7(0x832aae) == 0 && byte(0x832aa4) == 8 && byte(0x832aa6) == 3 && byte(0x832AA8) == 3 && stageClear()
 )
 id = id + 1
 badge = badge + 1
@@ -250,7 +253,7 @@ achievement
 	title = "Let Your Hatred Flow",
 	description = "Clear the game as Moritsune",
 	points = 25,
-	trigger = byte(0x832aa4) == 8 && byte(0x832aa6) == 3 && byte(0x83215C) == 1 && prev(byte(0x00832289)) == 0xf && byte(0x00832289) == 0x10
+	trigger = bit7(0x832aae) == 0 && byte(0x832aa4) == 8 && byte(0x832aa6) == 3 && byte(0x83215C) == 1 && stageClear()
 )
 id = id + 1
 badge = badge + 1
@@ -262,7 +265,7 @@ achievement
 	title = "You Faught Well",
 	description = "Clear the game as Joe Musashi",
 	points = 25,
-	trigger = byte(0x832aa4) == 8 && byte(0x832aa6) == 3 && byte(0x83215C) == 2 && prev(byte(0x00832289)) == 0xf && byte(0x00832289) == 0x10
+	trigger = bit7(0x832aae) == 0 && byte(0x832aa4) == 8 && byte(0x832aa6) == 3 && byte(0x83215C) == 2 && stageClear()
 )
 id = id + 1
 badge = badge + 1
@@ -326,7 +329,7 @@ achievement
 	title = "Simulation Station",
 	description = "Collect and save 5 Oboro Clan coins and unlock Stage Select",
 	points = 5,
-	trigger = prev(byte(0x832281)) == 1 && bit(4, 0x832281) > prev(bit(4, 0x832281))
+	trigger = prev(bit7(0x832281)) == 1 && bit(4, 0x832281) > prev(bit(4, 0x832281))
 )
 
 achievement
@@ -336,7 +339,7 @@ achievement
 	title = "Recollection",
 	description = "Collect and save 10 Oboro Clan coins and unlock the Movie theater",
 	points = 5,
-	trigger = prev(byte(0x832281)) == 1 && bit(5, 0x832281) > prev(bit(5, 0x832281))
+	trigger = prev(bit7(0x832281)) == 1 && bit(5, 0x832281) > prev(bit(5, 0x832281))
 )
 id = id + 1
 badge = badge + 1
@@ -348,7 +351,7 @@ achievement
 	title = "Masterpiece Museum",
 	description = "Collect and save 20 Oboro Clan coins and unlock the art Gallery",
 	points = 10,
-	trigger = prev(byte(0x832281)) == 1 && bit(6, 0x832281) > prev(bit(6, 0x832281))
+	trigger = prev(bit7(0x832281)) == 1 && bit(6, 0x832281) > prev(bit(6, 0x832281))
 )
 id = id + 1
 badge = badge + 1
@@ -360,7 +363,7 @@ achievement
 	title = "Tragic Destiny",
 	description = "Collect and save 30 Oboro Clan coins and unlock Moritsune",
 	points = 10,
-	trigger = prev(byte(0x832281)) == 1 && bit(2, 0x832281) > prev(bit(2, 0x832281))
+	trigger = prev(bit7(0x832281)) == 1 && bit(2, 0x832281) > prev(bit(2, 0x832281))
 )
 id = id + 1
 badge = badge + 1
@@ -372,7 +375,7 @@ achievement
 	title = "Return of the Ninja Master",
 	description = "Collect and save 40 Oboro Clan coins and unlock Joe Musashi",
 	points = 25,
-	trigger = prev(byte(0x832281)) == 1 && bit(3, 0x832281) > prev(bit(3, 0x832281))
+	trigger = prev(bit7(0x832281)) == 1 && bit(3, 0x832281) > prev(bit(3, 0x832281))
 )
 id = id + 1
 badge = badge + 1
@@ -384,13 +387,17 @@ achievement
 	title = "Full Dive VR",
 	description = "Collect and save all 50 Oboro Clan coins and unlock Stage EX",
 	points = 50,
-	trigger = prev(byte(0x832281)) == 1 && bit(1, 0x832281) > prev(bit(1, 0x832281))
+	trigger = prev(bit7(0x832281)) == 1 && bit(1, 0x832281) > prev(bit(1, 0x832281))
 )
 id = id + 1
 badge = badge + 1
 
 stageBestSRankSum = 0
-for s in range(0, 0x10) stageBestSRankSum = stageBestSRankSum + stageBestSRank(s)
+for s in range(0, 0x10) 
+{
+	if (s == 0x10) stageBestSRankSum = stageBestSRankSum + stageBestSRank(s + 1) //EX data is one slot higher than expected
+	else stageBestSRankSum = stageBestSRankSum + stageBestSRank(s)
+}
 
 achievement
 (
@@ -399,7 +406,7 @@ achievement
 	title = "Kage Jōnin",
 	description = "Earn an S rank in all 17 stages",
 	points = 100,
-	trigger = prev(byte(0x832281)) == 1 && prev(stageBestSRankSum) == 16 && measured(stageBestSRankSum == 17)
+	trigger = prev(bit7(0x832281)) == 1 && prev(stageBestSRankSum) == 16 && measured(stageBestSRankSum == 17)
 )
 
 ////Leaderboards
