@@ -305,7 +305,7 @@ i = 0
 for c in range(4, 10)
 {
 	points = 5
-	if (c == 4) points = 4
+	if (c == 4) points = 3
 	else if (c == 10) points = 10
 	
 	achievement
@@ -327,8 +327,8 @@ achievement
 	id = 331981,
 	badge = "374875",
 	title = "Simulation Station",
-	description = "Collect and save 5 Oboro Clan coins and unlock Stage Select",
-	points = 5,
+	description = "Collect and save an Oboro Clan coin and unlock Stage Select",
+	points = 1,
 	trigger = prev(bit7(0x832281)) == 1 && bit(4, 0x832281) > prev(bit(4, 0x832281))
 )
 
