@@ -115,8 +115,8 @@ for s in range(0, 0x10)
 		badge = badge + 1
 	}
 	
-	points = 10
-	if (s == 0x10) points = 25
+	points = 5
+	if (s == 0x10) points = 10
 	
 	achievement
 	(
@@ -148,8 +148,8 @@ for s in range(0, 0x10)
 	id = id + 1
 	badge = badge + 1
 	
-	points = 25
-	if (s == 0x10) points = 50
+	points = 10
+	if (s == 0x10) points = 25
 	
 	achievement
 	(
@@ -183,7 +183,7 @@ for s in range(0, 0x10)
 			badge = format("",  badge),
 			title = "Stage " + stage[s] + " - Hard",
 			description = "Clear Stage " + stage[s] + " on Hard",
-			points = 10,
+			points = 5,
 			trigger = byte(0x832aa4) == stageX[s] && byte(0x832aa6) == stageY[s] && stageClear() && byte(0x832AA8) == 2
 		)
 		id = id + 1
@@ -313,7 +313,7 @@ for c in range(4, 10)
 		id = id,
 		badge = format("",  badge),
 		title = tateAchTitles[i],
-		description = "Use the Tate technique on " + c + " enemies simultaneously",
+		description = "Use the Tate technique on " + c + " enemies",
 		points = points,
 		trigger = tateChain(c)
 	)
@@ -335,7 +335,7 @@ achievement
 achievement
 (
 	id = id,
-	badge = format("",  badge),
+	badge = "377232",
 	title = "Recollection",
 	description = "Collect and save 10 Oboro Clan coins and unlock the Movie theater",
 	points = 5,
@@ -571,4 +571,4 @@ for c in range(0,2)
 	
 ////Unused
 
-//function stageClear() => __ornext(dword_be(0x4BADD8) != prev(dword_be(0x4BADD8)) || dword_be(0x4BADDC) != prev(dword_be(0x4BADDC)) || tbyte_be(0x4BADE0) != prev(tbyte_be(0x4BADE0))) && dword_be(0x4BADD8) == 0x53544147 && dword_be(0x4BADDC) == 0x455F434C && tbyte_be(0x4BADE0) == 0x454152 //This checks that the music ID changes to STAGE_CLEAR. Changed to the next function for simplicity
+//function stageClear() => __ornext(dword_be(0x4BADD8) != prev(dword_be(0x4BADD8)) || dword_be(0x4BADDC) != prev(dword_be(0x4BADDC)) || tbyte_be(0x4BADE0) != prev(tbyte_be(0x4BADE0))) && dword_be(0x4BADD8) == 0x53544147 && dword_be(0x4BADDC) == 0x455F434C && tbyte_be(0x4BADE0) == 0x454152 //This checks that the music ID changes to STAGE_CLEAR. Changed to the another function for simplicity
