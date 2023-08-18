@@ -292,7 +292,7 @@ function UKSScore() => dword(0x187f4c)
 function UKSLives() => word(0x187f50)
 
 function UKSActive() => UKSRunning() && __ornext(UKSMain() || UKSPractice())
-function UKSEnding() => prev(word(0x184be8)) == 0 && word(0x184be8) == 0xffff
+function UKSEnding() => word(0x184be8) == 0xffff
 function UKSExitField(field, door)
 {
 	if (length(UKS_exits[field]) > 1) return UKSActive() && UKSField() == UKS_fields[field] && UKSExitDoor() == door && UKSExiting()
@@ -375,7 +375,7 @@ for field in [30, 43, 52, 55, 58, 63]
 	points = 10
 	if (field >= 58) points = 25
 	
-	achievement("[UKS] Field " + field + " Ending", "Exit to the ending from Field " + field + "for the first time", points, UKSMainActive() && UKSField() == UKS_fields[field] && bit0(UKSFieldBitsBase + field*UKSFieldBitsOffset) > prev(bit0(UKSFieldBitsBase + field*UKSFieldBitsOffset)), id=achIds[id], badge=format("",badgeIds[badge]))
+	achievement("[UKS] Field " + field + " Ending", "Exit to the ending from Field " + field + " for the first time", points, UKSMainActive() && UKSField() == UKS_fields[field] && bit0(UKSFieldBitsBase + field*UKSFieldBitsOffset) > prev(bit0(UKSFieldBitsBase + field*UKSFieldBitsOffset)), id=achIds[id], badge=format("",badgeIds[badge]))
 	id = id + 1
 	badge = badge + 1
 }
