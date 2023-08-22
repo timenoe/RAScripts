@@ -292,7 +292,8 @@ function UKSScore() => dword(0x187f4c)
 function UKSLives() => word(0x187f50)
 
 function UKSActive() => UKSRunning() && __ornext(UKSMain() || UKSPractice())
-function UKSEnding() => word(0x184be8) == 0xffff
+//function UKSEnding() => word(0x184be8) == 0xffff
+function UKSEnding() => __ornext(UKSField() == UKS_fields[30] || UKSField() == UKS_fields[43] || UKSField() == UKS_fields[52] || UKSField() == UKS_fields[55] || UKSField() == UKS_fields[58] || UKSField() == UKS_fields[63]) && UKSExiting()
 function UKSExitField(field, door)
 {
 	if (length(UKS_exits[field]) > 1) return UKSActive() && UKSField() == UKS_fields[field] && UKSExitDoor() == door && UKSExiting()
@@ -300,7 +301,13 @@ function UKSExitField(field, door)
 }
 function UKSExiting() => UKSExitTimer() == 2 && UKSAction() == 0xdb
 function UKSDeathless() => UKSFinalDeaths() == 0
-function UKSLongestPath() => UKSFinalExits() == length(UKSLongestPathFields)
+//function UKSLongestPath() => UKSFinalExits() == length(UKSLongestPathFields)
+function UKSLongestPath()
+{
+	check = always_true()
+	for field in UKSLongestPathFields check = check && once(UKSField() == UKS_fields[field])
+	return check
+}
 function UKSMain() => UKSGameState() == 1
 function UKSMainActive() => UKSRunning() && UKSMain()
 function UKSPractice() => UKSGameState() == 3
@@ -392,12 +399,13 @@ for field in [30, 43, 52, 55, 58, 63]
 	points = 25
 	if (field >= 58) points = 50
 	
-	achievement("[UKS] Field " + field + " Ending 1CC", "Exit to the ending from Field " + field + " without using a continue", points, UKSMainActive() && UKSField() == UKS_fields[field] && UKSContinues() == 0 && UKSEnding(), id=achIds[id], badge=format("",badgeIds[badge]))
+	achievement("[UKS] Field " + field + " Ending 1CC", "Exit to the ending from Field " + field + " without using a continue", points, UKSMainActive() && UKSField() == UKS_fields[field] && UKSContinues() == 0 && UKSExiting(), id=achIds[id], badge=format("",badgeIds[badge]))
 	id = id + 1
 	badge = badge + 1
 }
 
-achievement("[UKS] Fishing Charter", "Take the longest path to an ending", 25, UKSMainActive() && UKSLongestPath() && UKSEnding(), id=achIds[id], badge=format("",badgeIds[badge]))
+//achievement("[UKS] Fishing Charter", "Take the longest path to an ending", 25, UKSMainActive() && UKSLongestPath() && UKSExiting(), id=achIds[id], badge=format("",badgeIds[badge]))
+achievement("[UKS] Fishing Charter", "Take the longest path to an ending", 25, never(!UKSMain()) && UKSRunning() && UKSLongestPath() && UKSExiting(), id=achIds[id], badge=format("",badgeIds[badge]))
 id = id + 1
 badge = badge + 1
 achievement("[UKS] I Just Wanna Fish", "Exit to an ending within 3 minutes", 50, UKSMainActive() && UKSRunTime() <= 10800 && trigger_when(UKSEnding()), id=achIds[id], badge=format("",badgeIds[badge]))
@@ -554,14 +562,14 @@ id = id + 1
 
 for field in [30, 43, 52, 55, 58, 63]
 {
-	leaderboard("[UKS] F" + field + " Ending Speedrun", "", UKSMainActive() && UKSField() == UKS_fields[field] && UKSEnding(), always_false(), always_true(), UKSRunTime(), format="FRAMES", lower_is_better=true, id=LBIds[id])
+	leaderboard("[UKS] F" + field + " Ending Speedrun", "", UKSMainActive() && UKSField() == UKS_fields[field] && UKSExiting(), always_false(), always_true(), UKSRunTime(), format="FRAMES", lower_is_better=true, id=LBIds[id])
 	id = id + 1
 }
 
-leaderboard("[UKS] Longest Path Speedrun", "", UKSMainActive() && UKSLongestPath() && UKSEnding(), always_false(), always_true(), UKSRunTime(), format="FRAMES", lower_is_better=true, id=LBIds[id])
+leaderboard("[UKS] Longest Path Speedrun", "", UKSMainActive() && UKSLongestPath() && UKSExiting(), always_false(), always_true(), UKSRunTime(), format="FRAMES", lower_is_better=true, id=LBIds[id])
 id = id + 1
 
-leaderboard("[UKS] Deathless Speedrun", "", UKSMainActive() && UKSEnding() && UKSDeathless(), always_false(), always_true(), UKSRunTime(), format="FRAMES", lower_is_better=true, id=LBIds[id])
+leaderboard("[UKS] Deathless Speedrun", "", UKSMainActive() && UKSDeathless() && UKSEnding(), always_false(), always_true(), UKSRunTime(), format="FRAMES", lower_is_better=true, id=LBIds[id])
 id = id + 1
 
 leaderboard("[UKS] High Score", "", UKSMainActive() && UKSEnding(), always_false(), always_true(), UKSScore(), format="VALUE", id=LBIds[id])
