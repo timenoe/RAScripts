@@ -12,7 +12,8 @@ function nextBit(addr)
 	else return [addr[0] + 1, addr[1]]
 }
 function bitTrue(index, addr) => dword_be(0xffe00c) == 0x4b48364a && word(0x30a038) == 0x1568 && byte(0x30a050) == 5 && bit(index, addr) > prev(bit(index, addr))
-function allAchievements() => bitcount(0x1c2155) + bitcount(0x1c2156) + bitcount(0x1c2157) - bit7(0x1c2157) < 23 && measured(bitcount(0x1c2155) + bitcount(0x1c2156) + bitcount(0x1c2157) - bit7(0x1c2157) == 23, when=dword_be(0xffe00c) == 0x4b48364a)
+function allStages() => prev(bit3(0x1c2151) + bit4(0x1c2151) + bit5(0x1c2151) + bit6(0x1c2151) + bit7(0x1c2151) + bit0(0x1c2152) + bit1(0x1c2152) + bit2(0x1c2152) + bit3(0x1c2152) + bit4(0x1c2152)) == 9 && measured(bit3(0x1c2151) + bit4(0x1c2151) + bit5(0x1c2151) + bit6(0x1c2151) + bit7(0x1c2151) + bit0(0x1c2152) + bit1(0x1c2152) + bit2(0x1c2152) + bit3(0x1c2152) + bit4(0x1c2152) == 10, when=dword_be(0xffe00c) == 0x4b48364a)
+function allAchievements() => prev(bitcount(0x1c2155) + bitcount(0x1c2156) + bit0(0x1c2157) + bit1(0x1c2157) + bit2(0x1c2157) + bit3(0x1c2157) + bit4(0x1c2157) + bit5(0x1c2157) + bit6(0x1c2157)) < 23 && measured(bitcount(0x1c2155) + bitcount(0x1c2156) + bit0(0x1c2157) + bit1(0x1c2157) + bit2(0x1c2157) + bit3(0x1c2157) + bit4(0x1c2157) + bit5(0x1c2157) + bit6(0x1c2157) == 23, when=dword_be(0xffe00c) == 0x4b48364a)
 function allOtherSeeds()
 {
 	base = 0x1c20fc
@@ -77,13 +78,13 @@ badge = badge + 1
 achievement("Stop and Smell the Roses", "Clear a stage without dashing (pressing B)", 5, bitTrue(5, 0x1c2157), id=id, badge=format("", badge))
 id = id + 1
 badge = badge + 1
-achievement("Honorary Ham-Ham", "Clear all stages", 10, bitTrue(1, 0x1c2155), id=id, badge=format("", badge))
+achievement("Honorary Ham-Ham", "Clear all 10 stages", 25, word(0x30a038) == 0x1568 && byte(0x30a050) == 5 && allStages(), id=id, badge=format("", badge))
 id = id + 1
 badge = badge + 1
 achievement("Hibernation Stash", "Collect all seeds", 25, bitTrue(2, 0x1c2155), id=id, badge=format("", badge))
 id = id + 1
 badge = badge + 1
-achievement("Certified Ham-Ham", "Earn all 23 in-game achievements", 25, word(0x30a038) == 0x1568 && byte(0x30a050) == 5 && allAchievements(), id=id, badge=format("", badge))
+achievement("Certified Ham-Ham", "Earn all 23 in-game achievements", 25, word(0x30a038) == 0x1568 && allAchievements(), id=id, badge=format("", badge))
 id = id + 1
 badge = badge + 1
 
