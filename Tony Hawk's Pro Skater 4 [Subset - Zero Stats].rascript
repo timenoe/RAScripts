@@ -95,7 +95,7 @@ for level in normalGoalIndexes
         title = "[Zero Stats] " + levelName[level] + " Amatuer Skater",
         description = "Complete all " + length(normalGoalIndexes[level]) + " amateur goals in " + levelName[level] + " with zero stats",
         points = 25,
-        trigger = protection() && prev(allNormalGoals) == length(normalGoalIndexes[level]) - 1 && measured(allNormalGoals == length(normalGoalIndexes[level]), when = careerMode() && inLevel(level) && goalPointerInitialized() && goalsInitialized(normalGoalIndexes[level][0])),
+        trigger = protection() && prev(allNormalGoals) == length(normalGoalIndexes[level]) - 1 && measured(allNormalGoals == length(normalGoalIndexes[level]), when = careerMode() && inLevel(level) && goalPointerInitialized()) && goalsInitialized(normalGoalIndexes[level][0]),
 		id = id,
 		badge = format("", badge)
     )
@@ -109,7 +109,7 @@ for level in normalGoalIndexes
 			title = "[Zero Stats] Fly Little Birdy",
 			description = "Complete the \"Save the birds on the power lines\" goal in Kona with zero stats",
 			points = 10,
-			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && goalsInitialized(normalGoalIndexes[level][0]) && birdGoal > prev(birdGoal),
+			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && goalsInitialized(normalGoalIndexes[level][7]) && birdGoal > prev(birdGoal),
 			id = id,
 			badge = format("", badge)
 		)
@@ -124,7 +124,7 @@ for level in normalGoalIndexes
 			title = "[Zero Stats] 5-Star Taxi Driver",
 			description = "Complete the \"900 off bridge to the ferry's top deck\" goal in Chicago with zero stats",
 			points = 10,
-			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && goalsInitialized(normalGoalIndexes[level][0]) && bridgeGoal > prev(bridgeGoal),
+			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && goalsInitialized(normalGoalIndexes[level][12]) && bridgeGoal > prev(bridgeGoal),
 			id = id,
 			badge = format("", badge)
 		)
@@ -135,7 +135,6 @@ for level in normalGoalIndexes
     
 for level in proGoalIndexes
 {
-
     allProGoals = 0
     for index in proGoalIndexes[level]
 	{ 
@@ -159,7 +158,7 @@ for level in proGoalIndexes
         title = "[Zero Stats] " + levelName[level] + " Pro Skater",
         description = description + total + " pro goals in " + levelName[level] + " with zero stats",
         points = 25,
-        trigger = protection() && prev(allProGoals) == total - 1 && measured(allProGoals == total, when = careerMode() && inLevel(level) && goalPointerInitialized() && goalsInitialized(proGoalIndexes[level][0])),
+        trigger = protection() && prev(allProGoals) == total - 1 && measured(allProGoals == total, when = careerMode() && inLevel(level) && goalPointerInitialized()) && goalsInitialized(proGoalIndexes[level][0]),
 		id = id,
 		badge = format("", badge)
     )
