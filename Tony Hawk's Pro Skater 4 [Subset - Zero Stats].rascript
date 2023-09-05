@@ -2,6 +2,8 @@
 // #ID = 25644
 // timenoe
 
+//// Constants
+
 levelName =
 {
     1: "College",
@@ -44,28 +46,21 @@ nextGoal = 8
 goalDiscoveredOffset = 0x18
 goalCompletedOffset = 0x1c
 
-function careerMode() => dword(0x96d70c) == 0x4da4937b
-function inLevel(level) => dword(0x96fbb4) == level
-
-function goalPointer() => dword(0x96f6dc)
-function goalPointerInitialized() => goalPointer() != 0
-function goalsInitialized(index)
-{
-    currentGoal = goalPointer()
-    
-    for step in range(1, index)
-	{
-        if (step == index) return prev(dword(dword(currentGoal + thisGoal) + goalDiscoveredOffset)) == 1
-        else currentGoal = dword(currentGoal + nextGoal)
-    }  
-}
+//// Functions
 
 function nonZeroStats() => dword(0x86ca30) + dword(0x86ca34) + dword(0x86ca38) + dword(0x86ca3c) + dword(0x86ca40) + dword(0x86ca44) + dword(0x86ca48) + dword(0x86ca4c) + dword(0x86ca50) + dword(0x86ca54) != 0
 function usingJango() => dword(dword(0x96f65c) + 0x70) == 0xdc3d90eb
 function cheating() => bit2(0x96fb8b) + bit3(0x96fb8b) + bit7(0x96fb8b) + bit1(0x96fb8c) + bit7(0x96fb8c) != 0
 function mainMenu() => dword(0x96fbb4) == 0
-
 function protection() => disable_when(__ornext(nonZeroStats() || usingJango() || cheating()), until = mainMenu())
+
+function careerMode() => dword(0x96d70c) == 0x4da4937b
+function inLevel(level) => dword(0x96fbb4) == level
+function skating() => dword(0x86cef0) + dword(0x86cef4) + dword(0x86cef8) != 0
+function goalPointer() => dword(0x96f6dc)
+function goalPointerInitialized() => goalPointer() != 0
+
+//// Achievements
 
 id = 351978
 badge = 396854
@@ -95,7 +90,7 @@ for level in normalGoalIndexes
         title = "[Zero Stats] " + levelName[level] + " Amatuer Skater",
         description = "Complete all " + length(normalGoalIndexes[level]) + " amateur goals in " + levelName[level] + " with zero stats",
         points = 25,
-        trigger = protection() && prev(allNormalGoals) == length(normalGoalIndexes[level]) - 1 && measured(allNormalGoals == length(normalGoalIndexes[level]), when = careerMode() && inLevel(level) && goalPointerInitialized()) && goalsInitialized(normalGoalIndexes[level][0]),
+        trigger = protection() && prev(allNormalGoals) == length(normalGoalIndexes[level]) - 1 && measured(allNormalGoals == length(normalGoalIndexes[level]), when = careerMode() && inLevel(level) && goalPointerInitialized() && skating()),
 		id = id,
 		badge = format("", badge)
     )
@@ -109,7 +104,7 @@ for level in normalGoalIndexes
 			title = "[Zero Stats] Fly Little Birdy",
 			description = "Complete the \"Save the birds on the power lines\" goal in Kona with zero stats",
 			points = 10,
-			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && goalsInitialized(normalGoalIndexes[level][7]) && birdGoal > prev(birdGoal),
+			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && skating() && birdGoal > prev(birdGoal),
 			id = id,
 			badge = format("", badge)
 		)
@@ -124,7 +119,7 @@ for level in normalGoalIndexes
 			title = "[Zero Stats] 5-Star Taxi Driver",
 			description = "Complete the \"900 off bridge to the ferry's top deck\" goal in Chicago with zero stats",
 			points = 10,
-			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && goalsInitialized(normalGoalIndexes[level][12]) && bridgeGoal > prev(bridgeGoal),
+			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && skating() && bridgeGoal > prev(bridgeGoal),
 			id = id,
 			badge = format("", badge)
 		)
@@ -158,7 +153,7 @@ for level in proGoalIndexes
         title = "[Zero Stats] " + levelName[level] + " Pro Skater",
         description = description + total + " pro goals in " + levelName[level] + " with zero stats",
         points = 25,
-        trigger = protection() && prev(allProGoals) == total - 1 && measured(allProGoals == total, when = careerMode() && inLevel(level) && goalPointerInitialized()) && goalsInitialized(proGoalIndexes[level][0]),
+        trigger = protection() && prev(allProGoals) == total - 1 && measured(allProGoals == total, when = careerMode() && inLevel(level) && goalPointerInitialized() && skating()),
 		id = id,
 		badge = format("", badge)
     )
