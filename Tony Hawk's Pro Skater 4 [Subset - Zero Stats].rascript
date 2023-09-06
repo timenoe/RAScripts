@@ -4,18 +4,9 @@
 
 //// Constants
 
-levelName =
-{
-    1: "College",
-    2: "San Francisco",
-    3: "Alcatraz",
-    4: "Kona",
-    5: "Shipyard",
-    6: "London",
-    7: "Zoo",
-    8: "Carnival",
-    9: "Chicago"
-}
+levelName = ["College", "San Francisco", "Alcatraz", "Kona", "Shipyard", "London", "Zoo", "Carnival", "Chicago"]
+
+proGoalPoints = [25, 50, 50, 25, 50, 50, 50]
 
 normalGoalIndexes =
 {
@@ -66,9 +57,15 @@ id = 351978
 badge = 396854
 for level in normalGoalIndexes
 {
-    
+   goal = 1
    allNormalGoals = 0
+   manualGoal = 0
+   escapeGoal = 0
    birdGoal = 0
+   dogGoal = 0
+   skateGoal = 0
+   lionGoal = 0
+   bellGoal = 0
    bridgeGoal = 0
    for index in normalGoalIndexes[level]
    { 
@@ -78,17 +75,24 @@ for level in normalGoalIndexes
             if (step == index) 
 			{
 				allNormalGoals = allNormalGoals + dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
-				if (level == 4 && index == 8) birdGoal = dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
-				else if (level == 9 && index == 13) bridgeGoal = dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
+				if (level == 2 && goal == 15) manualGoal = dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
+				else if (level == 3 && goal == 14) escapeGoal = dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
+				else if (level == 4 && goal == 8) birdGoal = dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
+				else if (level == 5 && goal == 9) dogGoal = dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
+				else if (level == 6 && goal == 2) skateGoal = dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
+				else if (level == 7 && goal == 16) lionGoal = dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
+				else if (level == 8 && goal == 4) bellGoal = dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
+				else if (level == 9 && goal == 13) bridgeGoal = dword(dword(currentGoal + thisGoal) + goalCompletedOffset)
 			}
             else currentGoal = dword(currentGoal + nextGoal)
-        }  
+        }
+		goal = goal + 1
     }
 
     achievement
 	(
-        title = "[Zero Stats] " + levelName[level] + " Amatuer Skater",
-        description = "Complete all " + length(normalGoalIndexes[level]) + " amateur goals in " + levelName[level] + " with zero stats",
+        title = "[Zero Stats] " + levelName[level - 1] + " Amateur Skater",
+        description = "Complete all " + length(normalGoalIndexes[level]) + " amateur goals in " + levelName[level - 1] + " with zero stats",
         points = 25,
         trigger = protection() && prev(allNormalGoals) == length(normalGoalIndexes[level]) - 1 && measured(allNormalGoals == length(normalGoalIndexes[level]), when = careerMode() && inLevel(level) && goalPointerInitialized() && skating()),
 		id = id,
@@ -97,11 +101,37 @@ for level in normalGoalIndexes
 	id = id + 1
 	badge = badge + 1
 	
-	if (level == 4)
+	if (level == 2)
 	{
 		achievement
 		(
-			title = "[Zero Stats] Fly Little Birdy",
+			title = "All The Way...",
+			description = "Complete the \"Manual, Gap, and Manual the setup\" goal in San Francisco with zero stats",
+			points = 5,
+			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && skating() && manualGoal > prev(manualGoal),
+			id = 353845,
+			badge = "398617"
+		)
+	}
+	
+	else if (level == 3)
+	{
+		achievement
+		(
+			title = "Master Escape Plan",
+			description = "Complete the \"Escape from Alcatraz\" goal in Alcatraz with zero stats",
+			points = 10,
+			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && skating() && escapeGoal > prev(escapeGoal),
+			id = 353846,
+			badge = "398618"
+		)
+	}
+	
+	else if (level == 4)
+	{
+		achievement
+		(
+			title = "Fly Little Birdy",
 			description = "Complete the \"Save the birds on the power lines\" goal in Kona with zero stats",
 			points = 10,
 			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && skating() && birdGoal > prev(birdGoal),
@@ -112,11 +142,63 @@ for level in normalGoalIndexes
 		badge = badge + 1
 	}
 	
+	else if (level == 5)
+	{
+		achievement
+		(
+			title = "Bad to the Bone",
+			description = "Complete the \"Dog Chase\" goal in Shipyard with zero stats",
+			points = 50,
+			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && skating() && dogGoal > prev(dogGoal),
+			id = 353847,
+			badge = "398619"
+		)
+	}
+	
+	else if (level == 6)
+	{
+		achievement
+		(
+			title = "Just Like Old Times",
+			description = "Complete the \"Collect the S-K-A-T-E letters\" goal in London with zero stats",
+			points = 10,
+			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && skating() && skateGoal > prev(skateGoal),
+			id = 353848,
+			badge = "398620"
+		)
+	}
+	
+	else if (level == 7)
+	{
+		achievement
+		(
+			title = "Skate or Die",
+			description = "Complete the \"Do a Sit Down Air over the Lion's cage\" goal in Zoo with zero stats",
+			points = 10,
+			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && skating() && lionGoal > prev(lionGoal),
+			id = 353849,
+			badge = "398621"
+		)
+	}
+	
+	else if (level == 8)
+	{
+		achievement
+		(
+			title = "Win the Best Prize",
+			description = "Complete the \"Hit the tricks and ring the bell!\" goal in Carnival with zero stats",
+			points = 10,
+			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && skating() && bellGoal > prev(bellGoal),
+			id = 353850,
+			badge = "398622"
+		)
+	}
+	
 	else if (level == 9)
 	{
 		achievement
 		(
-			title = "[Zero Stats] 5-Star Taxi Driver",
+			title = "5-Star Taxi Driver",
 			description = "Complete the \"900 off bridge to the ferry's top deck\" goal in Chicago with zero stats",
 			points = 10,
 			trigger = protection() && careerMode() && inLevel(level) && goalPointerInitialized() && skating() && bridgeGoal > prev(bridgeGoal),
@@ -150,9 +232,9 @@ for level in proGoalIndexes
 	
 	achievement
 	(
-        title = "[Zero Stats] " + levelName[level] + " Pro Skater",
-        description = description + total + " pro goals in " + levelName[level] + " with zero stats",
-        points = 25,
+        title = "[Zero Stats] " + levelName[level - 1] + " Pro Skater",
+        description = description + total + " pro goals in " + levelName[level - 1] + " with zero stats",
+        points = proGoalPoints[level - 1],
         trigger = protection() && prev(allProGoals) == total - 1 && measured(allProGoals == total, when = careerMode() && inLevel(level) && goalPointerInitialized() && skating()),
 		id = id,
 		badge = format("", badge)
