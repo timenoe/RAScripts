@@ -323,7 +323,7 @@ friendGroups = {
 	1: ["Aidan", "Alba", "Aldo", "Bran", "Bruce", "Butch", "Carlos", "Cecil", "Chatt", "Christoph", "Claudia", "Clive", "Cornelia", "Cosmo", "Dan", "Dennis", "Edgar", "Ernest", "Eugene", "Faraus", "Flora", "Garcia", "Gene", "Golye", "Gonber", "Gregory", "Howard", "Hyann", "Jared", "Jill", "Johan", "Keaton", "Leban", "Lily", "Lulu", "Marietta", "Martinez", "Mook", "Morfinn", "Morgan", "Nick", "Paul", "Pinky", "Rika", "Rolec", "Romaria", "Santos", "Sarval", "Solo", "Stefan", "Sunset", "Synelia", "Tarkin", "Wal", "Wyze", "Yack", "Zida"],
 	2: ["Anastasia", "Dwight", "Elef", "Grant", "Hip", "Ryan"],
 	3: ["Adina", "Elena"],
-	4: ["Conrad", "Daniel", "Eon", "Franklin", "Gareth", "Gordon", "Iris"],
+	4: ["Conrad", "Daniel", "Eon", "Franklin", "Gareth", "Gordon", "Iris"], //David goes after Daniel
 	5: ["Aesop", "Ben", "Bligh", "Brie", "Caesar", "Den", "Donkey", "Gabe", "Gerald", "Giske", "Gob", "Gobrey", "Golly", "Gonn", "Goo", "Jarvis", "Lin", "Lyle", "Mason", "Monki", "Nocturne", "Tony"],
 	6: ["Elmo", "Joaquel"],
 	
@@ -353,7 +353,7 @@ friendGroups = {
 
 skipFriends = ["Clive", "Ganz", "Gawain", "Ridley"] //These friends do not need an individual achievement since they are mandatory for the story (Clive, etc.)
 tempFriends = ["Coco", "Daniel", "Genius", "Gil", "Jarvis", "Mikey", "Pitt", "Row"] //These friends are temporarily added to the friends list for the story, so the party flag has to be checked instead for their actual recruitment
-easyFriends = ["Aesop", "Bran", "Garcia", "Gob", "Monki", "Wal"] //These friends are recruited around the same time, so the point value of their individual achievement will be reduced
+easyFriends = ["Aesop", "Bran", "Elef", "Garcia", "Gob", "Hip", "Monki", "Ryan", "Wal"] //These friends are recruited around the same time, so the point value of their individual achievement will be reduced
 hardFriends = ["Adele", "Clarence", "Curtis", "Donkey", "Dynas", "Elwen", "Galvados", "Gerald", "Gobrey", "Gruel", "Iris", "JJ","Kain", "Leona", "Morgan", "Nocturne", "Nyx", "Ortoroz", "Thanos", "Valkyrie"] //These friends are harder to recruit for various reasons, so their point value will be increased
 missableFriends = ["Adele", "Adina", "Aldo", "Ardoph", "Bligh", "Brie", "Caesar", "Christoph", "Curtis", "Daniel", "Dimitri", "Dennis", "Doppio", "Drew", "Dwight", "Dynas", "Elef", "Elena", "Elwen", "Galvados", "Gerald", "Giovanni", "Giske", "Gruel", "Grant", "Hip", "Jarvis", "Jill", "JJ", "Kain", "Luka", "Nocturne", "Nyx", "Patrick", "Putt", "Rocky", "Ryan", "Sebastian", "Sonny", "Star", "Thanos", "Ursula", "Vitas"] //These friends are missable for various reasons
 
@@ -566,7 +566,7 @@ kickDuelGroups = {
 noKickDuelGroups = {
 	10: ["Gabe", "Goo"],
 	12: ["Polpo"],
-	13: ["Ravil"],
+	13: ["Ravil", "Theresa"],
 	14: ["Barbena", "Nalshay", "Nask", "Ray C. Ross", "Rose", "Sayna"]
 }
 //I don't believe that these characters can be kick dueled, so I am excluding them from the count
@@ -696,7 +696,8 @@ function validPtr() => mainPtr() != 0
 function battleStatus() => byte(0x37fb6d)
 function winBattle() => prev(battleStatus()) == 0 && battleStatus() == 1
 function loseBattle() => prev(battleStatus()) == 0 && battleStatus() == 2
-function firstEnemy() => dword(0x37fb94)
+function soloBossBattle(enemy) => dword(0x37fb94) == enemy
+function bossBattle(enemy) => __ornext(dword(0x37fb94) == enemy || dword(0x37fba8) == enemy || dword(0x37fbbc) == enemy || dword(0x37fbd0) == enemy)
 
 function daytime() => rsDword(0x6162f8) - rsDword(0x616794) * 5184000 >= 1296000 && rsDword(0x6162f8) - rsDword(0x616794) * 5184000 < 3888000
 //This is incorrectly optimized and the fix is pending, so replace the generated logic with this: I:0xX18e8d0_B:0xXfffff4a4*5184000_I:0xX18e8d0_0xXfffff008>=1296000_I:0xX18e8d0_B:0xXfffff4a4*5184000_I:0xX18e8d0_0xXfffff008<3888000
@@ -730,7 +731,19 @@ function characterRoom(characterID) => word(characterPtr() + characterOffset*cha
 function characterVolty(characterID) => byte(characterPtr() + characterOffset*characterID + voltyOffset)
 function sameRoom(characterID) => room() == word(characterPtr() + characterOffset*characterID + roomOffset)
 function commonItemSlot(index) => word(characterPtr() + characterOffset*characterIDs["Jack"] + inventoryOffset + 4*(index-1))
+function commonItemSlotQuantity(index) => byte(characterPtr() + characterOffset*characterIDs["Jack"] + inventoryOffset + 4*(index-1) + quantityOffset)
 function itemEquipStatus(index) => byte(characterPtr() + characterOffset*characterIDs["Jack"] + inventoryOffset + 4*(index-1) + equipStatusOffset)
+function getNewCommonItem(itemID) {
+
+	getCommonItem = always_false()
+	
+	for i in range(1, 100) {
+	
+		getCommonItem = getCommonItem || prev(commonItemSlot(i)) == 0 && commonItemSlot(i) == itemID
+	}
+	
+	return getCommonItem
+}
 function getCommonItem(itemID) {
 
 	getCommonItem = always_false()
@@ -738,6 +751,7 @@ function getCommonItem(itemID) {
 	for i in range(1, 100) {
 	
 		getCommonItem = getCommonItem || prev(commonItemSlot(i)) == 0 && commonItemSlot(i) == itemID
+		getCommonItem = getCommonItem || prev(commonItemSlot(i)) == itemID && commonItemSlot(i) == itemID && commonItemSlotQuantity(i) > prev(commonItemSlotQuantity(i))
 	}
 	
 	return getCommonItem
@@ -816,7 +830,7 @@ function rsBitFalse(room, index, addr) => validPtr() && room() == room && rsBit(
 
 function completeMission(mission) => validPtr() && room() == 0x1f8 && prev(recentlyCompletedMission()) == mission && recentlyCompletedMission() == 0
 
-function defeatEnemy(room, enemy) => validPtr() && room() == room && battling() && firstEnemy() == enemy && winBattle()
+function defeatBoss(room, boss) => validPtr() && room() == room && battling() && bossBattle(boss) && winBattle()
 
 //Collection
 
@@ -843,6 +857,7 @@ function allRecords() {
 function collectAllItems(items) => notLoading() && prev(sum_of(items, s => s)) == length(items) - 1 && measured(sum_of(items, s => s) == length(items), when = validPtr())
 
 function battleDrop(item) => validPtr() && battling() && getCommonItem(item)
+function newBattleDrop(item) => validPtr() && battling() && getNewCommonItem(item)
 
 function getTriaMilk() => validPtr() && notLoading() && sameRoom(characterIDs["Tarkin"]) && getCommonItem(0x351)
 
@@ -854,8 +869,8 @@ function goodCrocSkin() => never(!validPtr()) && never(room() != 0xfa) && never(
 
 function teleportSelf() => validPtr() && room() == 0xf9 && prev(rsBit(7, 0x61654e)) == 1 && trigger_when(rsBit(7, 0x61654e) == 0)
 
-function loseJarvisFoodFight() => validPtr() && room() == 0x206 && battling() && firstEnemy() == characterIDs["Jarvis"] && prev(battleStatus()) == 0 && trigger_when(battleStatus() == 2)
-function winJarvisFoodFight() => validPtr() && room() == 0x206 && battling() && firstEnemy() == characterIDs["Jarvis"] && prev(battleStatus()) == 0 && trigger_when(battleStatus() == 1)
+function loseJarvisFoodFight() => validPtr() && room() == 0x206 && battling() && soloBossBattle(characterIDs["Jarvis"]) && prev(battleStatus()) == 0 && trigger_when(battleStatus() == 2)
+function winJarvisFoodFight() => validPtr() && room() == 0x206 && battling() && soloBossBattle(characterIDs["Jarvis"]) && prev(battleStatus()) == 0 && trigger_when(battleStatus() == 1)
 
 function fireworksDate(characterID) => validPtr() && highestAffectionCharacter() == characterID && prev(rsBit(7, 0x616532)) == 1 && trigger_when(room() == 0x1f3 && rsBit(7, 0x616532) == 0)
 
@@ -881,13 +896,13 @@ function dance(roomID, musicID) => never(!validPtr()) && never(room() != roomID)
 
 //Challenges
 
-function drunkJarvisEmptyBottle() => validPtr() && rsBit(5, 0x61637e) == 0 && cutscene() && room() == 0x2a8 && equippedWeapon(0xa1) && battling() && firstEnemy() == characterIDs["Jarvis"] && prev(battleStatus()) == 0 && trigger_when(battleStatus() == 1)
+function drunkJarvisEmptyBottle() => validPtr() && rsBit(5, 0x61637e) == 0 && cutscene() && room() == 0x2a8 && equippedWeapon(0xa1) && battling() && soloBossBattle(characterIDs["Jarvis"]) && prev(battleStatus()) == 0 && trigger_when(battleStatus() == 1)
 
-function havenGawainNoLeo() => never(firstEnemy() == characterIDs["Gawain"] && loseBattle()) && validPtr() && once(rsBit(3, 0x6163f4) > prev(rsBit(3, 0x6163f4))) && room() == 0x129 && trigger_when(battling() && firstEnemy() == characterIDs["Gawain"] && prev(battleStatus()) == 0 && battleStatus() == 1)
+function havenGawainNoLeo() => never(soloBossBattle(characterIDs["Gawain"]) && loseBattle()) && validPtr() && once(rsBit(3, 0x6163f4) > prev(rsBit(3, 0x6163f4))) && room() == 0x129 && trigger_when(battling() && soloBossBattle(characterIDs["Gawain"]) && prev(battleStatus()) == 0 && battleStatus() == 1)
 
-function daytimeElwen() => validPtr() && room() == 0xfe && daytime() && battling() && firstEnemy() == characterIDs["Elwen"] && prev(battleStatus()) == 0 && trigger_when(battleStatus() == 1)
+function daytimeElwen() => validPtr() && nonhumanSide() && cutscene() && room() == 0xfe && daytime() && battling() && bossBattle(characterIDs["Elwen"]) && prev(battleStatus()) == 0 && trigger_when(battleStatus() == 1)
 
-function kelvinArbitratorSolo() => validPtr() && room() == 0x2fb && solo() && equippedWeapon(0xa5) && battling() && firstEnemy() == 0xf3 && prev(battleStatus()) == 0 && trigger_when(battleStatus() == 1)
+function kelvinArbitratorSolo() => validPtr() && room() == 0x2fb && equippedWeapon(0xa5) && battling() && soloBossBattle(characterIDs["Kelvin"]) && prev(battleStatus()) == 0 && trigger_when(battleStatus() == 1)
 
 ///Achievements
 
@@ -1280,7 +1295,7 @@ achievement(
 	title = "Bonding Time",
 	description = "Defeat Cairn",
 	points = 10,
-	trigger = defeatEnemy(0x2b7, 0xf2)
+	trigger = defeatBoss(0x2b7, 0xf2)
 )
 
 id = id + 1
@@ -1291,7 +1306,7 @@ achievement(
 	title = "Necrovisions",
 	description = "Defeat Lezard",
 	points = 10,
-	trigger = defeatEnemy(0x2a1, 0xef)
+	trigger = defeatBoss(0x2a1, 0xef)
 )
 
 id = id + 1
@@ -1302,7 +1317,7 @@ achievement(
 	title = "Perilous Package",
 	description = "Defeat Gabriel Celesta",
 	points = 25,
-	trigger = defeatEnemy(0x2cf, 0xf4)
+	trigger = defeatBoss(0x2cf, 0xf4)
 )
 
 id = id + 1
@@ -1313,7 +1328,7 @@ achievement(
 	title = "Delusional Dream",
 	description = "Defeat Ethereal Queen",
 	points = 50,
-	trigger = defeatEnemy(0x2db, 0xf1)
+	trigger = defeatBoss(0x2db, 0xf1)
 )
 
 id = id + 1
@@ -1324,7 +1339,7 @@ achievement(
 	title = "Back to Sleep",
 	description = "Defeat Quasar",
 	points = 10,
-	trigger = defeatEnemy(0x266, 0xa1)
+	trigger = defeatBoss(0x266, 0xa1)
 )
 
 id = id + 1
@@ -1339,8 +1354,8 @@ for friendGroup in friendGroups {
 		
 			title = friendTitles[friend]
 			if (any_of(missableFriends, s => s == friend)) title = title + " [m]"
-			if (friendGroup >= 14) title = title + " [h]"
-			else if (friendGroup >= 7) title = title + " [n]"
+			if (friendGroup >= 14 && friendGroup != 22) title = title + " [h]"
+			else if (friendGroup >= 7 && friendGroup != 22) title = title + " [n]"
 			
 			description  = "Add " + friend + " to your friends list"
 			friendBit = bit3(characterPtr() + characterOffset*characterID + friendOffset)
@@ -1360,7 +1375,7 @@ for friendGroup in friendGroups {
 				title = title,
 				description = description,
 				points = points,
-				trigger = validPtr() && sameRoom(characterID) && friendBit > prev(friendBit)
+				trigger = validPtr() && notLoading() && friendBit > prev(friendBit)
 			)
 			
 			id = id + 1
@@ -1421,7 +1436,7 @@ for kickDuelGroup in kickDuelGroups {
 	
 		id = id,
 		title = kickDuelTitles[kickDuelGroup],
-		description = description + kickDuelDescriptions[kickDuelGroup] + " in a kick duel",
+		description = description + kickDuelDescriptions[kickDuelGroup] + " in a duel",
 		points = points,
 		trigger = notLoading() && prev(allDuels) == duelCount - 1 && measured(allDuels == duelCount, when = validPtr())
 	)
@@ -1485,13 +1500,16 @@ for skillGroup in skillGroups {
 		else for i in mult addr = nextBit(addr)
 	}
 	
+	if (skillGroup == 0) trigger = never(!validPtr()) && never(!notLoading()) && prevSkillGroupUnlearned && measured(tally(length(allSkillGroupLearned), allSkillGroupLearned))
+	else trigger = never(!validPtr()) && never(!notLoading()) && battling() && prevSkillGroupUnlearned && measured(tally(length(allSkillGroupLearned), allSkillGroupLearned))
+	
 	achievement(
 	
 		id = id,
 		title = skillGroupLevelTitles[skillGroup],
 		description = "Learn all " + length(allSkillGroupLearned) + " " + skillGroupDescriptions[skillGroup] + " skills",
 		points = 25,
-		trigger = never(!validPtr()) && never(!notLoading()) && battling() && prevSkillGroupUnlearned && measured(tally(length(allSkillGroupLearned), allSkillGroupLearned))
+		trigger = trigger
 	)
 	
 	id = id + 1
@@ -1537,7 +1555,7 @@ achievement(
 	title = "Jack of All Trades, Master of None",
 	description = "Learn all " + length(allSkillsLearned) + " skills",
 	points = 50,
-	trigger = never(!validPtr()) && never(!notLoading()) && battling() && prevSkillUnlearned && measured(tally(length(allSkillsLearned), allSkillsLearned))
+	trigger = never(!validPtr()) && never(!notLoading()) && prevSkillUnlearned && measured(tally(length(allSkillsLearned), allSkillsLearned))
 )
 
 id = id + 1
@@ -1750,10 +1768,10 @@ id = id + 1
 achievement(
 	
 	id = id,
-	title = "Medusa Spear",
-	points = 25,
-	description = "Complete all spear practice exercises and receive your reward",
-	trigger = rsBitTrueAnywhere(4, 0x616368)
+	title = "VOID",
+	description = "VOID",
+	points = 0,
+	trigger = always_false()
 )
 
 id = id + 1
@@ -1788,7 +1806,7 @@ achievement(
 	title = "Glory Edge",
 	description = "Obtain a Glory Edge",
 	points = 10,
-	trigger = battleDrop(0x54)
+	trigger = newBattleDrop(0x54)
 )
 
 id = id + 1
@@ -1800,7 +1818,7 @@ achievement(
 	title = "Bind Saber",
 	description = "Obtain a Bind Saber",
 	points = 10,
-	trigger = battleDrop(0x71)
+	trigger = newBattleDrop(0x71)
 )
 
 id = id + 1
@@ -1811,7 +1829,7 @@ achievement(
 	title = "Muramasa",
 	description = "Obtain a Muramasa",
 	points = 10,
-	trigger = battleDrop(0x6c)
+	trigger = newBattleDrop(0x6c)
 )
 
 id = id + 1
@@ -1822,7 +1840,7 @@ achievement(
 	title = "Knight Axe",
 	description = "Obtain a Knight Axe",
 	points = 10,
-	trigger = battleDrop(0x7c)
+	trigger = newBattleDrop(0x7c)
 )
 
 id = id + 1
@@ -1833,7 +1851,7 @@ achievement(
 	title = "Fall Smasher",
 	description = "Obtain a Fall Smasher",
 	points = 10,
-	trigger = battleDrop(0x84)
+	trigger = newBattleDrop(0x84)
 )
 
 id = id + 1
@@ -1844,7 +1862,7 @@ achievement(
 	title = "Binding Spear",
 	description = "Obtain a Binding Spear",
 	points = 10,
-	trigger = battleDrop(0x97)
+	trigger = newBattleDrop(0x97)
 )
 
 id = id + 1
@@ -1855,7 +1873,7 @@ achievement(
 	title = "Dragon Scale",
 	description = "Obtain a suit of Dragon Scale",
 	points = 10,
-	trigger = battleDrop(0x148)
+	trigger = newBattleDrop(0x148)
 )
 
 id = id + 1
@@ -1866,7 +1884,7 @@ achievement(
 	title = "Ore Armor",
 	description = "Obtain a suit of Ore Armor",
 	points = 10,
-	trigger = battleDrop(0x14a)
+	trigger = newBattleDrop(0x14a)
 )
 
 id = id + 1
@@ -1877,7 +1895,7 @@ achievement(
 	title = "Life Bangle",
 	description = "Obtain a Life Bangle",
 	points = 10,
-	trigger = battleDrop(0x24d)
+	trigger = newBattleDrop(0x24d)
 )
 
 id = id + 1
@@ -1888,7 +1906,7 @@ achievement(
 	title = "VIP Badge",
 	description = "Obtain a VIP Badge",
 	points = 10,
-	trigger = battleDrop(0x284)
+	trigger = newBattleDrop(0x284)
 )
 
 id = id + 1
@@ -1899,7 +1917,7 @@ achievement(
 	title = "Magic Mirror [n]",
 	description = "Obtain a Magic Mirror",
 	points = 10,
-	trigger = battleDrop(0x289)
+	trigger = newBattleDrop(0x289)
 )
 
 id = id + 1
@@ -1910,7 +1928,7 @@ achievement(
 	title = "Gold Dragon Castle",
 	description = "Obtain a Gold Dragon Castle record",
 	points = 10,
-	trigger = battleDrop(0x304)
+	trigger = newBattleDrop(0x304)
 )
 
 id = id + 1
@@ -1921,7 +1939,7 @@ achievement(
 	title = "Dragon Lair Cave",
 	description = "Obtain a Dragon Lair Cave record",
 	points = 10,
-	trigger = battleDrop(0x2e3)
+	trigger = newBattleDrop(0x2e3)
 )
 
 id = id + 1
@@ -1932,7 +1950,7 @@ achievement(
 	title = "Distortion Corridor",
 	description = "Obtain a Distortion Corridor record",
 	points = 10,
-	trigger = battleDrop(0x2e8)
+	trigger = newBattleDrop(0x2e8)
 )
 
 id = id + 1
@@ -1943,7 +1961,7 @@ achievement(
 	title = "Shrine of Fray",
 	description = "Obtain a Shrine of Fray record",
 	points = 10,
-	trigger = battleDrop(0x2e9)
+	trigger = newBattleDrop(0x2e9)
 )
 
 id = id + 1
@@ -2107,7 +2125,7 @@ achievement(
 	title = "Odds and Ends [m] [n]",
 	description = "Resolve the problems of the Fort Helencia occupants",
 	points = 5,
-	trigger = rsBitTrue(0x13d, 2, 0x61652b)
+	trigger = rsBitTrue(0x133, 2, 0x61652b)
 )
 //This can only be done during the Nonhuman Side before departing for Goblin Haven
 
@@ -2176,6 +2194,14 @@ for date in dates {
 	id = id + 1
 }
 //These can be missed if Jack doesn't have high enough affection with any of the dateable characters
+
+achievement
+(
+	title = "Sparks Fly [m] [h]",
+	description = "Attend the fireworks festival",
+	points = 5,
+	trigger = rsBitFalse(0x1f3, 7, 0x616532)
+)
 
 achievement(
 
@@ -2361,6 +2387,24 @@ achievement(
 	description = "Defeat the water dragon Kelvin solo using the Arbitrator",
 	points = 25,
 	trigger = kelvinArbitratorSolo()
+)
+
+achievement(
+	
+	id = 318360,
+	title = friendTitles["David"],
+	description = "Add David to your friends list",
+	points = 5,
+	trigger = validPtr() && notLoading() && bit3(characterPtr() + characterOffset*characterIDs["David"] + friendOffset) > prev(bit3(characterPtr() + characterOffset*characterIDs["David"] + friendOffset))
+)
+
+achievement(
+	
+	id = 318449,
+	title = "Medusa Spear",
+	points = 25,
+	description = "Complete all spear practice exercises and receive your reward",
+	trigger = rsBitTrueAnywhere(3, 0x616368)
 )
 
 ///Leaderboards
