@@ -77,7 +77,7 @@ badge = badge + 1
 achievement("Pile of Gems", "Unlock 36 allies", 25, activeStory() && prev(allAllies) < 36 && allAllies == 36, id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
-achievement("Ally Army", "Unlock all 46 allies", 50, activeStory() && prev(allAllies) < 46 && measured(allAllies == 46), id = id, badge = format("", badge))
+achievement("Ally Army", "Unlock all 46 allies", 50, prev(allAllies) < 46 && measured(allAllies == 46, when = activeStory()), id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
 
@@ -93,12 +93,12 @@ badge = badge + 1
 achievement("End in Sight", "Complete 75 variations of Hidden Arena", 50, activeStory() && prev(allArena) == 74 && allArena == 75, id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
-achievement("Arena Ascension", "Complete all 100 variations of Hidden Arena", 100, activeStory() && prev(allArena) == 99 && measured(allArena == 100), id = id, badge = format("", badge))
+achievement("Arena Ascension", "Complete all 100 variations of Hidden Arena", 100, prev(allArena) == 99 && measured(allArena == 100, when = activeStory()), id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
 
 allRevisits = bit5(0x4598) + bit6(0x4598) + bit7(0x4598) + bitcount(0x4599)
-achievement("Trip Down Memory Lane", "Revisit and complete all 11 zones after completing 50 variations of Hidden Arena", 25, activeStory() && prev(allRevisits) == 10 && measured(allRevisits == 11), id = id, badge = format("", badge))
+achievement("Trip Down Memory Lane", "Revisit and complete all 11 zones after completing 50 variations of Hidden Arena", 25, prev(allRevisits) == 10 && measured(allRevisits == 11, when = activeStory()), id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
 
