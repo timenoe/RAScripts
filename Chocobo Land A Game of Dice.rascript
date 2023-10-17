@@ -15,7 +15,7 @@ mapName = ["Mage Plains", "Sahagin Marsh", "Gigantoad Swamp", "Behemoth Plains",
 function state() => byte(0x4514)
 function mainMenuState() => state() == 3
 function mapState() => state() == 6
-function gameState() => state() > 4
+function gameState() => state() > 4 && state() < 10
 
 function mode() => byte(0x4730)
 function storyMode() => mode() == 0
