@@ -466,7 +466,7 @@ achievement("Maxwell D. Goodboy", "Safely cross the channel on the raft", 3, ver
 achievement("Top the Charts", "Find all 10 different Pooki flavours for Starbi", 10, versionTrigger(findConsecutiveBits, [[4,0xe341], 10, 10, [noSpecificMap], measured]), id=385580)
 achievement("Door-to-Door Pooki Salesman", "Clear the Zandunia warehouse of beasties, or find a way out", 5, versionTrigger(findConsecutiveBits, [[7,0xe401], 3, 1, [0x33], unmeasured]), id=385581)
 achievement("Plestro's Guard Dog", "Defeat Mamacuba in the Zandunia warehouse", 5, versionTrigger(findBit, [[2,0xe52d], 0x33]), id=385582)
-achievement("Little Lost Souls", "Gather all 4 of Aelia's missing babies", 5, versionTrigger(findConsecutiveBits, [[1,0xe528], 4, 4, [0x04], measured]), id=385583)
+achievement("Little Lost Souls", "Find and return all 4 of Aelia's missing babies", 5, versionTrigger(findConsecutiveBits, [[5,0xe528], 4, 4, [0x04], measured]), id=385583)
 achievement("Fish Fear You", "Catch all 12 fish", 10, versionTrigger(findConsecutiveBits, [[0,0xe590], 12, 12, [0x13], measured]), id=385584)
 mapAchievements(["Zandunia", "Rumbly Jungle", "Croxco Scrapheap"], 385585)
 // Miscellaneous
