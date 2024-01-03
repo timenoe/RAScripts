@@ -71,7 +71,7 @@ dubelleCameraTarget = [0x7000, 0x48c00]
 hyperBeamAddr = [4,0xe56c]
 installedAppAddrs = [bit4(0xe5da), bit5(0xe5da), bit7(0xe5da)]
 maps = ["The Outpost", "Croxco Scrapheap", "Zandunia", "Rumbly Jungle", "Wytchberg", "Totummy Temples", "Grand Zootel", "Resonarion", "Lunar Penitentiary", "Echelon L. Central", "Echelon L. Residential", "Echelon Mega Mall", "Echelon L. Industrial", "Echelon Upper", "Xenolith", "Bolly Dimension", "Orange Dimension"]
-newAppAddrs = [bit4(0xe5d8), bit5(0xe5d8), bit7(0xe5d8)]
+newAppAddrs = [bit0(0xe592), bit0(0xe5b8), bit1(0xe5b8), bit2(0xe5b8), bit3(0xe5b8), bit0(0xe5c8), bit2(0xe5c8), bit4(0xe5d8), bit5(0xe5d8)]
 nuyuCameraTarget = [0x1f000, 0x43000]
 specialScorecardAddrs = [bit2(0xe5b8), bit3(0xe5b8), bit2(0xe5c8)]
 tuffStuffAddrs = [bit7(0xe337), bit1(0xe339), bit6(0xe343), bit7(0xe343)]
@@ -222,8 +222,16 @@ function reachCount(offset, value, count, map, measured, exact)
 		}
 		else mission = maxwellsMission(offset)
 		
-		if (measured == 1) return map(offset) == map && prev(value(offset)) == count - 1 && measured(value(offset) == count, when = mission && hyperBeamCheck)
-		else return mission && map(offset) == map && hyperBeamCheck && prev(value(offset)) == count - 1 && value(offset) == count
+		if (measured == 1)
+		{
+			if (exact == 1) return map(offset) == map && prev(value(offset)) == count - 1 && measured(value(offset) == count, when = mission && hyperBeamCheck)
+			else return map(offset) == map && prev(value(offset)) < count && measured(value(offset) == count, when = mission && hyperBeamCheck)
+		}
+		else
+		{
+			if (exact == 1) return mission && map(offset) == map && hyperBeamCheck && prev(value(offset)) == count - 1 && value(offset) == count
+			else return mission && map(offset) == map && hyperBeamCheck && prev(value(offset)) < count && value(offset) == count
+		}
 	}
 } 
 function valueIncrease(offset, value) => value(offset) > prev(value(offset))
@@ -348,17 +356,17 @@ function bountyHuntersChallenge(offset) => never(shootBlaster(offset) || tookDam
 function changeTheme(offset) => inGame(offset) && pawsed(offset) && trigger_when(prev(pawsOsTheme(offset)) == 5 && pawsOsTheme(offset) == 6)
 function changeOutfit(offset) => map(offset) == 0x0e && trackCameraTarget(offset, nuyuCameraTarget) && trigger_when(outfit(offset) != prev(outfit(offset)))
 function councilChallenge(offset) => never(outOfOrderCouncil(offset) || tookDamage(offset) || notInGame(offset)) && once(startCouncilBoss(offset, normal, hyperBeamLocked)) && trigger_when(chadCouncilDefeated(offset))
-function cropettSpeedrun(offset) => cropettsMission(offset) && inGame(offset) && secondsPlayed(offset) <= 35895 && trigger_when(beatCropettsMission(offset))
+function cropettSpeedrun(offset) => cropettsMission(offset) && inGame(offset) && secondsPlayed(offset) <= 600 && trigger_when(beatCropettsMission(offset))
 function dangerNut(offset) => never(xPos(offset) > 0x6f9 && xPos(offset) < 0x727 || yPos(offset) > 0x650 || dying(offset)) && once(map(offset) == 0x31 && hyperBeamLocked(offset) && prev(nearbyNpcPtr(offset)) == tbyte(0xf3bc + offset) && npcCommenceDialogue(offset, 0x9e81d50)) && trigger_when(xPos(offset) >= 0x140 && xPos(offset) <= 0x200 && grounded(offset))
 function dayThreeBombParts(offset) => planet(offset) == 0xa && inPlanet(offset) && byte(0xe548 + offset) <= 3 && prev(sum_of(getBits([7, 0xe336 + offset], 5), s => s)) < 5 && trigger_when(sum_of(getBits([7, 0xe336 + offset], 5), s => s) == 5)
 function fallFromHeaven(offset) => map(offset) == 0x11 && prev(animation(offset)) == 0x850 && animation(offset) == 0x3d0
 function findPodly(offset) => inPlanet(offset) && map(offset) == 0x0f && trueBit(offset, hyperBeamAddr) && trigger_when(inArea(offset, 0x54a, 0x559, 0x0b3, 0x0b3))
 function flexOnGuard(offset) => map(offset) == 0x2b && trueBit(offset, [4,0xe540]) && trigger_when(npcCommenceDialogue(offset, 0x9e829a8))
 function henchmenChallenge(offset) => never(tookDamage(offset) || notInGame(offset)) && once(startHenchmenBoss(offset, normal)) && trigger_when(henchmenDefeated(offset))
-function hideInBox(offset) => maxwellsMission(offset) && inGame(offset) && prev(byte(0x004f1c + offset)) == 9 && byte(0x004f1c + offset) == 0xa
+function hideInBox(offset) => map(offset) == 0x1c && prisonProgress(offset) > 8 && trigger_when(prev(byte(0x004f1c + offset)) == 9 && byte(0x004f1c + offset) == 0xa)
 function hugJenovi(offset) => inPlanet(offset) && map(offset) == 0x22 && trueBit(offset, [5,0xe305]) && trigger_when(npcCommenceDialogue(offset, 0x9e821b4))
 function installNewApp(offset) => inGame(offset) && pawsed(offset) && sum_of(newAppAddrs, s => s) > 0 && prev(sum_of(installedAppAddrs, s => s)) == 0 && trigger_when(sum_of(installedAppAddrs, s => s) == 1)
-function laserdrillChallenge(offset) => prev(sum_of(allLaserdrillShardRocks(offset), s => s)) < length(allLaserdrillShardRocks(offset)) && measured(sum_of(allLaserdrillShardRocks(offset), s => s) == length(allLaserdrillShardRocks(offset)), when = difficulty(offset) == normal && map(offset) == 0x05 && music(offset) == 0x1d)
+function laserdrillChallenge(offset) => prev(sum_of(allLaserdrillShardRocks(offset), s => s)) < 93 && measured(sum_of(allLaserdrillShardRocks(offset), s => s) >= 93, when = difficulty(offset) == normal && map(offset) == 0x05 && music(offset) == 0x1d)
 function mamacuda1Challenge(offset) => never(dying(offset) || notInGame(offset)) && never(once(startMamacuda1Boss(offset, normal, hyperBeamLocked)) && repeated(1201, always_true())) && once(startMamacuda1Boss(offset, normal, hyperBeamLocked)) && trigger_when(bossDefeated(offset, boss1))
 function mamacuda2Challenge(offset) => never(useWeapon(offset, warpBolt) || dying(offset) || notInGame(offset)) && once(startMamacuda2Boss(offset, normal, hyperBeamLocked)) && trigger_when(bossDefeated(offset, boss1))
 function mamacudaSaysHi(offset) => inPlanet(offset) && map(offset) == 0x31 && trueBit(offset, [2,0xe52d]) && prev(byte(0x11172 + offset)) == 0 && trigger_when(byte(0x11172) + offset == 1)
@@ -374,9 +382,9 @@ function mapAchievements(maps, id)
 		id = id + 1
 	}
 }
-function petKappa(offset) => map(offset) == 0x2d && nearNpc(offset, 0x9e7ec68) && prev(byte(0x4f1c + offset)) == 0 && trigger_when(byte(0x4f1c + offset) == 0x10)
+function petKappa(offset) => map(offset) == 0x2d && wasNearNpc(offset, 0x9e7ec68) && prev(byte(0x4f1c + offset)) == 0 && trigger_when(byte(0x4f1c + offset) == 0x10)
 function plestroChallenge(offset) => inPlanet(offset) && map(offset) == 0x31 && trueBit(offset, [7,0xe401]) && falseBit(offset, [0,0xe402]) && falseBit(offset, [1,0xe402]) && prev(bit0(0xe303 + offset)) == 0 && trigger_when(trueBit(offset, [0,0xe303]))
-function poopThink(offset) => inGame(offset) && poopSweeperPtr(offset) != 0 && trigger_when(byte(poopSweeperPtr(offset) + 0x80d8) > prev(byte(poopSweeperPtr(offset) + 0x80d8)))
+function poopThink(offset) => inGame(offset) && poopSweeperPtr(offset) != 0 && never(byte(poopSweeperPtr(offset) + 0x80d8) == 0) && trigger_when(repeated(60, byte(poopSweeperPtr(offset) + 0x80d8) == 1))
 function rankBurgerdog(offset, special, score) => map(offset) == 0x0c && burgerdog(offset, special) && burgerdogPtr(offset) != 0 && burgerdogScore(offset) >= score && trigger_when(burgerdogEnd(offset))
 function rankRhythmGame(offset, game, score, duration) => map(offset) == 0x23 && rhythmGame(offset, game) && rhythmGamePtr(offset) != 0 && rhythmGameScore(offset) >= score && trigger_when(rhythmGameEnd(offset, duration))
 function readUselessSign(offset) => inPlanet(offset) && map(offset) == 0x31 && trueBit(offset, [4,0xe52d]) && trigger_when(npcCommenceDialogue(offset, 0x9e82a50))
@@ -389,14 +397,14 @@ function sPlusRankLilacForce(offset) => map(offset) == 0x0d && lilacForcePtr(off
 function speakToWitch(offset, mode) => map(offset) == 0x2e && npcInOutfit(offset, witchPtr, mode) && commenceDialogue(offset)
 function sRankPoopSweeper(offset) => inGame(offset) && poopSweeperPtr(offset) != 0 && poopSweeperStarted(offset) && poopSweeperTime(offset) <= 15 && trigger_when(valueIncrease(offset, poopSweeperWins))
 function uncoverGizmo(offset) => map(offset) == 0x0e && prev(gizmoShards(offset)) < 2 && trigger_when(gizmoShards(offset) == 2)
-function unlockHyperBeam(offset) => tbyte(0xe76c + offset) != 0 && byte(tbyte(0xe76c + offset)) > prev(byte(tbyte(0xe76c + offset))) 
+function unlockHyperBeam(offset) => tbyte(0xe76c + offset) != 0 && byte(tbyte(0xe76c + offset) + 0x840c) > prev(byte(tbyte(0xe76c + offset) + 0x840c)) 
 
 // Functions - Leaderboards
 function beatCropettsMission(offset) => map(offset) == 0x02 && prev(cropettsMissionCompletePtr(offset)) == 0 && cropettsMissionCompletePtr(offset) != 0
 function beatGame(offset, hyperBeamStatus) => map(offset) == 0x20 && checkBit(offset, hyperBeamAddr, hyperBeamStatus) && prev(creditsTextPtr(offset)) == 0 && creditsTextPtr(offset) != 0
-function clearRhythmGame(offset, game) => map(offset) == 0x23 && rhythmGame(offset, game) && endMinigame(offset)
-function endBurgerdog(offset, special) => map(offset) == 0x0c && burgerdog(offset, special) && endMinigame(offset)
-function endLilacForce(offset) => map(offset) == 0x0d && endMinigame(offset)
+function clearRhythmGame(offset, game, duration) => map(offset) == 0x23 && rhythmGame(offset, game) && rhythmGamePtr(offset) != 0 && rhythmGameEnd(offset, duration)
+function endBurgerdog(offset, special) => map(offset) == 0x0c && burgerdog(offset, special) && burgerdogPtr(offset) != 0 && burgerdogEnd(offset)
+function endLilacForce(offset) => map(offset) == 0x0d && lilacForcePtr(offset) != 0 && endMinigame(offset)
 function hundoCropettsMission(offset) => trueBits(offset, [6, 0xe339], 8) && beatCropettsMission(offset)
 function hundoGame(offset, status) => friends(offset) == 67 && items(offset) == 124 && trueBits(offset, [0,0xe584], 30) && trueBits(offset, [0,0xe5e0], 38) && trueBit(offset, [2,0xe57a]) && poopSweeperWins(offset) >= 5 && beatGame(offset, status)
 function winPoopSweeper(offset) => inGame(offset) && poopSweeperPtr(offset) != 0 && valueIncrease(offset, poopSweeperWins)
@@ -440,7 +448,7 @@ mapAchievements(["The Outpost", "Orange Dimension"], 385566)
 // Miscellaneous
 achievement("Not-So-Alien Fruit", "Meet Azure (oranges are now marked on the map)", 1, versionTrigger(findBit, [[3, 0xe3eb], 0x21]), id=385568)
 // Challenges
-achievement("Target Practice", "Defeat the hidden Slimer while only letting it summon at most 3 Hard-Rocks on Normal difficulty", 25, versionTrigger(slimerChallenge, []), id=385569) // Missable
+achievement("Target Practice", "Defeat the hidden Slimer while only letting it summon at most 3 Hard-Rocks on Normal difficulty", 10, versionTrigger(slimerChallenge, []), id=385569) // Missable
 
 // Zandunia, Rumbly Jungle, Croxco Scrapheap, Saltsoup Basin
 // Progression
@@ -472,8 +480,8 @@ achievement("Imposter Among Us", "That pattern on the wall is suspect...", 1, ve
 achievement("Small-Brain Danger-Nut", "Disregard Chopo's advice and cross the gap", 5, versionTrigger(dangerNut, []), id=385594)
 achievement("Tastes Like Remorse", "Escape the warehouse without defeating any beasties and then return to Plestro", 10, versionTrigger(plestroChallenge, []), id=385595) // Missable
 achievement("Rottweiler Tier Guard Dog", "Defeat Mamacuda in Zandunia within 20s on Normal difficulty", 10, versionTrigger(mamacuda1Challenge, []), id=385596) // Missable
-achievement("The Bear Necessities", "Defeat Planck's henchmen without taking damage on Normal difficulty", 10, versionTrigger(henchmenChallenge, []), id=385597) // Missable
-achievement("Laserdrill Certified", "Have the Laserdrill destroy all 94 Shard-Rocks on Normal difficulty", 25, versionTrigger(laserdrillChallenge, []), id=385598) // Missable
+achievement("The Bear Necessities", "Defeat Planck's henchmen without taking damage on Normal difficulty", 25, versionTrigger(henchmenChallenge, []), id=385597) // Missable
+achievement("Laserdrill Certified", "Have the Laserdrill destroy 93 Shard-Rocks on Normal difficulty", 25, versionTrigger(laserdrillChallenge, []), id=385598) // Missable
 
 // Wytchberg, Totummy Temples, Grand Zootel, Resonarion
 // Progression
@@ -526,7 +534,8 @@ achievement("Part-Time Hero", "Defeat all the beasties in Echelon Mega Mall", 5,
 achievement("I Ruff Rock and Roll", "Open a chest with the help of a guard in Echelon L. Industrial", 3, versionTrigger(findBit, [[6, 0xe585], 0x0b]), id=385641)
 mapAchievements(["Lunar Penitentiary", "Echelon L. Central", "Echelon L. Residential", "Echelon Mega Mall", "Echelon L. Industrial"], 385642)
 // Miscellaneous
-achievement("R.I.P. Gizmo", "Collect the two shards covering the portrait of Riks old dog Gizmo", 1, versionTrigger(uncoverGizmo, []), id=385647)
+achievement("Boxwell", "Hide inside the box in Cropett's prison cell", 1, versionTrigger(hideInBox, []), id=385672)
+achievement("R.I.P. Gizmo", "Collect the two shards covering the portrait of Rik's old dog Gizmo", 1, versionTrigger(uncoverGizmo, []), id=385647)
 achievement("Looking Sharp!", "Change your outfit at Nuyu's New You", 1, versionTrigger(changeOutfit, []), id=385648)
 // Challenges
 achievement("Get Shafted", "Find all 5 bomb parts for Bomsae within 3 days", 10, versionTrigger(dayThreeBombParts, []), id=385649) // Missable
@@ -561,10 +570,9 @@ achievement("Cosmic Curator", "Acquire all 124 items", 50, versionTrigger(reachC
 
 // Overall Miscellaneous
 achievement("Pro Tip", "Warp back to your ship by holding Select", 1, versionTrigger(shipWarp, []), id=385671)
-achievement("Solid Max", "Hide inside a box", 1, versionTrigger(hideInBox, []), id=385672)
 achievement("Nostalgia Overload", "Cycle through all the pawsOS themes by pressing Select", 1, versionTrigger(changeTheme, []), id=385673)
 achievement("Pawsome Present", "Install a new app in pawsOS", 1, versionTrigger(installNewApp, []), id=385674)
-achievement("The Thinker", "Take a moment to think during a game of Poop Sweeper", 1, versionTrigger(poopThink, []), id=385675)
+achievement("The Thinker", "Think for a moment during a game of Poop Sweeper", 1, versionTrigger(poopThink, []), id=385675)
 
 // Overall Challenges
 achievement("Watch Your Step", "Get an S rank in Poop Sweeper", 10, versionTrigger(sRankPoopSweeper, []), id=385676)
@@ -589,16 +597,16 @@ leaderboard("Cropett's Mission - Any% Speedrun", "Beat Cropett's Mission in the 
 leaderboard("Cropett's Mission - 100% Speedrun", "Beat Cropett's Mission with all 8 Alien Fruit in the fastest time", versionTrigger(hundoCropettsMission, []), always_false(), always_true(), versionValue(secondsPlayed), format="SECS", lower_is_better=true, id=84705)
 leaderboard("Poop Sweeper - Speedrun", "Win a game of Poop Sweeper in the fastest time", versionTrigger(winPoopSweeper, []), always_false(), always_true(), versionValue(poopSweeperTime), format="SECS", lower_is_better=true, id=84706)
 leaderboard("Poop Sweeper - Most Wins", "Win the most games of Poop Sweeper", versionTrigger(winPoopSweeper, []), always_false(), always_true(), versionValue(poopSweeperWins), format="VALUE", lower_is_better=false, id=84707)
-leaderboard("Rhythm Game (Woofer) - High Score", "Finish a rhythm game of Woofer with the highest score", versionTrigger(clearRhythmGame, [woofer]), always_false(), always_true(), versionValue(rhythmGameFinalScore), format="VALUE", lower_is_better=false, id=84708)
-leaderboard("Rhythm Game (Tweeter) - High Score", "Finish a rhythm game of Tweeter with the highest score", versionTrigger(clearRhythmGame, [tweeter]), always_false(), always_true(), versionValue(rhythmGameFinalScore), format="VALUE", lower_is_better=false, id=84709)
-leaderboard("Rhythm Game (Special 1) - High Score", "Finish a rhythm game of Special 1 with the highest score", versionTrigger(clearRhythmGame, [special1]), always_false(), always_true(), versionValue(rhythmGameFinalScore), format="VALUE", lower_is_better=false, id=84710)
-leaderboard("Rhythm Game (Special 2) - High Score", "Finish a rhythm game of Special 2 with the highest score", versionTrigger(clearRhythmGame, [special2]), always_false(), always_true(), versionValue(rhythmGameFinalScore), format="VALUE", lower_is_better=false, id=84711)
+leaderboard("Rhythm Game (Woofer) - High Score", "Finish a rhythm game of Woofer with the highest score", versionTrigger(clearRhythmGame, [woofer, wooferDuration]), always_false(), always_true(), versionValue(rhythmGameFinalScore), format="VALUE", lower_is_better=false, id=84708)
+leaderboard("Rhythm Game (Tweeter) - High Score", "Finish a rhythm game of Tweeter with the highest score", versionTrigger(clearRhythmGame, [tweeter, tweeterDuration]), always_false(), always_true(), versionValue(rhythmGameFinalScore), format="VALUE", lower_is_better=false, id=84709)
+leaderboard("Rhythm Game (Special 1) - High Score", "Finish a rhythm game of Special 1 with the highest score", versionTrigger(clearRhythmGame, [special1, special1Duration]), always_false(), always_true(), versionValue(rhythmGameFinalScore), format="VALUE", lower_is_better=false, id=84710)
+leaderboard("Rhythm Game (Special 2) - High Score", "Finish a rhythm game of Special 2 with the highest score", versionTrigger(clearRhythmGame, [special2, special2Duration]), always_false(), always_true(), versionValue(rhythmGameFinalScore), format="VALUE", lower_is_better=false, id=84711)
 leaderboard("Lilac Force - High Score", "Finish a game of Lilac Force with the highest score", versionTrigger(endLilacForce, []), always_false(), always_true(), versionValue(lilacForceScore), format="VALUE", lower_is_better=false, id=84712)
 leaderboard("Burgerdog - High Score", "Finish a game of Burgerdog with the highest score", versionTrigger(endBurgerdog, [normal]), always_false(), always_true(), versionValue(burgerdogFinalScore), format="VALUE", lower_is_better=false, id=84713)
 leaderboard("Burgerdog (Special) - High Score", "Finish a game of Burgerdog (Special) with the highest score", versionTrigger(endBurgerdog, [special]), always_false(), always_true(), versionValue(burgerdogFinalScore), format="VALUE", lower_is_better=false, id=84714)
-leaderboard("Slimer Speedrun (Normal)", "Defeat the Slimer in The Outpost on Normal difficulty in the fastest time", versionTrigger(startSlimerBoss, [normal, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85368)
-leaderboard("Slimer Speedrun (Easy)", "Defeat the Slimer in The Outpost on Easy difficulty in the fastest time", versionTrigger(startSlimerBoss, [easy, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85369)
-leaderboard("Slimer Speedrun (Hyper Beam)", "Defeat the Slimer in The Outpost with the Hyper Beam in the fastest time", versionTrigger(startSlimerBoss, [anyDifficulty, hyperBeamUnlocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85370)
+leaderboard("Slimer Speedrun (Normal)", "Defeat the hidden Slimer on Normal difficulty in the fastest time", versionTrigger(startSlimerBoss, [normal, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85368)
+leaderboard("Slimer Speedrun (Easy)", "Defeat the hidden Slimer on Easy difficulty in the fastest time", versionTrigger(startSlimerBoss, [easy, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85369)
+leaderboard("Slimer Speedrun (Hyper Beam)", "Defeat the hidden Slimer with the Hyper Beam in the fastest time", versionTrigger(startSlimerBoss, [anyDifficulty, hyperBeamUnlocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85370)
 leaderboard("Mamacuda 1 Speedrun (Normal)", "Defeat Mamacuda in Zandunia on Normal difficulty in the fastest time", versionTrigger(startMamacuda1Boss, [normal, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85371)
 leaderboard("Mamacuda 1 Speedrun (Easy)", "Defeat Mamacuda in Zandunia on Easy difficulty in the fastest time", versionTrigger(startMamacuda1Boss, [easy, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85372)
 leaderboard("Mamacuda 1 Speedrun (Hyper Beam)", "Defeat Mamacuda in Zandunia with the Hyper Beam in the fastest time", versionTrigger(startMamacuda1Boss, [anyDifficulty, hyperBeamUnlocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85373)
