@@ -362,6 +362,7 @@ function dayThreeBombParts(offset) => planet(offset) == 0xa && inPlanet(offset) 
 function fallFromHeaven(offset) => map(offset) == 0x11 && prev(animation(offset)) == 0x850 && animation(offset) == 0x3d0
 function findPodly(offset) => inPlanet(offset) && map(offset) == 0x0f && trueBit(offset, hyperBeamAddr) && trigger_when(inArea(offset, 0x54a, 0x559, 0x0b3, 0x0b3))
 function flexOnGuard(offset) => map(offset) == 0x2b && trueBit(offset, [4,0xe540]) && trigger_when(npcCommenceDialogue(offset, 0x9e829a8))
+function get10kShards(offset) => maxwellsMission(offset) && inGame(offset) && prev(shards(offset)) < 10000 && shards(offset) >= 10000
 function henchmenChallenge(offset) => never(tookDamage(offset) || notInGame(offset)) && once(startHenchmenBoss(offset, normal)) && trigger_when(henchmenDefeated(offset))
 function hideInBox(offset) => map(offset) == 0x1c && prisonProgress(offset) > 8 && trigger_when(prev(byte(0x004f1c + offset)) == 9 && byte(0x004f1c + offset) == 0xa)
 function hugJenovi(offset) => inPlanet(offset) && map(offset) == 0x22 && trueBit(offset, [5,0xe305]) && trigger_when(npcCommenceDialogue(offset, 0x9e821b4))
@@ -522,7 +523,7 @@ achievement("Through the Woofs and Tweets", "Get an S rank in Special 2", 25, ve
 achievement("Drill Doger", "Acquire the Drill Module", 1, versionTrigger(findBit, [[3, 0xe335], 0x18]), id=385630) // Progression
 achievement("Incendiary Greatness", "Find all 5 bomb parts for Bomsae", 5, versionTrigger(findConsecutiveBits, [[7,0xe336], 5, 5, [0x14,0x15,0x16,0x17], measured]), id=385631) // Progression
 achievement("Professional Escape", "Escape from Lunar Penitentiary with the gang", 5, versionTrigger(reachCount, [prisonProgress, 10, 0x1d, unmeasured, exact]), id=385632) // Progression
-achievement("Pocket Full of Shards", "Collect 10k shards for Sbooch", 10, versionTrigger(reachCount, [shards, 10000, noSpecificMap, unmeasured, unexact]), id=385633) // Progression
+achievement("Pocket Full of Shards", "Collect 10k shards", 10, versionTrigger(get10kShards, []), id=385633) // Progression
 achievement("Sorry I'm Late", "Fix the trains that go to the residential and industrial districts in Echelon L. Central", 5, versionTrigger(findBit, [[5, 0xe558], 0x0f]), id=385634) // Progression
 achievement("Elevation Station", "Find all 4 keycards to open the entrance to the Echelon Upper elevator", 10, versionTrigger(findConsecutiveBits, [[2,0xe336], 4, 4, [0x0b,0x0f], measured]), id=385635) // Progression
 // Completion
