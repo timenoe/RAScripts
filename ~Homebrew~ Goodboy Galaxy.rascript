@@ -242,7 +242,7 @@ function animation(offset) => word(0x4f44 + offset)
 function bossHealth(offset, boss) => word(tbyte(0x5100 + offset) + boss)
 function burgerdogPtr(offset) => tbyte(0x52cc + offset)
 function burgerdogFinalScore(offset) => tbyte(0x1063d + offset)
-function burgerdogScore(offset) => dword(burgerdogPtr(offset) + 0x8001)
+function burgerdogScore(offset) => word(burgerdogPtr(offset) + 0x8001)
 function councilProgress(offset) => byte(0xe569 + offset)
 function creditsTextPtr(offset) => tbyte(0x5360 + offset)
 function cropettsMissionCompletePtr(offset) => tbyte(0x11178 + offset)
@@ -352,14 +352,14 @@ function versionIdentifier(version)
 function wasNearNpc(offset, npcID) => prev(nearbyNpcPtr(offset)) != 0 && prev(dword(nearbyNpcPtr(offset))) == npcID
 
 // Functions - Achievements
-function bountyHuntersChallenge(offset) => never(shootBlaster(offset) || tookDamage(offset) || notInGame(offset)) && once(startBountyHuntersBoss(offset, normal, hyperBeamLocked)) && trigger_when(threeBossesDefeated(offset))
+function bountyHuntersChallenge(offset) => never(shootBlaster(offset) || dying(offset) || notInGame(offset)) && once(startBountyHuntersBoss(offset, normal, hyperBeamLocked)) && trigger_when(threeBossesDefeated(offset))
 function changeTheme(offset) => inGame(offset) && pawsed(offset) && trigger_when(prev(pawsOsTheme(offset)) == 5 && pawsOsTheme(offset) == 6)
 function changeOutfit(offset) => map(offset) == 0x0e && trackCameraTarget(offset, nuyuCameraTarget) && trigger_when(outfit(offset) != prev(outfit(offset)))
-function councilChallenge(offset) => never(outOfOrderCouncil(offset) || tookDamage(offset) || notInGame(offset)) && once(startCouncilBoss(offset, normal, hyperBeamLocked)) && trigger_when(chadCouncilDefeated(offset))
+function councilChallenge(offset) => never(outOfOrderCouncil(offset) || dying(offset) || notInGame(offset)) && once(startCouncilBoss(offset, normal, hyperBeamLocked)) && trigger_when(chadCouncilDefeated(offset))
 function cropettSpeedrun(offset) => cropettsMission(offset) && inGame(offset) && secondsPlayed(offset) <= 600 && trigger_when(beatCropettsMission(offset))
 function dangerNut(offset) => never(xPos(offset) > 0x6f9 && xPos(offset) < 0x727 || yPos(offset) > 0x650 || dying(offset)) && once(map(offset) == 0x31 && hyperBeamLocked(offset) && prev(nearbyNpcPtr(offset)) == tbyte(0xf3bc + offset) && npcCommenceDialogue(offset, 0x9e81d50)) && trigger_when(xPos(offset) >= 0x140 && xPos(offset) <= 0x200 && grounded(offset))
 function dayThreeBombParts(offset) => planet(offset) == 0xa && inPlanet(offset) && byte(0xe548 + offset) <= 3 && prev(sum_of(getBits([7, 0xe336 + offset], 5), s => s)) < 5 && trigger_when(sum_of(getBits([7, 0xe336 + offset], 5), s => s) == 5)
-function fallFromHeaven(offset) => map(offset) == 0x11 && prev(animation(offset)) == 0x850 && animation(offset) == 0x3d0
+function fallFromHeaven(offset) => map(offset) == 0x11 && xPos(offset) == 0x417 && prev(animation(offset)) == 0x850 && animation(offset) == 0x3d0
 function findPodly(offset) => inPlanet(offset) && map(offset) == 0x0f && trueBit(offset, hyperBeamAddr) && trigger_when(inArea(offset, 0x54a, 0x559, 0x0b3, 0x0b3))
 function flexOnGuard(offset) => map(offset) == 0x2b && trueBit(offset, [4,0xe540]) && trigger_when(npcCommenceDialogue(offset, 0x9e829a8))
 function get10kShards(offset) => maxwellsMission(offset) && inGame(offset) && prev(shards(offset)) < 10000 && shards(offset) >= 10000
@@ -541,7 +541,8 @@ achievement("Looking Sharp!", "Change your outfit at Nuyu's New You", 1, version
 // Challenges
 achievement("Get Shafted", "Find all 5 bomb parts for Bomsae within 3 days", 10, versionTrigger(dayThreeBombParts, []), id=385649) // Missable
 achievement("Welcome to Burgerdog...", "Get a MAX rank in Burgerdog", 5, versionTrigger(rankBurgerdog, [normal, burgerdogMaxRankScore]), id=385650)
-achievement("...Home of the Burgerdog", "Get an S rank in Burgerdog (Special)", 10, versionTrigger(rankBurgerdog, [special, burgerdogSpecialSRankScore]), id=385651)
+achievement("...Home of the Burgerdog", "Get an S rank in Burgerdog (Special)", 10, versionTrigger(rankBurgerdog, [special, burgerdogSpecialSRankScore]), id=385651) // Unofficial
+achievement("...Home of the Burgerdog", "Get an S rank in Burgerdog (Special)", 10, versionTrigger(rankBurgerdog, [special, burgerdogSpecialSRankScore]), id=386653) // Core
 achievement("PyroPyro's Pinnacle", "Get an S+ rank in Lilac Force", 25, versionTrigger(sPlusRankLilacForce, []), id=385652)
 
 // Echelon Upper, Xenolith
@@ -556,8 +557,8 @@ mapAchievements(["Echelon Upper", "Xenolith"], 385658)
 // Miscellaneous
 achievement("Staff Use Only!", "Fall down from heaven", 1, versionTrigger(fallFromHeaven, []), id=385660)
 // Challenges
-achievement("Barking up the Wrong Tree", "Defeat the Bounty Hunters without shooting the Blaster and without taking damage on Normal difficulty", 10, versionTrigger(bountyHuntersChallenge, []), id=385661) // Missable
-achievement("Canis Major Chad", "Destroy The Council in the order of blue, yellow, then red without taking damage on Normal difficulty", 25, versionTrigger(councilChallenge, []), id=385662)
+achievement("Barking up the Wrong Tree", "Defeat the Bounty Hunters without shooting the Blaster on Normal difficulty", 10, versionTrigger(bountyHuntersChallenge, []), id=385661) // Missable
+achievement("Canis Major Chad", "Destroy The Council in the order of blue, yellow, then red on Normal difficulty", 25, versionTrigger(councilChallenge, []), id=385662)
 
 // Overall Completion
 achievement("Macro-Being", "Explore the Bolly nests and discover what's inside", 10, versionTrigger(findBit, [[1, 0xe403], 0x01]), id=385663)
