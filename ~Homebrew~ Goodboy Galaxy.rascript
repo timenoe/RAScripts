@@ -516,7 +516,7 @@ achievement("Softlock Key", "Defeat Mamacuda in Totummy Temples without using th
 achievement("Who Let the Dogs Out", "Get an S rank in Woofer", 10, versionTrigger(rankRhythmGame, [woofer, wooferSRankScore, wooferDuration]), id=385626)
 achievement("Make Gramma Proud", "Get an S rank in Tweeter", 10, versionTrigger(rankRhythmGame, [tweeter, tweeterSRankScore, tweeterDuration]), id=385627)
 achievement("The Intense Voice of Maxwell", "Get an S rank in Special 1", 25, versionTrigger(rankRhythmGame, [special1, special1SRankScore, special1Duration]), id=385628)
-achievement("Through the Woofs and Tweets", "Get an S rank in Special 2", 25, versionTrigger(rankRhythmGame, [special2, special2SRankScore, special2Duration]), id=385629)
+achievement("Through the Woofs and the Tweets", "Get an S rank in Special 2", 25, versionTrigger(rankRhythmGame, [special2, special2SRankScore, special2Duration]), id=385629)
 
 // Lunar Penitentiary, Echelon Lower
 // Progression
@@ -541,8 +541,8 @@ achievement("Looking Sharp!", "Change your outfit at Nuyu's New You", 1, version
 // Challenges
 achievement("Get Shafted", "Find all 5 bomb parts for Bomsae within 3 days", 10, versionTrigger(dayThreeBombParts, []), id=385649) // Missable
 achievement("Welcome to Burgerdog...", "Get a MAX rank in Burgerdog", 5, versionTrigger(rankBurgerdog, [normal, burgerdogMaxRankScore]), id=385650)
-achievement("...Home of the Burgerdog", "Get an S rank in Burgerdog (Special)", 10, versionTrigger(rankBurgerdog, [special, burgerdogSpecialSRankScore]), id=385651) // Unofficial
-achievement("...Home of the Burgerdog", "Get an S rank in Burgerdog (Special)", 10, versionTrigger(rankBurgerdog, [special, burgerdogSpecialSRankScore]), id=386653) // Core
+achievement("VOID", "VOID", 0, always_false(), id=385651) // Unofficial
+achievement("...Home of the Burgerdog", "Get an S rank in Burgerdog (Special)", 25, versionTrigger(rankBurgerdog, [special, burgerdogSpecialSRankScore]), id=386653) // Core
 achievement("PyroPyro's Pinnacle", "Get an S+ rank in Lilac Force", 25, versionTrigger(sPlusRankLilacForce, []), id=385652)
 
 // Echelon Upper, Xenolith
