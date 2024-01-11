@@ -67,6 +67,7 @@ wooferDuration = 0xfe2
 wooferSRankScore = 782
 
 // Constants - Arrays
+bountyHuntersAddr = [2, 0xe308]
 dubelleCameraTarget = [0x7000, 0x48c00]
 hyperBeamAddr = [4,0xe56c]
 installedAppAddrs = [bit4(0xe5da), bit5(0xe5da), bit7(0xe5da)]
@@ -288,6 +289,7 @@ function allLaserdrillShardRocks(offset)
 	for rockAddr in range(0xe98c + offset, 0xf0f8 + offset, 0x14) if ((rockAddr != 0xec20 + offset) && (rockAddr != 0xec34 + offset)) array_push(allRocks, dword(rockAddr))
 	return allRocks
 }
+function befriendBountyHunters(offset) => bitFlip([bountyHuntersAddr[0], bountyHuntersAddr[1] + offset])
 function bossDefeated(offset, boss) => prev(bossHealth(offset, boss)) > 0 && bossHealth(offset, boss) == 0
 function burgerdog(offset, special) => byte(0x10638 + offset) == special
 function burgerdogEnd(offset) => byte(burgerdogPtr(offset) + 0x8871) > prev(byte(burgerdogPtr(offset) + 0x8871))
@@ -352,7 +354,7 @@ function versionIdentifier(version)
 function wasNearNpc(offset, npcID) => prev(nearbyNpcPtr(offset)) != 0 && prev(dword(nearbyNpcPtr(offset))) == npcID
 
 // Functions - Achievements
-function bountyHuntersChallenge(offset) => never(shootBlaster(offset) || dying(offset) || notInGame(offset)) && once(startBountyHuntersBoss(offset, normal, hyperBeamLocked)) && trigger_when(threeBossesDefeated(offset))
+function bountyHuntersChallenge(offset) => never(shootBlaster(offset) || dying(offset) || notInGame(offset)) && once(checkDifficulty(offset, normal) && map(offset) == 0x12 && prev(music(offset)) != 0x4a && music(offset) == 0x4a) && trigger_when(befriendBountyHunters(offset))
 function changeTheme(offset) => inGame(offset) && pawsed(offset) && trigger_when(prev(pawsOsTheme(offset)) == 5 && pawsOsTheme(offset) == 6)
 function changeOutfit(offset) => map(offset) == 0x0e && trackCameraTarget(offset, nuyuCameraTarget) && trigger_when(outfit(offset) != prev(outfit(offset)))
 function councilChallenge(offset) => never(outOfOrderCouncil(offset) || dying(offset) || notInGame(offset)) && once(startCouncilBoss(offset, normal, hyperBeamLocked)) && trigger_when(chadCouncilDefeated(offset))
@@ -557,7 +559,7 @@ mapAchievements(["Echelon Upper", "Xenolith"], 385658)
 // Miscellaneous
 achievement("Staff Use Only!", "Fall down from heaven", 1, versionTrigger(fallFromHeaven, []), id=385660)
 // Challenges
-achievement("Barking up the Wrong Tree", "Defeat the Bounty Hunters without shooting the Blaster on Normal difficulty", 10, versionTrigger(bountyHuntersChallenge, []), id=385661) // Missable
+achievement("Barking up the Wrong Tree", "Defeat then befriend the Bounty Hunters without shooting the Blaster on Normal difficulty", 10, versionTrigger(bountyHuntersChallenge, []), id=385661) // Missable
 achievement("Canis Major Chad", "Destroy The Council in the order of blue, yellow, then red on Normal difficulty", 25, versionTrigger(councilChallenge, []), id=385662)
 
 // Overall Completion
@@ -617,9 +619,9 @@ leaderboard("Planck's Henchmen Speedrun (Easy)", "Defeat Planck's henchmen on Ea
 leaderboard("Mamacuda 2 Speedrun (Normal)", "Defeat Mamacuda in Totummy Temples on Normal difficulty in the fastest time", versionTrigger(startMamacuda2Boss, [normal, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85376)
 leaderboard("Mamacuda 2 Speedrun (Easy)", "Defeat Mamacuda in Totummy Temples on Easy difficulty in the fastest time", versionTrigger(startMamacuda2Boss, [easy, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85377)
 leaderboard("Mamacuda 2 Speedrun (Hyper Beam)", "Defeat Mamacuda in Totummy Temples with the Hyper Beam in the fastest time", versionTrigger(startMamacuda2Boss, [anyDifficulty, hyperBeamUnlocked]), versionTrigger(exitBoss, []), versionTrigger(bossDefeated, [boss1]), always_true(), format="FRAMES", lower_is_better=true, id=85378)
-leaderboard("Bounty Hunters Speedrun (Normal)", "Defeat the Bounty Hunters on Normal difficulty in the fastest time", versionTrigger(startBountyHuntersBoss, [normal, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(threeBossesDefeated, []), always_true(), format="FRAMES", lower_is_better=true, id=85379)
-leaderboard("Bounty Hunters Speedrun (Easy)", "Defeat the Bounty Hunters on Easy difficulty in the fastest time", versionTrigger(startBountyHuntersBoss, [easy, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(threeBossesDefeated, []), always_true(), format="FRAMES", lower_is_better=true, id=85380)
-leaderboard("Bounty Hunters Speedrun (Hyper Beam)", "Defeat the Bounty Hunters with the Hyper Beam in the fastest time", versionTrigger(startBountyHuntersBoss, [anyDifficulty, hyperBeamUnlocked]), versionTrigger(exitBoss, []), versionTrigger(threeBossesDefeated, []), always_true(), format="FRAMES", lower_is_better=true, id=85381)
+leaderboard("Bounty Hunters Speedrun (Normal)", "Defeat then befriend the Bounty Hunters on Normal difficulty in the fastest time", versionTrigger(startBountyHuntersBoss, [normal, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(befriendBountyHunters, []), always_true(), format="FRAMES", lower_is_better=true, id=85379)
+leaderboard("Bounty Hunters Speedrun (Easy)", "Defeat then befriend the Bounty Hunters on Easy difficulty in the fastest time", versionTrigger(startBountyHuntersBoss, [easy, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(befriendBountyHunters, []), always_true(), format="FRAMES", lower_is_better=true, id=85380)
+leaderboard("Bounty Hunters Speedrun (Hyper Beam)", "Defeat then befriend the Bounty Hunters with the Hyper Beam in the fastest time", versionTrigger(startBountyHuntersBoss, [anyDifficulty, hyperBeamUnlocked]), versionTrigger(exitBoss, []), versionTrigger(befriendBountyHunters, []), always_true(), format="FRAMES", lower_is_better=true, id=85381)
 leaderboard("The Council Speedrun (Normal)", "Destroy The Council on Normal difficulty in the fastest time", versionTrigger(startCouncilBoss, [normal, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(threeBossesDefeated, []), always_true(), format="FRAMES", lower_is_better=true, id=85382)
 leaderboard("The Council Speedrun (Easy)", "Destroy The Council on Easy difficulty in the fastest time", versionTrigger(startCouncilBoss, [easy, hyperBeamLocked]), versionTrigger(exitBoss, []), versionTrigger(threeBossesDefeated, []), always_true(), format="FRAMES", lower_is_better=true, id=85383)
 leaderboard("The Council Speedrun (Hyper Beam)", "Destroy The Council with the Hyper Beam in the fastest time", versionTrigger(startCouncilBoss, [anyDifficulty, hyperBeamUnlocked]), versionTrigger(exitBoss, []), versionTrigger(threeBossesDefeated, []), always_true(), format="FRAMES", lower_is_better=true, id=85384)
