@@ -24,7 +24,7 @@ function localVersusMode() => mode() == 1
 function map() => byte(0x4731)
 function noDemo() => bit3(0x4740) == 0 // Only need to check when in Versus mode
 function auto() => bit2(0x4771) == 1 // Only need to check when in Versus mode
-function noAuto() => disable_when(auto(), until = mainMenuState()) // Only need to check when in Versus mode
+function invalidateVersus() => never(auto() || mainMenuState())
 function defaultVersusSettings() => byte(0x4732) == 2 && byte(0x267e9) == 0 && byte(0x267ea) == 0 && byte(0x267f9) == 4 && byte(0x267fa) == 0 && byte(0x2682e) == 0
 
 function progress() => byte(0x4559)
@@ -47,7 +47,7 @@ function activeStory() => gameState() && storyMode()
 function activeStoryMap() => mapState() && storyMode()
 
 // Use for default settings local versus map triggers
-function activeDefaultLocalVersusMap() => noAuto() && mapState() && localVersusMode() && noDemo() && defaultVersusSettings()
+function activeDefaultLocalVersusMap() => mapState() && localVersusMode() && noDemo() && defaultVersusSettings()
 
 // Use for misc. challenges
 function activeMap() => noAuto() && mapState() && noDemo()
@@ -102,16 +102,16 @@ achievement("Trip Down Memory Lane", "Revisit and complete all 11 zones after co
 id = id + 1
 badge = badge + 1
 
-achievement("Galewood", "Complete a local skirmish versus match in Galewood with default settings", 5, activeDefaultLocalVersusMap() && map() == 0xc && trigger_when(victory()), id = id, badge = format("", badge))
+achievement("Galewood", "Complete a local skirmish versus match in Galewood with default settings", 5, invalidateVersus() && once(activeDefaultLocalVersusMap() && map() == 0xc) && trigger_when(victory()), id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
-achievement("Springwood", "Complete a local skirmish versus match in Springwood with default settings", 5, activeDefaultLocalVersusMap() && map() == 0xd && trigger_when(victory()), id = id, badge = format("", badge))
+achievement("Springwood", "Complete a local skirmish versus match in Springwood with default settings", 5, invalidateVersus() && once(activeDefaultLocalVersusMap() && map() == 0xd) && trigger_when(victory()), id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
-achievement("Nameless Cavern", "Complete a local skirmish versus match in Nameless Cavern with default settings", 5, activeDefaultLocalVersusMap() && map() == 0xe && trigger_when(victory()), id = id, badge = format("", badge))
+achievement("Nameless Cavern", "Complete a local skirmish versus match in Nameless Cavern with default settings", 5, invalidateVersus() && once(activeDefaultLocalVersusMap() && map() == 0xe) && trigger_when(victory()), id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
-achievement("Twilight Cave", "Complete a local skirmish versus match in Twilight Cave with default settings", 5, activeDefaultLocalVersusMap() && map() == 0xf && trigger_when(victory()), id = id, badge = format("", badge))
+achievement("Twilight Cave", "Complete a local skirmish versus match in Twilight Cave with default settings", 5, invalidateVersus() && once(activeDefaultLocalVersusMap() && map() == 0xf) && trigger_when(victory()), id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
 
