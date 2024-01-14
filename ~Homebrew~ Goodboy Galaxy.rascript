@@ -362,6 +362,7 @@ function cropettSpeedrun(offset) => cropettsMission(offset) && inGame(offset) &&
 function dangerNut(offset) => never(xPos(offset) > 0x6f9 && xPos(offset) < 0x727 || yPos(offset) > 0x650 || dying(offset)) && once(map(offset) == 0x31 && hyperBeamLocked(offset) && prev(nearbyNpcPtr(offset)) == tbyte(0xf3bc + offset) && npcCommenceDialogue(offset, 0x9e81d50)) && trigger_when(xPos(offset) >= 0x140 && xPos(offset) <= 0x200 && grounded(offset))
 function dayThreeBombParts(offset) => planet(offset) == 0xa && inPlanet(offset) && byte(0xe548 + offset) <= 3 && prev(sum_of(getBits([7, 0xe336 + offset], 5), s => s)) < 5 && trigger_when(sum_of(getBits([7, 0xe336 + offset], 5), s => s) == 5)
 function fallFromHeaven(offset) => map(offset) == 0x11 && xPos(offset) == 0x417 && prev(animation(offset)) == 0x850 && animation(offset) == 0x3d0
+function findAeliesBabies(offset) => map(offset) == 0x04 && prev(sum_of(getBits([5,0xe528], 4), s => s)) < 4 && measured(sum_of(getBits([5,0xe528], 4), s => s) == 4, when = maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
 function findPodly(offset) => inPlanet(offset) && map(offset) == 0x0f && trueBit(offset, hyperBeamAddr) && trigger_when(inArea(offset, 0x54a, 0x559, 0x0b3, 0x0b3))
 function flexOnGuard(offset) => map(offset) == 0x2b && trueBit(offset, [4,0xe540]) && trigger_when(npcCommenceDialogue(offset, 0x9e829a8))
 function get10kShards(offset) => maxwellsMission(offset) && inGame(offset) && prev(shards(offset)) < 10000 && shards(offset) >= 10000
@@ -469,7 +470,8 @@ achievement("Maxwell D. Goodboy", "Safely cross the channel on the raft", 3, ver
 achievement("Top the Charts", "Find all 10 different Pooki flavours for Starbi", 10, versionTrigger(findConsecutiveBits, [[4,0xe341], 10, 10, [noSpecificMap], measured]), id=385580)
 achievement("Door-to-Door Pooki Salesman", "Clear the Zandunia warehouse of beasties, or find a way out", 5, versionTrigger(findConsecutiveBits, [[7,0xe401], 3, 1, [0x33], unmeasured]), id=385581)
 achievement("Plestro's Guard Dog", "Defeat Mamacuba in the Zandunia warehouse", 5, versionTrigger(findBit, [[2,0xe52d], 0x33]), id=385582)
-achievement("Little Lost Souls", "Find and return all 4 of Aelia's missing babies", 5, versionTrigger(findConsecutiveBits, [[5,0xe528], 4, 4, [0x04], measured]), id=385583)
+//achievement("Little Lost Souls", "Find and return all 4 of Aelia's missing babies", 5, versionTrigger(findConsecutiveBits, [[5,0xe528], 4, 4, [0x04], measured]), id=385583)
+achievement("Little Lost Souls", "Find and return all 4 of Aelia's missing babies", 5, versionTrigger(findAeliesBabies, []))
 achievement("Fish Fear You", "Catch all 12 fish", 10, versionTrigger(findConsecutiveBits, [[0,0xe590], 12, 12, [0x13], measured]), id=385584)
 mapAchievements(["Zandunia", "Rumbly Jungle", "Croxco Scrapheap"], 385585)
 // Miscellaneous

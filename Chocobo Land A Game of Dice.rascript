@@ -68,13 +68,13 @@ for map in range(1, 0xb)
 allAllies = 0
 for allyAddr in range(0x4574, 0x4578) allAllies = allAllies + bitcount(allyAddr)
 for allyBit in range(0, 5) allAllies = allAllies + bit(allyBit, 0x4579)
-achievement("Chummy Choco", "Unlock 12 allies", 5, activeStory() && prev(allAllies) < 12 && allAllies == 12, id = id, badge = format("", badge))
+achievement("Chummy Choco", "Unlock 12 allies", 5, activeStory() && prev(allAllies) < 12 && allAllies >= 12, id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
-achievement("Popular Poulet", "Unlock 24 allies", 10, activeStory() && prev(allAllies) < 24 && allAllies == 24, id = id, badge = format("", badge))
+achievement("Popular Poulet", "Unlock 24 allies", 10, activeStory() && prev(allAllies) < 24 && allAllies >= 24, id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
-achievement("Pile of Gems", "Unlock 36 allies", 25, activeStory() && prev(allAllies) < 36 && allAllies == 36, id = id, badge = format("", badge))
+achievement("Pile of Gems", "Unlock 36 allies", 25, activeStory() && prev(allAllies) < 36 && allAllies >= 36, id = id, badge = format("", badge))
 id = id + 1
 badge = badge + 1
 achievement("Ally Army", "Unlock all 46 allies", 50, prev(allAllies) < 46 && measured(allAllies == 46, when = activeStory()), id = id, badge = format("", badge))
