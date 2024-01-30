@@ -265,7 +265,7 @@ specialMovePart =
 }
 
 // Functions
-function anyEnding() => badEnding() || goodEnding()
+function anyEnding() => inGame() && __ornext(prev(room) == 2 || prev(room) == 0xc || prev(room) == 0x191) && room == 0x3e6
 function badEnding() => inGame() && prev(room) == 0x191 && room == 0x3e6
 function character(characterName)
 {
@@ -291,12 +291,14 @@ function ending(leaderboardEndingName)
     else if (leaderboardEndingName == "Bad Ending") return badEnding()
     else if (leaderboardEndingName == "True Ending") return goodEnding()
 }
-function goodEnding() => inGame() && prev(room) == 0xc && room == 0x3e6
+function goodEnding() => inGame() && __ornext(prev(room) == 2 || prev(room) == 0xc) && room == 0x3e6
+function inCutscene() => dword(0xe697d8) != 0
 function inGame() => prev(gameState) != 0 && gameState == 1
 function maxRank() => ascii_string_equals(0xe80f27, "S+++")
 function NG() => dword(0xe3082c) == 0
 function NGPlus() => dword(0xe3082c) == 1
-function notInGame() => gameState != 0
+function notInCutscene() => dword(0xe697d8) == 0
+function notInGame() => gameState != 1
 function openAllPresents(presentAddrs)
 {
     trigger = always_true()
@@ -310,13 +312,13 @@ function someOpenPresents(presentAddrs)
     for presentAddr in presentAddrs trigger = __ornext(trigger || prev(presentAddr) != 0x80000001)
     return trigger
 }
-function startDialogue() => prev(dialogueSequenceID) == 0 && dialogueSequenceID == 1
+function startDialogue() => dialogueSequenceID > prev(dialogueSequenceID)
 
 function acquireOmegaDrillParts() => inGame() && level == 0x1f && prev(dword(0xe303cc)) == 0 && dword(0xe303cc) == 1
 function changeVoice() => gameState == 0xa && prev(byte(0xd6e0b8)) == 0 && byte(0xd6e0b8) == 1
-function destroyMonsterVillageJars() => never(notInGame() || room != 0x191) && once(byte(0xd6f202) == 3) && trigger_when(repeated(3, destroyJar()))
-function hoccerChallenge() => inGame() && room == 0x18 && dword(0xe30edc) == 1 && dword(0xe63fb0) == 0 && trigger_when(dword(0xe63fb8) != 0 && prev(dword(0xe30958)) < 0xfffffff0 && dword(0xe30958) >= 0xfffffff0) // signed int
-function makePeckyLaugh() => inGame() && room == 0x17 && prev(dword(0xe30fc0)) == 0 && trigger_when(headgear != 0x2a && headgear != 0x38 && dword(0xe30fc0) == 1) // Gas Mask and Monkey Hat both make Pecky laugh while seemingly covering your face. All the other headgear either almost make him laugh, or make him laugh at Parin's real face
+function destroyMonsterVillageJars() => never(notInGame() || room != 0x191) && notInCutscene() && once(byte(0xd6f202) == 3) && trigger_when(repeated(3, destroyJar()))
+function hoccerChallenge() => inGame() && notInCutscene() && room == 0x18 && dword(0xe30edc) == 1 && dword(0xe63fb0) == 0 && trigger_when(dword(0xe63fb8) != 0 && prev(dword(0xe30958)) < 0xfffffff0 && dword(0xe30958) >= 0xfffffff0) // signed int
+function makePeckyLaugh() => inGame() && notInCutscene() && room == 0x17 && prev(dword(0xe30fc0)) == 0 && trigger_when(headgear != 0x2a && headgear != 0x38 && dword(0xe30fc0) == 1) // Gas Mask and Monkey Hat both make Pecky laugh while seemingly covering your face. All the other headgear either almost make him laugh, or make him laugh at Parin's real face
 function maxAnyHeadgear()
 {
     trigger = always_false()
@@ -326,31 +328,31 @@ function maxAnyHeadgear()
     }
     return inGame() && level == 0 && trigger
 }
-function openBatsHideawayDoor() => inGame() && level == 0xa && room == 0x1fb && dialogueChoice != 3 && prev(dword(0xe307c0)) == 0 && trigger_when(dword(0xe307c0) == 1)
-function openCentimeterHallPresents() => inGame() && level == 3 && room == 0x6d && someOpenPresents(centimeterHallPresents) && trigger_when(openAllPresents(centimeterHallPresents))
-function openHeavensHillDoor() => inGame() && level == 0x14 && room == 0x25f && prev(dword(0xe307e0)) == 0 && trigger_when(dword(0xe307e0) == 2)
-function openOblivionAbyssPresents() => inGame() && room == 0x13b && someOpenPresents(oblivionAbyssPresents) && trigger_when(openAllPresents(oblivionAbyssPresents))
-function readDadsBooks() => inGame() && room == 2 && __ornext(dialogue == 0x41e || dialogue == 0x46e) && prev(dialogueSequenceID) == 1 && trigger_when(dialogueChoice == 1 && dialogueSequenceID == 3)
-function readUselessSign() => inGame() && level == 0xc && room == 0xcb && trigger_when(__ornext(dialogue == 0xa4 || dialogue == 0xbb) && endDialogue())
-function stealFromDisk() => inGame() && room == 5 && trigger_when(__ornext(dialogue == 0xe7 || dialogue == 0xfe) && endDialogue())
-function switchWithPopon() => inGame() && room == 0xc && dword(0xe325b8) == 1 && prev(dword(0xe325ac)) == 0 && trigger_when(dword(0xe325ac) == 1)
+function openBatsHideawayDoor() => inGame() && notInCutscene() && level == 0xa && room == 0x1fb && dialogueChoice != 3 && prev(dword(0xe307c0)) == 0 && trigger_when(dword(0xe307c0) == 1)
+function openCentimeterHallPresents() => inGame() && notInCutscene() && level == 3 && room == 0x6d && someOpenPresents(centimeterHallPresents) && trigger_when(openAllPresents(centimeterHallPresents))
+function openHeavensHillDoor() => inGame() && notInCutscene() && level == 0x14 && room == 0x25f && prev(dword(0xe307e0)) == 0 && trigger_when(dword(0xe307e0) == 2)
+function openOblivionAbyssPresents() => inGame() && notInCutscene() && room == 0x13b && someOpenPresents(oblivionAbyssPresents) && trigger_when(openAllPresents(oblivionAbyssPresents))
+function readDadsBooks() => inGame() && notInCutscene() && room == 2 && __ornext(dialogue == 0x41e || dialogue == 0x46e) && prev(dialogueSequenceID) == 1 && trigger_when(dialogueChoice == 1 && dialogueSequenceID == 3)
+function readUselessSign() => inGame() && notInCutscene() && level == 0xc && room == 0xcb && trigger_when(__ornext(dialogue == 0xa4 || dialogue == 0xbb) && endDialogue())
+function stealFromDisk() => inGame() && notInCutscene() && room == 5 && trigger_when(__ornext(dialogue == 0xe7 || dialogue == 0xfe) && endDialogue())
+function switchWithPopon() => inGame() && notInCutscene() && room == 0xc && dword(0xe325b8) == 1 && prev(dword(0xe325ac)) == 0 && trigger_when(dword(0xe325ac) == 1)
 function talkToDevs()
 {
     dialogues = []
     for dialogueID in devDialogueIDs array_push(dialogues, once(dialogue == dialogueID && startDialogue()))
     return never(notInGame() || room != 6) && measured(tally(8, dialogues))
 }
-function tryRomanceCompatabilityTest() => inGame() && room == 0x16 && __ornext(dialogue == 0x72e || dialogue == 0x750) && prev(dialogueSequenceID) == 1 && trigger_when(dialogueChoice == 1 && textInput != 0 && dialogueSequenceID == 2)
+function tryRomanceCompatabilityTest() => inGame() && notInCutscene() && room == 0x16 && __ornext(dialogue == 0x72e || dialogue == 0x750) && prev(dialogueSequenceID) == 1 && trigger_when(dialogueChoice == 1 && textInput != 0 && dialogueSequenceID == 2)
 function upgradeAnyHeadgear()
 {
     trigger = always_false()
     for headgearAddr in range(0xe31a40, 0xe31a78, 4) trigger = trigger || (dword(headgearAddr) > prev(dword(headgearAddr)))
     return inGame() && level == 0 && trigger
 }
-function useFortuneTellingMachine() => inGame() && room == 0x16 && __ornext(dialogue == 0x42d || dialogue == 0x4a6) && prev(dialogueSequenceID) == 1 && trigger_when(dialogueChoice == 1 && dialogueSequenceID == 2)
-function usePimentoSlide() => inGame() && room == 0x1b && dword(0xe75834) == 0x4e21 && prev(xCoordinate) <= -200.0 && trigger_when(xCoordinate > -200.0)
-function wearKimono() => inGame() && room == 2 && dword(0xe3087c) == 1 && prev(outfit) != kimono && trigger_when(outfit == kimono)
-function wearSantaOutfit() => inGame() && room == 2 && dword(0xe30878) == 1 && prev(outfit) != santaOutfit && trigger_when(outfit == santaOutfit)
+function useFortuneTellingMachine() => inGame() && notInCutscene() && room == 0x16 && __ornext(dialogue == 0x42d || dialogue == 0x4a6) && prev(dialogueSequenceID) == 1 && trigger_when(dialogueChoice == 1 && dialogueSequenceID == 2)
+function usePimentoSlide() => inGame() && notInCutscene() && room == 0x1b && dword(0xe75834) == 0x4e21 && prev(xCoordinate) <= -200.0 && trigger_when(xCoordinate > -200.0)
+function wearKimono() => inGame() && notInCutscene() && room == 2 && dword(0xe3087c) == 1 && prev(outfit) != kimono && trigger_when(outfit == kimono)
+function wearSantaOutfit() => inGame() && notInCutscene() && room == 2 && dword(0xe30878) == 1 && prev(outfit) != santaOutfit && trigger_when(outfit == santaOutfit)
 
 // Achievements
 achievement("You Are Worthy", "Acquire the Drill", 1, inGame() && level == 0 && prev(dword(0xe30bc8)) == 0 && dword(0xe30bc8) == 1)
