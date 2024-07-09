@@ -11,6 +11,7 @@ ptrMask = 0x7fffffff
 
 iterations = ["first", "second", "third"]
 mainCourseNames = ["Bianco Hills", "Ricco Harbor", "Gelato Beach", "Pinna Park", "Sirena Beach", "Noki Bay", "Pianta Village"]
+coinShineInstanceID = 0x879d
 romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"]
 
 courseShorthand = 
@@ -41,7 +42,7 @@ secretCoinShines =
 	"Gelato Beach": ["Dune Bud Sand Castle Secret", "The Sand Bird is Born"],
 	"Pinna Park": ["Park", "The Beach Cannon's Secret", "The Yoshi-Go-Round's Secret"],
 	"Sirena Beach": ["Casino", "King Boo Down Below"],
-	"Noki Bay": ["Eely-Mouth's Dentist", "The Shell's Secret"],
+	"Noki Bay": ["Underwater", "The Shell's Secret"],
 	"Pianta Village": ["Secret of the Village Underside"]
 }
 
@@ -115,6 +116,94 @@ gameStateIDs =
 {
 	"Enter": 3
 }
+shineIDs = 
+{
+	"Bianco 1": 0x0000,
+	"Bianco 2": 0x0001,
+	"Bianco 3": 0x0002,
+	"Bianco 4": 0x0003,
+	"Bianco 5": 0x0004,
+	"Bianco 6": 0x0005,
+	"Bianco 7": 0x0006,
+	"Bianco 8": 0x0007,
+	"Bianco Secret 1": 0x0008,
+	"Bianco Secret 2": 0x0009,
+
+	"Ricco 1": 0x000a,
+	"Ricco 2": 0x000b,
+	"Ricco 3": 0x000c,
+	"Ricco 4": 0x000d,
+	"Ricco 5": 0x000e,
+	"Ricco 6": 0x000f,
+	"Ricco 7": 0x0010,
+	"Ricco 8": 0x0011,
+	"Ricco Secret 1": 0x0012,
+	"Ricco Secret 2": 0x0013,
+
+	"Gelato 1": 0x0014,
+	"Gelato 2": 0x0015,
+	"Gelato 3": 0x0016,
+	"Gelato 4": 0x0017,
+	"Gelato 5": 0x0018,
+	"Gelato 6": 0x0019,
+	"Gelato 7": 0x001a,
+	"Gelato 8":  0x001b,
+	"Gelato Secret 1": 0x001c,
+	"Gelato Secret 2": 0x001d,
+
+	"Pinna 1": 0x001e,
+	"Pinna 2": 0x001f,
+	"Pinna 3": 0x0020,
+	"Pinna 4": 0x0021,
+	"Pinna 5": 0x0022,
+	"Pinna 6": 0x0023,
+	"Pinna 7": 0x0024,
+	"Pinna 8": 0x0025,
+	"Pinna Secret 1": 0x0026,
+	"Pinna Secret 2": 0x0027,
+
+	"Sirena 1": 0x0028,
+	"Sirena 2": 0x0029,
+	"Sirena 3": 0x002a,
+	"Sirena 4": 0x002b,
+	"Sirena 5": 0x002c,
+	"Sirena 6": 0x002d,
+	"Sirena 7": 0x002e,
+	"Sirena 8": 0x002f,
+	"Sirena Secret 1": 0x0030,
+	"Sirena Secret 2": 0x0031,
+
+	"Noki 1": 0x0032,
+	"Noki 2": 0x0033,
+	"Noki 3": 0x0034,
+	"Noki 4": 0x0035,
+	"Noki 5": 0x0036,
+	"Noki 6": 0x0037,
+	"Noki 7": 0x0038,
+	"Noki 8": 0x0039,
+	"Noki Secret 1": 0x003a,
+	"Noki Secret 2": 0x003b,
+
+	"Pianta 1": 0x003c,
+	"Pianta 2": 0x003d,
+	"Pianta 3": 0x003e,
+	"Pianta 4": 0x003f,
+	"Pianta 5": 0x0040,
+	"Pianta 6": 0x0041,
+	"Pianta 7": 0x0042,
+	"Pianta 8": 0x0043,
+	"Pianta Secret 1": 0x0044,
+	"Pianta Secret 2": 0x0045,
+}
+
+// #endregion
+
+// #region Offset
+
+objectOffsets = 
+{
+	"Instance": 8
+}
 
 // #endregion
 
@@ -134,6 +223,7 @@ function nextBit(addr)
 
 // #region Region
 
+function regionBit(addr) => bit(addr[0], bitflagPtr() + addr[1] - bitflagBaseAddr)
 function regionDword(addr) => dword_be(bitflagPtr() + addr - bitflagBaseAddr)
 
 // #endregion
@@ -141,6 +231,7 @@ function regionDword(addr) => dword_be(bitflagPtr() + addr - bitflagBaseAddr)
 // #region Pointer
 
 function bitflagPtr() => dword_be(regionPtr() + 0x34) & ptrMask
+function collectedShinePtr() => dword_be(gamePtr() + 0x25c) & ptrMask
 function gamePtr() => dword_be(regionPtr() + 4) & ptrMask
 function regionPtr() => dword_be(0x5518) & ptrMask
 
@@ -157,6 +248,8 @@ function gameState() => byte(gamePtr() + 0x64)
 
 // #region Helper
 
+function collectAnyShine() => regionBit([6, 0x578a54]) > prev(regionBit([6, 0x578a54]))
+function collectCoinShine() => collectAnyShine() && word_be(collectedShinePtr() + objectOffsets["Instance"]) == coinShineInstanceID
 function enterCourseEpisode(courseName, courseStateName) => once(inCourse(courseName) && inCourseState(courseStateName) && inGameState("Enter"))
 function gainCoins(increment) => coins() - prev(coins()) == increment
 function inAnyCourse(courseNames)
@@ -201,7 +294,7 @@ for courseAreaName in secretCoinShines["Delfino Plaza"]
 	if (courseAreaName == "Flooded Delfino Plaza") type = "missable"
 	else type = ""
 	
-	achievement("Delfino Plaza Secret " + romanNumerals[index], "Spawn the Delfino Plaza 100 Coin Shine Sprite " + desc, 5, courseCheck && prev(coins()) < 100 && coins() >= 100, type=type)
+	achievement("Delfino Plaza Secret " + romanNumerals[index], "Collect the Delfino Plaza 100 Coin Shine Sprite " + desc, 5, courseCheck && collectCoinShine(), type=type)
 
 	index = index + 1
 }
@@ -217,6 +310,7 @@ for courseName in mainCourseNames
 
 		if (maxCoinCount < 100) points = 5
 		else if (maxCoinCount < 150) points = 10
+		else if (courseName == "Noki Bay" && episodeName == "Episode 8") points = 50
 		else if (courseName == "Pianta Village" && episodeName == "Episode 6") points = 50
 		else points = 25
 		
@@ -245,10 +339,13 @@ for courseName in mainCourseNames
 		else if (courseAreaName == "Park") desc = "in the park"
 		else if (courseAreaName == "Casino") desc = "in the casino"
 		else if (courseAreaName == "King Boo Down Below") desc = "while fighting King Boo"
-		else if (courseAreaName == "Eely-Mouth's Dentist") desc = "while fighting Eely-Mouth"
+		else if (courseAreaName == "Underwater") desc = "in the underwater ruins"
 		else desc = "in " + courseAreaName
+
+		if (courseAreaName == "Underwater") courseCheck = inAnyCourse(["Noki Bay - The Red Coin Fish", "Noki Bay - Eely-Mouth's Dentist"])
+		else courseCheck = inCourse(courseName + " - " + courseAreaName)
 		
-		achievement(title, "Spawn the " + courseName + " 100 Coin Shine Sprite " + desc, 5, inCourse(courseName + " - " + courseAreaName) && prev(coins()) < 100 && coins() >= 100)
+		achievement(title, "Collect the " + courseName + " 100 Coin Shine Sprite " + desc, 5, courseCheck && collectCoinShine())
 	
 		index = index + 1
 	}

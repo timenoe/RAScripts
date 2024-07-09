@@ -56,7 +56,8 @@ function blueCoins() => regionDword(0x578a5c)
 // General
 function inCourse(courseName) => course() == courseIDs[courseName]
 function inGameState(gameStateName) => gameState() == gameStateIDs[gameStateName]
-function inGame() => !inCourse("Title Screen/Credits") && !inGameState("Loading")
+function inGame() => notBooting() && !inCourse("Title Screen/Credits") && !inGameState("Loading")
+function notBooting() => dword_be(regionPtr() + 0x34) != 0 // bitflagPtr check
 
 function prePeach() => regionBit([4, 0x5789f8]) == 0
 

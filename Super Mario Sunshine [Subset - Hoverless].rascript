@@ -80,29 +80,162 @@ courseIDs =
 }
 courseStateIDs = 
 {
-	"dolpic0": 0,
-	"dolpic1": 1,
-	"dolpic10": 2,
-	"dolpic5": 5,
-	"dolpic6": 6,
-	"dolpic7": 7,
-	"dolpic8": 8,
-	"dolpic9": 9,
-	"Episode 1": 0,
-	"Episode 2": 1,
-	"Episode 3": 2,
-	"Episode 4": 3,
-	"Episode 5": 4,
-	"Episode 6": 5,
-	"Episode 7": 6,
-	"Episode 8": 7,
+	"dolpic0": 0x00,
+	"dolpic1": 0x01,
+	"dolpic5": 0x05,
+	"dolpic6": 0x06,
+	"dolpic7": 0x07,
+	"dolpic8": 0x08,
+	"dolpic9": 0x09,
+	"dolpic10": 0x02,
+	"Episode Selection": 0xff,
+	"Episode 1": 0x00,
+	"Episode 2": 0x01,
+	"Episode 3": 0x02,
+	"Episode 4": 0x03,
+	"Episode 5": 0x04,
+	"Episode 6": 0x05,
+	"Episode 7": 0x06,
+	"Episode 8": 0x07,
+	"pinnaParco2": 0x02,
+	"pinnaBoss1": 0x01,
+	"delfino0": 0x00,
+	"casino0": 0x00,
+	"casino1": 0x01,
 }
 gameStateIDs = 
 {
 	"Loading": 0,
 	"Cutscene": 0x78
 }
+shineIDs = 
+{
+	"Bianco 1": 0x0000,
+	"Bianco 2": 0x0001,
+	"Bianco 3": 0x0002,
+	"Bianco 4": 0x0003,
+	"Bianco 5": 0x0004,
+	"Bianco 6": 0x0005,
+	"Bianco 7": 0x0006,
+	"Bianco 8": 0x0007,
+	"Bianco 3 Reds": 0x0008,
+	"Bianco 6 Reds": 0x0009,
 
+	"Ricco 1": 0x000a,
+	"Ricco 2": 0x000b,
+	"Ricco 3": 0x000c,
+	"Ricco 4": 0x000d,
+	"Ricco 5": 0x000e,
+	"Ricco 6": 0x000f,
+	"Ricco 7": 0x0010,
+	"Ricco 8": 0x0011,
+	"Ricco 4 Reds": 0x0012,
+	"Ricco 2 Sequel": 0x0013,
+
+	"Gelato 1": 0x0014,
+	"Gelato 2": 0x0015,
+	"Gelato 3": 0x0016,
+	"Gelato 4": 0x0017,
+	"Gelato 5": 0x0018,
+	"Gelato 6": 0x0019,
+	"Gelato 7": 0x001a,
+	"Gelato 8":  0x001b,
+	"Gelato 1 Reds": 0x001c,
+	"Gelato Staircase": 0x001d,
+
+	"Pinna 1": 0x001e,
+	"Pinna 2": 0x001f,
+	"Pinna 3": 0x0020,
+	"Pinna 4": 0x0021,
+	"Pinna 5": 0x0022,
+	"Pinna 6": 0x0023,
+	"Pinna 7": 0x0024,
+	"Pinna 8": 0x0025,
+	"Pinna 2 Reds": 0x0026,
+	"Pinna 6 Reds": 0x0027,
+
+	"Sirena 1": 0x0028,
+	"Sirena 2": 0x0029,
+	"Sirena 3": 0x002a,
+	"Sirena 4": 0x002b,
+	"Sirena 5": 0x002c,
+	"Sirena 6": 0x002d,
+	"Sirena 7": 0x002e,
+	"Sirena 8": 0x002f,
+	"Sirena 2 Reds": 0x0030,
+	"Sirena 4 Reds": 0x0031,
+
+	"Noki 1": 0x0032,
+	"Noki 2": 0x0033,
+	"Noki 3": 0x0034,
+	"Noki 4": 0x0035,
+	"Noki 5": 0x0036,
+	"Noki 6": 0x0037,
+	"Noki 7": 0x0038,
+	"Noki 8": 0x0039,
+	"Noki 6 Reds": 0x003a,
+	"Noki Gold Bird": 0x003b,
+
+	"Pianta 1": 0x003c,
+	"Pianta 2": 0x003d,
+	"Pianta 3": 0x003e,
+	"Pianta 4": 0x003f,
+	"Pianta 5": 0x0040,
+	"Pianta 6": 0x0041,
+	"Pianta 7": 0x0042,
+	"Pianta 8": 0x0043,
+	"Pianta 5 Reds": 0x0044,
+	"Pianta Sun": 0x0045,
+
+	"Airstrip": 0x0056,
+	"Turbo Track": 0x0057,
+	"Airstrip Reds": 0x0058,
+	"Pachinko Game": 0x0059,
+	"Super Slide": 0x005a,
+	"Lily Pad Ride": 0x005b,
+	"Red Coin Field": 0x005c,
+	"Lighthouse Roof": 0x005d,
+	"Box Game 1": 0x005e,
+	"Box Game 2": 0x005f,
+	"West Bell": 0x0060,
+	"East Bell": 0x0061,
+	"Chuckster": 0x0062,
+	"Shine Gate": 0x0063,
+	"Bianco 100 Coins": 0x0064,
+	"Ricco 100 Coins": 0x0065,
+	"Gelato 100 Coins": 0x0066,
+	"Pinna 100 Coins": 0x0067,
+	"Sirena 100 Coins": 0x0068,
+	"Noki 100 Coins": 0x0069,
+	"Pianta 100 Coins": 0x006a,
+	"Delfino 100 Coins": 0x006b,
+	"Turbo Gate": 0x0074,
+	"Beach": 0x0075,
+	"Gold Bird": 0x0076,
+
+	"Corona Mountain": 0x0077,
+}
+igtCourses = 
+{
+	"Bianco 3": "Bianco Hills - The Hillside Cave Secret",
+	"Bianco 6": "Bianco Hills - The Secret of the Dirty Lake",
+	"Ricco 2": "Ricco Harbor - Blooper Surfing Safari",
+	"Ricco 4": "Ricco Harbor - The Secret of Ricco Tower",
+	"Ricco 6": "Ricco Harbor",
+	"Gelato 1": "Gelato Beach - Dune Bud Sand Castle Secret",
+	"Gelato 5": "Gelato Beach",
+	"Pinna 2": "Pinna Park - The Beach Cannon's Secret",
+	"Pinna 6": "Pinna Park - The Yoshi-Go-Round's Secret",
+	"Sirena 2": "Sirena Beach - The Hotel Lobby's Secret",
+	"Sirena 4": "Sirena Beach - The Secret of Casino Delfino",
+	"Sirena 6": "Sirena Beach - Beach",
+	"Sirena 8": "Sirena Beach - Hotel",
+	"Noki 5": "Noki Bay",
+	"Noki 6": "Noki Bay - The Shell's Secret",
+	"Pianta 2": "Pianta Village",
+	"Pianta 5": "Pianta Village - Secret of the Village Underside",
+	"Pianta 6": "Pianta Village",
+}
 // Titles
 
 mainCourseNames = ["Bianco Hills", "Ricco Harbor", "Gelato Beach", "Pinna Park", "Sirena Beach", "Noki Bay", "Pianta Village"]
@@ -140,56 +273,69 @@ mainCourseblueCoinsTitle =
 {
 	"Bianco Hills": "[Hoverless] High and Low",
 	"Ricco Harbor": "[Hoverless] Klamber Chaos",
-	"Gelato Beach": "[Hoverless] Wakey, Wakey, Cataquack",
+	"Gelato Beach": "[Hoverless] Wakey, Wakey, Cataquack!",
 	"Pinna Park": "[Hoverless] Break the Targets",
 	"Sirena Beach": "[Hoverless] Waterlogged Furniture",
 	"Noki Bay": "[Hoverless] Rule 1: Check Waterfalls",
 	"Pianta Village": "[Hoverless] Blue Moon"
 }
 
-timedRedCoinCourseNames = ["Bianco Hills - The Hillside Cave Secret", "Bianco Hills - The Secret of the Dirty Lake",
-						   "Ricco Harbor - The Secret of Ricco Tower",
-						   "Gelato Beach - Dune Bud Sand Castle Secret",
-						   "Pinna Park - The Beach Cannon's Secret", "Pinna Park - The Yoshi-Go-Round's Secret",
-						   "Sirena Beach - Hotel", "Sirena Beach - The Hotel Lobby's Secret", "Sirena Beach - The Secret of Casino Delfino",
-						   "Noki Bay - The Shell's Secret",
-						   "Pianta Village - Secret of the Village Underside",
-						   "Delfino Plaza - Delfino Airstrip"]
-
-timedRedCoinCourseTitles = 
+courseShorthand = 
 {
-	"Bianco Hills - The Hillside Cave Secret": "Red Coins of the Hillside Cave",
-	"Bianco Hills - The Secret of the Dirty Lake": "Red Coins of the Dirty Lake",
-	"Ricco Harbor - The Secret of Ricco Tower": "Red Coins in Ricco Tower",
-	"Gelato Beach - Dune Bud Sand Castle Secret": "Red Coins in the Sand Castle",
-	"Pinna Park - The Beach Cannon's Secret": "Red Coins in the Cannon",
-	"Pinna Park - The Yoshi-Go-Round's Secret": "Red Coins in the Yoshi-Go-Round",
-	"Sirena Beach - Hotel": "Red Coins in the Hotel",
-	"Sirena Beach - The Hotel Lobby's Secret": "Red Coins in Boo's Big Mouth",
-	"Sirena Beach - The Secret of Casino Delfino": "Red Coin Winnings in the Casino",
-	"Noki Bay - The Shell's Secret": "Red Coins on the Half Shell",
-	"Pianta Village - Secret of the Village Underside": "Red Coin Chucksters",
-	"Delfino Plaza - Delfino Airstrip": "Red Coin Waterworks"
+	"Bianco Hills": "Bianco",
+	"Ricco Harbor": "Ricco",
+	"Gelato Beach": "Gelato",
+	"Pinna Park": "Pinna",
+	"Sirena Beach": "Sirena",
+	"Noki Bay": "Noki",
+	"Pianta Village": "Pianta"
 }
-
-raceCourseNames = ["Gelato Beach", "Noki Bay", "Pianta Village"]
-raceCourseEpisodes = 
+igtEpisodes = 
 {
-	"Gelato Beach": "Episode 5",
-	"Noki Bay": "Episode 5",
-	"Pianta Village": "Episode 2"
+	"Bianco": [],
+	"Ricco": [2, 6],
+	"Gelato": [5],
+	"Pinna": [],
+	"Sirena": [6, 8],
+	"Noki": [5],
+	"Pianta": [2, 6]
 }
-raceCourseTitles = 
+igtRaces = 
 {
-	"Gelato Beach": "Il Piantissimo's Sand Sprint",
-	"Noki Bay": "Il Piantissimo's Surf Swim",
-	"Pianta Village": "Il Piantissimo's Crazy Climb" 
+	"Bianco": [],
+	"Ricco": [],
+	"Gelato": [5],
+	"Pinna": [],
+	"Sirena": [],
+	"Noki": [5],
+	"Pianta": [2]
+}
+igtReds = 
+{
+	"Bianco": [],
+	"Ricco": [6],
+	"Gelato": [],
+	"Pinna": [],
+	"Sirena": [8],
+	"Noki": [],
+	"Pianta": []
+}
+igtSecretReds = 
+{
+	"Bianco": [3, 6],
+	"Ricco": [4],
+	"Gelato": [1],
+	"Pinna": [2, 6],
+	"Sirena": [2, 4],
+	"Noki": [6],
+	"Pianta": [5]
 }
 
 //// Functions
 
 // Pointers
 function bitflagPtr() => dword_be(regionPtr() + 0x34) & ptrMask
+function collectedShinePtr() => dword_be(gamePtr() + 0x25c) & ptrMask
 function gamePtr() => dword_be(regionPtr() + 4) & ptrMask
 function hudPtr() => dword_be(gamePtr() + 0x74) & ptrMask
 function regionPtr() => dword_be(0x5518) & ptrMask
@@ -198,6 +344,7 @@ function scriptPtr() => dword_be(gamePtr() + 0x80) & ptrMask
 // Addresses
 function course() => byte(regionPtr() + 0xe)
 function courseState() => byte(regionPtr() + 0xf)
+function cutscene() => byte(regionPtr() + 0x1b)
 function gameState() => byte(gamePtr() + 0x64)
 function piantasRescued() => regionDword(0x578a84)
 function redCoins() => regionDword(0x578a7c)
@@ -205,15 +352,31 @@ function shines() => regionDword(0x578a58)
 function timer() => dword_be(hudPtr() + 0x500)
 
 // General
+function collectAnyShine() => regionBit([6, 0x578a54]) > prev(regionBit([6, 0x578a54]))
+function collectShine(shineName) => collectAnyShine() && word_be(collectedShinePtr() + 0x136) == shineIDs[shineName]
+function inAnyCourse(courseNames)
+{
+	courseCheck = always_false()
+	for courseName in courseNames courseCheck = courseCheck || inCourse(courseName)
+	return __ornext(courseCheck)
+}
+function inAnyCourseState(courseStateNames)
+{
+	courseStateCheck = always_false()
+	for courseStateName in courseStateNames courseStateCheck = courseStateCheck || inCourseState(courseStateName)
+	return __ornext(courseStateCheck)
+}
 function inCourse(courseName) => course() == courseIDs[courseName]
+function inCourseAndEpisode(courseName, episode) => inCourse(courseName) && inCourseState("Episode " + episode)
 function inCourseState(courseStateName) => courseState() == courseStateIDs[courseStateName]
 function inGameState(gameStateName) => gameState() == gameStateIDs[gameStateName]
-function inGame() => course() != courseIDs["Title Screen/Credits"] && !inGameState("Loading")
+function inGame() => notBooting() && !inCourse("Title Screen/Credits") && !inGameState("Loading")
 function inEnding() => inCourse("Title Screen/Credits") && inGameState("Cutscene")
-
+function notBooting() => dword_be(regionPtr() + 0x34) != 0 // bitflagPtr check
+function wasInCourseState(courseStateName) => prev(courseState()) == courseStateIDs[courseStateName]
 function allPiantasRescued() => piantasRescued() == 10
 function allRedCoins() => prev(redCoins()) == 7 && redCoins() == 8
-function boxingClever(level) => countRegionBits([6, 0x578993], 2) == level
+function boxGame(formation) => countRegionBits([6, 0x578993], 2) == formation
 function reachRaceFlag() => regionBit([5, 0x578a6c]) > prev(regionBit([5, 0x578a6c]))
 function timerWasActive() => prev(byte(hudPtr() + 0x4a)) == 1
 
@@ -221,11 +384,11 @@ function timerWasActive() => prev(byte(hudPtr() + 0x4a)) == 1
 
 function endBeachCleaning() => word_be(scriptPtr() + 0x372) == 0x2cd
 function finishBlooperRace() => word_be(scriptPtr() + 0x372) == 0x46e
-function winBoxingClever()
+function winBoxGame()
 {
-	return __ornext(inCourseState("dolpic10") || inCourseState("dolpic6") || inCourseState("dolpic7")) && word_be(scriptPtr() + 0xf2e) == 0x32f || 
-					inCourseState("dolpic8") && word_be(scriptPtr() + 0x124a) == 0x32f || 
-					inCourseState("dolpic5") && word_be(scriptPtr() + 0x1566) == 0x32f
+	return __ornext(inAnyCourseState(["dolpic6", "dolpic7", "dolpic10"])) && prev(word_be(scriptPtr() + 0xf2e)) == 0x470 && word_be(scriptPtr() + 0xf2e) == 0x32f || 
+					inCourseState("dolpic8") && prev(word_be(scriptPtr() + 0x124a)) == 0x470 && word_be(scriptPtr() + 0x124a) == 0x32f || 
+					inCourseState("dolpic5") && prev(word_be(scriptPtr() + 0x1566)) == 0x470 && word_be(scriptPtr() + 0x1566) == 0x32f
 }
 function winMonteRace(courseName)
 {
@@ -247,17 +410,17 @@ for mainCourse in mainCourseNames
 		shineAddr = nextBit(shineAddr)
 	}
 }
-achievement("[Hoverless] Delfino Airstrip Dilemma", "Collect the first Shine Sprite in Delfino Airstrip", 1, inGame() && regionBitflip([6, 0x578992]))
-achievement("[Hoverless] New Challenger Approaching", "Defeat the Polluted Piranha covering the Grand Pianta Statue in Delfino Plaza", 2, inGame() && regionBitflip([4, 0x5789f8]))
+achievement("[Hoverless] Delfino's Dilemma", "Collect the first Shine Sprite in Delfino Airstrip", 1, inGame() && regionBitflip([6, 0x578992]))
+achievement("[Hoverless] Challenger Approaching!", "Defeat the Polluted Piranha covering the Grand Pianta Statue in Delfino Plaza", 2, inGame() && regionBitflip([4, 0x5789f8]))
 achievement("[Hoverless] Boathouse Blues", "Collect 3 Shine Sprites", 3, inGame() && prev(shines()) < 3 && shines() >= 3)
 achievement("[Hoverless] Shiny Landmark", "Collect 5 Shine Sprites", 5, inGame() && prev(shines()) < 5 && shines() >= 5)
-achievement("[Hoverless] Kidnapped...Again?!", "Collect 10 Shine Sprites", 5, inGame() && prev(shines()) < 10 && shines() >= 10)
+achievement("[Hoverless] Kidnapped... Again?!", "Collect 10 Shine Sprites", 5, inGame() && prev(shines()) < 10 && shines() >= 10)
 achievement("[Hoverless] Look into the Light", "Collect 20 Shine Sprites", 10, inGame() && prev(shines()) < 20 && shines() >= 20)
 achievement("[Hoverless] Retro Reunion", "Befriend Yoshi in Delfino Plaza", 5, inGame() && regionBitflip([7, 0x5789f9]))
 achievement("[Hoverless] Time to Speed Things Up", "Obtain the Turbo Nozzle in Delfino Plaza", 10, inGame() && regionBitflip([7, 0x5789f4]))
-achievement("[Hoverless] First Jump Man, Now Rocket Man", "Obtain the Rocket Nozzle in Delfino Plaza", 10, inGame() && regionBitflip([6, 0x5789f4]))
-achievement("[Hoverless] Shadow Tsunami", "Complete Episode 7 in all 7 main courses", 10, inGame() && prev(allEpisode7s) == 6 && measured(allEpisode7s == 7))
-achievement("[Hoverless] Bonding Time", "Collect the final Shine Sprite in Corona Mountain", 25, inEnding() && regionBitflip([7, 0x578996]))
+achievement("[Hoverless] From Jumpman to Rocketman", "Obtain the Rocket Nozzle in Delfino Plaza", 10, inGame() && regionBitflip([6, 0x5789f4]))
+achievement("[Hoverless] Shadow Tsunami", "Complete Episode 7 in all 7 main courses", 10, !inGameState("Loading") && prev(allEpisode7s) == 6 && measured(allEpisode7s == 7, when=notBooting() && !inCourse("Title Screen/Credits")))
+achievement("[Hoverless] Father and Son Shine!", "Collect the final Shine Sprite in Corona Mountain", 25, inEnding() && regionBitflip([7, 0x578996]))
 
 // Collection
 
@@ -268,28 +431,28 @@ mainCourseBlueCoinsAddr = [2, 0x57899d]
 mainCourseBlueCoins = 0
 for mainCourseName in mainCourseNames
 {
-	achievement(mainCourseEpisodeShinesTitle[mainCourseName], "Complete all 8 episodes in " + mainCourseName, 25, inGame() && prev(countRegionBits(mainCourseEpisodeShinesAddr, 8)) == 7 && measured(countRegionBits(mainCourseEpisodeShinesAddr, 8) == 8))
+	achievement(mainCourseEpisodeShinesTitle[mainCourseName], "Complete all 8 episodes in " + mainCourseName, 25, !inGameState("Loading") && prev(countRegionBits(mainCourseEpisodeShinesAddr, 8)) == 7 && measured(countRegionBits(mainCourseEpisodeShinesAddr, 8) == 8, when=notBooting() && !inCourse("Title Screen/Credits")))
 	for i in range(1, 10) mainCourseEpisodeShinesAddr = nextBit(mainCourseEpisodeShinesAddr)
 
-	achievement(mainCourseSecretShinesTitle[mainCourseName], "Collect both secret Shine Sprites in " + mainCourseName, 10, inGame() && prev(countRegionBits(mainCourseSecretShinesAddr, 2)) == 1 && measured(countRegionBits(mainCourseSecretShinesAddr, 2) == 2))
+	achievement(mainCourseSecretShinesTitle[mainCourseName], "Collect both secret Shine Sprites in " + mainCourseName, 10, !inGameState("Loading") && prev(countRegionBits(mainCourseSecretShinesAddr, 2)) == 1 && measured(countRegionBits(mainCourseSecretShinesAddr, 2) == 2, when=notBooting() && !inCourse("Title Screen/Credits")))
 	for i in range(1, 10) mainCourseSecretShinesAddr = nextBit(mainCourseSecretShinesAddr)
 
-	achievement(mainCourseCoinShineTitle[mainCourseName], "Gather 100 Yellow Coins and collect the Shine Sprite in " + mainCourseName, 5, inGame() && regionBitflip(mainCourseCoinShineAddr))
+	achievement(mainCourseCoinShineTitle[mainCourseName], "Gather 100 coins and collect the Shine Sprite in " + mainCourseName, 5, inGame() && regionBitflip(mainCourseCoinShineAddr))
 	mainCourseCoinShineAddr = nextBit(mainCourseCoinShineAddr)
 	
 	blueCoins = countRegionBits(mainCourseBlueCoinsAddr, 30)
 	mainCourseBlueCoins = mainCourseBlueCoins + blueCoins
-	achievement(mainCourseblueCoinsTitle[mainCourseName], "Collect all 30 Blue Coins in " + mainCourseName, 25, inGame() && prev(blueCoins) == 29 && measured(blueCoins == 30))
+	achievement(mainCourseblueCoinsTitle[mainCourseName], "Collect all 30 Blue Coins in " + mainCourseName, 25, !inGameState("Loading") && prev(blueCoins) == 29 && measured(blueCoins == 30, when=notBooting() && !inCourse("Title Screen/Credits")))
 	for i in range(1, 50) mainCourseBlueCoinsAddr = nextBit(mainCourseBlueCoinsAddr)
 }
 
 plazaShineAddrs = [[5, 0x578993], [6, 0x578993], [7, 0x578993], [0, 0x578994], [1, 0x578994], [2, 0x578994], [3, 0x578994], [4, 0x578996], [5, 0x578996], [6, 0x578996]]
 plazaShines = 0
 for plazaShineAddr in plazaShineAddrs plazaShines = plazaShines + regionBit(plazaShineAddr)
-achievement("[Hoverless] Janitor of the Year", "Collect all 10 Shine Sprites within Delfino Plaza", 25, inGame() && prev(plazaShines) == 9 && measured(plazaShines == 10))
+achievement("[Hoverless] Janitor of the Year", "Collect all 10 Shine Sprites within Delfino Plaza", 25, !inGameState("Loading") && prev(plazaShines) == 9 && measured(plazaShines == 10, when=notBooting() && !inCourse("Title Screen/Credits")))
 achievement("[Hoverless] Slip and Slide", "Collect the Shine Sprite in Super Slide", 3, inGame() && regionBitflip([2, 0x578993]))
 achievement("[Hoverless] Nothing But Pain", "Collect the Shine Sprite in Pachinko Game", 10, inGame() && regionBitflip([1, 0x578993]))
-achievement("[Hoverless] Thank You Lilly", "Collect the Shine Sprite in Lily Pad Ride", 5, inGame() && regionBitflip([3, 0x578993]))
+achievement("[Hoverless] Thank You, Lilly!", "Collect the Shine Sprite in Lily Pad Ride", 5, inGame() && regionBitflip([3, 0x578993]))
 achievement("[Hoverless] F-Zero Sunshine", "Collect the Shine Sprite in Turbo Track", 3, inGame() && regionBitflip([7, 0x578992]))
 achievement("[Hoverless] Scavenger Hunt", "Collect the Shine Sprite in Red Coin Field", 3, inGame() && regionBitflip([4, 0x578993]))
 
@@ -308,25 +471,40 @@ for bitBlock in range(0, length(tradeShineBaseAddrs) - 1)
 delfinoPlazaBlueCoins = countRegionBits([1, 0x578997], 19)
 coronaMountainBlueCoins = countRegionBits([4, 0x5789cb], 10)
 allBlueCoins = mainCourseBlueCoins + delfinoPlazaBlueCoins + coronaMountainBlueCoins + regionBit([0, 0x578997])
-achievement("[Hoverless] Inequivalent Exchange", "Trade all 240 Blue Coins for 24 Shine Sprites in the boathouse of Delfino Plaza", 25, inGame() && prev(tradedBlueCoins) < 240 && measured(tradedBlueCoins == 240))
+achievement("[Hoverless] Inequivalent Exchange", "Trade all 240 Blue Coins for 24 Shine Sprites in the boathouse of Delfino Plaza", 25, !inGameState("Loading") && prev(tradedBlueCoins) < 240 && measured(tradedBlueCoins == 240, when=notBooting() && !inCourse("Title Screen/Credits")))
 achievement("[Hoverless] Easy Way or the Hard Way", "Gather 100 Yellow Coins and collect the Shine Sprite in Delfino Plaza, Red Coin Field, or Delfino Airstrip", 5, inGame() && regionBitflip([3, 0x578995]))
-achievement("[Hoverless] Surf and Turf", "Collect all 19 Blue Coins in Delfino Plaza", 25, inGame() && prev(delfinoPlazaBlueCoins) == 18 && measured(delfinoPlazaBlueCoins == 19))
-achievement("[Hoverless] Get Rich or Die Trying", "Collect all 10 Blue Coins in Corona Mountain", 25, inGame() && prev(coronaMountainBlueCoins) == 9 && measured(coronaMountainBlueCoins == 10))
+achievement("[Hoverless] Surf and Turf", "Collect all 19 Blue Coins in Delfino Plaza", 25, !inGameState("Loading") && prev(delfinoPlazaBlueCoins) == 18 && measured(delfinoPlazaBlueCoins == 19, when=notBooting() && !inCourse("Title Screen/Credits")))
+achievement("[Hoverless] Get Rich or Die Trying", "Collect all 10 Blue Coins in Corona Mountain", 25, !inGameState("Loading") && prev(coronaMountainBlueCoins) == 9 && measured(coronaMountainBlueCoins == 10, when=notBooting() && !inCourse("Title Screen/Credits")))
 achievement("[Hoverless] Red Coin Waterworks", "Collect the Shine Sprite in Delfino Airstrip after visiting Corona Mountain", 3, inGame() && regionBitflip([0, 0x578993]))
 achievement("[Hoverless] Melty Block", "Collect the Blue Coin in Delfino Airstrip after visiting Corona Mountain", 2, inGame() && regionBitflip([0, 0x578997]))
-achievement("[Hoverless] Shine On!", "Collect all 120 Shine Sprites", 50, (inGame() || inEnding()) && prev(shines()) < 120 && measured(shines() == 120))
-achievement("[Hoverless] Tanuki Time", "Collect all 240 Blue Coins", 50, inGame() && prev(allBlueCoins) == 239 && measured(allBlueCoins == 240))
+achievement("[Hoverless] Shine On!", "Collect all 120 Shine Sprites", 50, !inGameState("Loading") && prev(shines()) < 120 && measured(shines() == 120, when=notBooting() && !inCourse("Title Screen/Credits")) || prev(shines()) < 120 && measured(shines() == 120, when=inCourse("Title Screen/Credits") && inGameState("Cutscene")))
+achievement("[Hoverless] Tanuki Time", "Collect all 240 Blue Coins", 50, !inGameState("Loading") && prev(allBlueCoins) == 239 && measured(allBlueCoins == 240, when=notBooting() && !inCourse("Title Screen/Credits")))
 
 //// Leaderboards
 
-// Countdown
+for mainCourseName in mainCourseNames
+{
+	if (mainCourseName == "Pinna Park") logicalCourseName = "Pinna Park - Beach"
+	else if (mainCourseName == "Sirena Beach") logicalCourseName = "Sirena Beach - Beach"
+	else logicalCourseName = mainCourseName
+	
+	course = courseShorthand[mainCourseName]
+	for episode in range(1, 8)
+	{
+		courseEpisode = course + " " + episode
 
-for level in range(0, 2) leaderboard("[Hoverless] Boxing Clever " + level + 1 + " Speedrun", "Break all the crates in the " + iterations[level] + " formation as fast as possible in Delfino Plaza", inCourse("Delfino Plaza") && boxingClever(level) && timerWasActive() && winBoxingClever(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
-for timedRedCoinCourseName in timedRedCoinCourseNames leaderboard("[Hoverless] " + timedRedCoinCourseTitles[timedRedCoinCourseName] + " Speedrun", "Collect all 8 red coins as fast as possible in " + timedRedCoinCourseTitles[timedRedCoinCourseName], inCourse(timedRedCoinCourseName) && timerWasActive() && allRedCoins(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
-leaderboard("[Hoverless] Scrubbing Sirena Beach Speedrun", "Scrub Sirena Beach clean as fast as possible in Episode 6 of Sirena Beach", inCourse("Sirena Beach - Beach") && inCourseState("Episode 6") && timerWasActive() && timer() > 0 && endBeachCleaning(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
-leaderboard("[Hoverless] Piantas in Need Speedrun", "Rescue all 10 Piantas as fast as possible in Episode 6 of Pianta Village", inCourse("Pianta Village") && inCourseState("Episode 6") && timerWasActive() && allPiantasRescued(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
+		if (courseEpisode == "Sirena 8") logicalEpisode = 5
+		else logicalEpisode = episode
 
-// Race
+		if (none_of(igtEpisodes[course], igtEpisode => episode == igtEpisode)) leaderboard("[Hoverless] " + courseEpisode + " Speedrun (RTA)", "Complete " + courseEpisode + " as fast as possible", wasInCourseState("Episode Selection") && inCourseAndEpisode(logicalCourseName, episode), inAnyCourse(["Title Screen/Credits", "Delfino Plaza"]), collectShine(courseEpisode), measured(always_true()), format="FRAMES", lower_is_better=true)
+		else if (any_of(igtRaces[course], igtRace => episode == igtRace)) leaderboard("[Hoverless] " + courseEpisode + " Speedrun (IGT)", "Reach the flag as fast as possible during the race against Il Piantissimo in " + courseEpisode, inCourseAndEpisode(igtCourses[courseEpisode], episode) && timerWasActive() && reachRaceFlag(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=true)
+		else if (any_of(igtReds[course], igtRed => episode == igtRed)) leaderboard("[Hoverless] " + courseEpisode + " Speedrun (IGT)", "Collect all 8 red coins as fast as possible in " + courseEpisode, inCourseAndEpisode(igtCourses[courseEpisode], logicalEpisode) && timerWasActive() && allRedCoins(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
+		else if (courseEpisode == "Ricco 2") leaderboard("[Hoverless] Ricco 2 Speedrun (IGT)", "Cross the finish line as fast as possible in Ricco 2", inCourse("Ricco Harbor - Blooper Surfing Safari") && timerWasActive() && finishBlooperRace(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=true)
+		else if (courseEpisode == "Sirena 6") leaderboard("[Hoverless] Sirena 6 Speedrun (IGT)", "Scrub Sirena Beach clean as fast as possible in Sirena 6", inCourseAndEpisode("Sirena Beach - Beach", 6) && timerWasActive() && timer() > 0 && endBeachCleaning(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
+		else if (courseEpisode == "Pianta 6") leaderboard("[Hoverless] Pianta 6 Speedrun (IGT)", "Rescue all 10 Piantas as fast as possible in Pianta 6", inCourseAndEpisode("Pianta Village", 6) && timerWasActive() && allPiantasRescued(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
+		if (any_of(igtSecretReds[course], igtSecretRed => episode == igtSecretRed)) leaderboard("[Hoverless] " + courseEpisode + " Reds Speedrun (IGT)", "Collect all 8 red coins as fast as possible in " + courseEpisode, inCourse(igtCourses[courseEpisode]) && timerWasActive() && allRedCoins(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
+	}
+}
 
-leaderboard("[Hoverless] Blooper Surfing Safari Speedrun", "Cross the finish line as fast as possible in Blooper Surfing Safari", inCourse("Ricco Harbor - Blooper Surfing Safari") && timerWasActive() && finishBlooperRace(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=true)
-for raceCourseName in raceCourseNames leaderboard("[Hoverless] " + raceCourseTitles[raceCourseName] + " Speedrun", "Reach the flag as fast as possible during the race against Il Piantissimo in " + raceCourseEpisodes[raceCourseName] + " of " + raceCourseName, inCourse(raceCourseName) && inCourseState(raceCourseEpisodes[raceCourseName]) && timerWasActive() && reachRaceFlag(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=true)
+for level in range(0, 2) leaderboard("[Hoverless] Box Game " + level + 1 + " Speedrun (IGT)", "Break all the crates in the " + iterations[level] + " formation as fast as possible in Delfino Plaza", inCourse("Delfino Plaza") && boxGame(level) && timerWasActive() && winBoxGame(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
+leaderboard("[Hoverless] Airstrip Reds Speedrun (IGT)", "Collect all 8 red coins as fast as possible in Delfino Airstrip", inCourse("Delfino Plaza - Delfino Airstrip") && timerWasActive() && allRedCoins(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
