@@ -278,9 +278,9 @@ function warpToCourse(courseName) => nextCourse() == courseIDs[courseName]
 
 // #region Achievement/Leaderboard
 
-achievement("Delfino Isle Treasure", "Collect 999 Coins in Delfino Plaza, Red Coin Field, or Delfino Airstrip", 25, inAnyCourse(["Delfino Plaza", "Delfino Plaza - Red Coin Field", "Delfino Plaza - Delfino Airstrip"]) && prev(coins()) < 999 && coins() == 999)
-achievement("Delfino Plaza Treasure", "Collect 162 Coins in Delfino Plaza without leaving", 25, never(!inCourse("Delfino Plaza")) && measured(tallyCoins(162)))
-achievement("Delfino Airstrip Treasure", "Collect 144 Coins in Delfino Airstrip without leaving", 25, never(!inCourse("Delfino Plaza - Delfino Airstrip")) && measured(tallyCoins(144)))
+achievement("Delfino Isle Treasure", "Collect 999 coins in Delfino Plaza, Red Coin Field, or Delfino Airstrip", 25, inAnyCourse(["Delfino Plaza", "Delfino Plaza - Red Coin Field", "Delfino Plaza - Delfino Airstrip"]) && prev(coins()) < 999 && coins() == 999)
+achievement("Delfino Plaza Treasure", "Collect 162 coins in Delfino Plaza without leaving", 25, never(!inCourse("Delfino Plaza")) && measured(tallyCoins(162)))
+achievement("Delfino Airstrip Treasure", "Collect 144 coins in Delfino Airstrip without leaving", 25, never(!inCourse("Delfino Plaza - Delfino Airstrip")) && measured(tallyCoins(144)))
 
 index = 0
 for courseAreaName in secretCoinShines["Delfino Plaza"]
@@ -294,7 +294,7 @@ for courseAreaName in secretCoinShines["Delfino Plaza"]
 	if (courseAreaName == "Flooded Delfino Plaza") type = "missable"
 	else type = ""
 	
-	achievement("Delfino Plaza Secret " + romanNumerals[index], "Collect the Delfino Plaza 100 Coin Shine Sprite " + desc, 5, courseCheck && collectCoinShine(), type=type)
+	achievement("Delfino Plaza Secret " + romanNumerals[index], "Collect the Delfino Plaza 100-coin Shine Sprite " + desc, 5, courseCheck && collectCoinShine(), type=type)
 
 	index = index + 1
 }
@@ -323,8 +323,8 @@ for courseName in mainCourseNames
 		
 		trigger = never(inCourse("Title Screen/Credits") || warpToCourse("Delfino Plaza") || loseCoins()) && once(enterCourseEpisode(logicalCourseName, episodeName)) && prev(coins()) < maxCoinCount && trigger_when(coinCheck)
 		
-		achievement(courseName + " Treasure " + romanNumerals[episode - 1], "Collect " + maxCoinCount + " Coins in " + episodeName + " of " + courseName, points, trigger)
-		if (maxCoinCount < 999) leaderboard(courseShorthandName + " Coin High Score", "Collect the most Coins in " + courseShorthandName, enterCourseEpisode(logicalCourseName, episodeName), __ornext(inCourse("Title Screen/Credits") || inCourse("Delfino Plaza")), loseCoins(), prev(coins()), format="VALUE")
+		achievement(courseName + " Treasure " + romanNumerals[episode - 1], "Collect " + maxCoinCount + " coins in " + episodeName + " of " + courseName, points, trigger)
+		if (maxCoinCount < 999) leaderboard(courseShorthandName + " Coin High Score", "Collect the most coins in " + courseShorthandName, enterCourseEpisode(logicalCourseName, episodeName), __ornext(inCourse("Title Screen/Credits") || inCourse("Delfino Plaza")), loseCoins(), prev(coins()), format="VALUE")
 		
 		episode = episode + 1
 	}
@@ -345,7 +345,7 @@ for courseName in mainCourseNames
 		if (courseAreaName == "Underwater") courseCheck = inAnyCourse(["Noki Bay - The Red Coin Fish", "Noki Bay - Eely-Mouth's Dentist"])
 		else courseCheck = inCourse(courseName + " - " + courseAreaName)
 		
-		achievement(title, "Collect the " + courseName + " 100 Coin Shine Sprite " + desc, 5, courseCheck && collectCoinShine())
+		achievement(title, "Collect the " + courseName + " 100-coin Shine Sprite " + desc, 5, courseCheck && collectCoinShine())
 	
 		index = index + 1
 	}

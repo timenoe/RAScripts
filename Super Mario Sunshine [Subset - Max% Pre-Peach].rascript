@@ -66,24 +66,24 @@ function prePeach() => regionBit([4, 0x5789f8]) == 0
 piantaVillageShines = countRegionBits([4, 0x57898f], 10) + regionBit([2, 0x578995])
 delfinoPlazaShines = regionBit([7, 0x578992]) + countRegionBits([1, 0x578993], 5) + countRegionBits([0, 0x578994], 4) + regionBit([3, 0x578995]) + countRegionBits([4, 0x578996], 2)
 
-piantaVillageBlueCoins = countRegionBits([6, 0x5789c2], 30) // Exclude the impossible Blue Coins from this in the future
+piantaVillageBlueCoins = countRegionBits([4, 0x5789bc], 30) // Exclude the impossible Blue Coins from this in the future
 delfinoPlazaBlueCoins = countRegionBits([1, 0x578997], 19) // Exclude the impossible Blue Coins from this in the future
 
-achievement("Progress is Progress!", "Collect the first Shine Sprite in Delfino Airstrip", 1, inGame() && prePeach() && regionBitflip([6, 0x578992]))
+achievement("Progress Is Progress!", "Collect the first Shine Sprite in the Delfino Airstrip", 1, inGame() && prePeach() && regionBitflip([6, 0x578992]))
 
-achievement("Independent Man", "Complete Episode 5 in Pianta Village", 5, inGame() && prePeach() && regionBitflip([0, 0x578990]))
+achievement("Independent Man", "Complete Episode 5 of Pianta Village", 5, inGame() && prePeach() && regionBitflip([0, 0x578990]))
 achievement("Unexpected Hero", "Collect all 11 Shine Sprites in Pianta Village", 25, inGame() && prePeach() && prev(piantaVillageShines) == 10 && measured(piantaVillageShines == 11))
 
 achievement("Float Like a Butterfly, Sting Like a Bee", "Collect all 27 obtainable Blue Coins in Pianta Village", 25, inGame() && prePeach() && prev(piantaVillageBlueCoins) == 26 && measured(piantaVillageBlueCoins == 27))
 
-achievement("No Thanks, I Get Motion Sickness", "Collect the 'Mario Toss' Shine Sprite in Delfino Plaza", 5, inGame() && prePeach() && regionBitflip([2, 0x578994]))
-achievement("Walls Don't Exist", "Collect the 'Turbo Dash!' Shine Sprite in Delfino Plaza", 5, inGame() && prePeach() && regionBitflip([4, 0x578996]))
-achievement("Meteor Mario", "Collect the 'Lighthouse Roof' Shine Sprite in Delfino Plaza", 10, inGame() && prePeach() && regionBitflip([5, 0x578993]))
-achievement("Many Branching Paths", "Collect the 'Clean the East Bell' Shine Sprite in Delfino Plaza", 10, inGame() && prePeach() && regionBitflip([1, 0x578994]))
-achievement("Look At That Shine!", "Collect the 'The Shine Gate Sparkle' Shine Sprite in Delfino Plaza", 10, inGame() && prePeach() && regionBitflip([3, 0x578994]))
-achievement("Bouncy Barrel", "Collect the 'Lily Pad Ride' Shine Sprite in Delfino Plaza", 10, inGame() && prePeach() && regionBitflip([3, 0x578993]))
-achievement("Breaking and Entering", "Collect the 'Turbo Track' Shine Sprite in Delfino Plaza", 10, inGame() && prePeach() && regionBitflip([7, 0x578992]))
-achievement("Photographic Memory", "Gather 100 Yellow Coins and collect the Shine Sprite in Delfino Plaza", 5, inGame() && prePeach() && regionBitflip([3, 0x578995]))
+achievement("No Thanks, I Get Motion Sickness", "Collect the \"Mario Toss\" Shine Sprite in Delfino Plaza", 5, inGame() && prePeach() && regionBitflip([2, 0x578994]))
+achievement("Walls Don't Exist", "Collect the \"Turbo Dash!\" Shine Sprite in Delfino Plaza", 5, inGame() && prePeach() && regionBitflip([4, 0x578996]))
+achievement("Meteor Mario", "Collect the \"Lighthouse Roof\" Shine Sprite in Delfino Plaza", 10, inGame() && prePeach() && regionBitflip([5, 0x578993]))
+achievement("Many Branching Paths", "Collect the \"Clean the East Bell\" Shine Sprite in Delfino Plaza", 10, inGame() && prePeach() && regionBitflip([1, 0x578994]))
+achievement("Look at That Shine!", "Collect the \"The Shine Gate Sparkle\" Shine Sprite in Delfino Plaza", 10, inGame() && prePeach() && regionBitflip([3, 0x578994]))
+achievement("Bouncy Barrel", "Collect the \"Lily Pad Ride\" Shine Sprite in Delfino Plaza", 10, inGame() && prePeach() && regionBitflip([3, 0x578993]))
+achievement("Breaking and Entering", "Collect the \"Turbo Track\" Shine Sprite in Delfino Plaza", 10, inGame() && prePeach() && regionBitflip([7, 0x578992]))
+achievement("Photographic Memory", "Gather 100 coins and collect the Shine Sprite in Delfino Plaza", 5, inGame() && prePeach() && regionBitflip([3, 0x578995]))
 achievement("Boundary Break", "Collect all 13 obtainable Shine Sprites in Delfino Plaza", 25, inGame() && prePeach() && prev(delfinoPlazaShines) == 12 && measured(delfinoPlazaShines == 13))
 
 achievement("Come On, Hover Right In", "Collect the Blue Coin behind the Orange Juice Generator near the Pinna Park cannon in Delfino Plaza", 5, inGame() && prePeach() && regionBitflip([5, 0x578998]))

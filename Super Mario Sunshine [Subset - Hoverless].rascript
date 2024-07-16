@@ -177,11 +177,11 @@ shineIDs =
 	"Noki Gold Bird": 0x003b,
 
 	"Pianta 1": 0x003c,
-	"Pianta 2": 0x003d,
+	"Pianta 4": 0x003d,
 	"Pianta 3": 0x003e,
-	"Pianta 4": 0x003f,
+	"Pianta 6": 0x003f,
 	"Pianta 5": 0x0040,
-	"Pianta 6": 0x0041,
+	"Pianta 2": 0x0041,
 	"Pianta 7": 0x0042,
 	"Pianta 8": 0x0043,
 	"Pianta 5 Reds": 0x0044,
@@ -384,11 +384,14 @@ function timerWasActive() => prev(byte(hudPtr() + 0x4a)) == 1
 
 function endBeachCleaning() => word_be(scriptPtr() + 0x372) == 0x2cd
 function finishBlooperRace() => word_be(scriptPtr() + 0x372) == 0x46e
-function winBoxGame()
+function winBoxGame(formation)
 {
-	return __ornext(inAnyCourseState(["dolpic6", "dolpic7", "dolpic10"])) && prev(word_be(scriptPtr() + 0xf2e)) == 0x470 && word_be(scriptPtr() + 0xf2e) == 0x32f || 
-					inCourseState("dolpic8") && prev(word_be(scriptPtr() + 0x124a)) == 0x470 && word_be(scriptPtr() + 0x124a) == 0x32f || 
-					inCourseState("dolpic5") && prev(word_be(scriptPtr() + 0x1566)) == 0x470 && word_be(scriptPtr() + 0x1566) == 0x32f
+	if (formation == 0) preScript = 0x48d
+	else preScript = 0x470
+
+	return __ornext(inAnyCourseState(["dolpic6", "dolpic7", "dolpic10"])) && prev(word_be(scriptPtr() + 0xf2e)) == preScript && word_be(scriptPtr() + 0xf2e) == 0x32f || 
+					inCourseState("dolpic8") && prev(word_be(scriptPtr() + 0x124a)) == preScript && word_be(scriptPtr() + 0x124a) == 0x32f || 
+					inCourseState("dolpic5") && prev(word_be(scriptPtr() + 0x1566)) == preScript && word_be(scriptPtr() + 0x1566) == 0x32f
 }
 function winMonteRace(courseName)
 {
@@ -410,8 +413,8 @@ for mainCourse in mainCourseNames
 		shineAddr = nextBit(shineAddr)
 	}
 }
-achievement("[Hoverless] Delfino's Dilemma", "Collect the first Shine Sprite in Delfino Airstrip", 1, inGame() && regionBitflip([6, 0x578992]))
-achievement("[Hoverless] Challenger Approaching!", "Defeat the Polluted Piranha covering the Grand Pianta Statue in Delfino Plaza", 2, inGame() && regionBitflip([4, 0x5789f8]))
+achievement("[Hoverless] Delfino's Dilemma", "Collect the first Shine Sprite in the Delfino Airstrip", 1, inGame() && regionBitflip([6, 0x578992]))
+achievement("[Hoverless] Challenger Approaching!", "Defeat the brown Gatekeeper covering the Grand Pianta Statue in Delfino Plaza", 2, inGame() && regionBitflip([4, 0x5789f8]))
 achievement("[Hoverless] Boathouse Blues", "Collect 3 Shine Sprites", 3, inGame() && prev(shines()) < 3 && shines() >= 3)
 achievement("[Hoverless] Shiny Landmark", "Collect 5 Shine Sprites", 5, inGame() && prev(shines()) < 5 && shines() >= 5)
 achievement("[Hoverless] Kidnapped... Again?!", "Collect 10 Shine Sprites", 5, inGame() && prev(shines()) < 10 && shines() >= 10)
@@ -442,6 +445,10 @@ for mainCourseName in mainCourseNames
 	
 	blueCoins = countRegionBits(mainCourseBlueCoinsAddr, 30)
 	mainCourseBlueCoins = mainCourseBlueCoins + blueCoins
+
+	if (mainCourseName == "Noki Bay") mainCourseName = "Pianta Village"
+	else if (mainCourseName == "Pianta Village") mainCourseName = "Noki Bay"
+	
 	achievement(mainCourseblueCoinsTitle[mainCourseName], "Collect all 30 Blue Coins in " + mainCourseName, 25, !inGameState("Loading") && prev(blueCoins) == 29 && measured(blueCoins == 30, when=notBooting() && !inCourse("Title Screen/Credits")))
 	for i in range(1, 50) mainCourseBlueCoinsAddr = nextBit(mainCourseBlueCoinsAddr)
 }
@@ -450,11 +457,11 @@ plazaShineAddrs = [[5, 0x578993], [6, 0x578993], [7, 0x578993], [0, 0x578994], [
 plazaShines = 0
 for plazaShineAddr in plazaShineAddrs plazaShines = plazaShines + regionBit(plazaShineAddr)
 achievement("[Hoverless] Janitor of the Year", "Collect all 10 Shine Sprites within Delfino Plaza", 25, !inGameState("Loading") && prev(plazaShines) == 9 && measured(plazaShines == 10, when=notBooting() && !inCourse("Title Screen/Credits")))
-achievement("[Hoverless] Slip and Slide", "Collect the Shine Sprite in Super Slide", 3, inGame() && regionBitflip([2, 0x578993]))
-achievement("[Hoverless] Nothing But Pain", "Collect the Shine Sprite in Pachinko Game", 10, inGame() && regionBitflip([1, 0x578993]))
-achievement("[Hoverless] Thank You, Lilly!", "Collect the Shine Sprite in Lily Pad Ride", 5, inGame() && regionBitflip([3, 0x578993]))
-achievement("[Hoverless] F-Zero Sunshine", "Collect the Shine Sprite in Turbo Track", 3, inGame() && regionBitflip([7, 0x578992]))
-achievement("[Hoverless] Scavenger Hunt", "Collect the Shine Sprite in Red Coin Field", 3, inGame() && regionBitflip([4, 0x578993]))
+achievement("[Hoverless] Slip and Slide", "Collect the Shine Sprite in the Super Slide", 3, inGame() && regionBitflip([2, 0x578993]))
+achievement("[Hoverless] Nothing but Pain", "Collect the Shine Sprite in the Pachinko Game", 10, inGame() && regionBitflip([1, 0x578993]))
+achievement("[Hoverless] Thank You, Lilly!", "Collect the Shine Sprite in the Lily Pad Ride", 5, inGame() && regionBitflip([3, 0x578993]))
+achievement("[Hoverless] F-Zero Sunshine", "Collect the Shine Sprite in the Turbo Track", 3, inGame() && regionBitflip([7, 0x578992]))
+achievement("[Hoverless] Scavenger Hunt", "Collect the Shine Sprite in the Red Coin Field", 3, inGame() && regionBitflip([4, 0x578993]))
 
 tradeShineBaseAddrs = [[6, 0x578990], [4, 0x578995]]
 tradeShineCount = [16, 8]
@@ -472,11 +479,11 @@ delfinoPlazaBlueCoins = countRegionBits([1, 0x578997], 19)
 coronaMountainBlueCoins = countRegionBits([4, 0x5789cb], 10)
 allBlueCoins = mainCourseBlueCoins + delfinoPlazaBlueCoins + coronaMountainBlueCoins + regionBit([0, 0x578997])
 achievement("[Hoverless] Inequivalent Exchange", "Trade all 240 Blue Coins for 24 Shine Sprites in the boathouse of Delfino Plaza", 25, !inGameState("Loading") && prev(tradedBlueCoins) < 240 && measured(tradedBlueCoins == 240, when=notBooting() && !inCourse("Title Screen/Credits")))
-achievement("[Hoverless] Easy Way or the Hard Way", "Gather 100 Yellow Coins and collect the Shine Sprite in Delfino Plaza, Red Coin Field, or Delfino Airstrip", 5, inGame() && regionBitflip([3, 0x578995]))
+achievement("[Hoverless] Easy Way or the Hard Way", "Gather 100 coins and collect the Shine Sprite in Delfino Plaza, Red Coin Field, or the Delfino Airstrip", 5, inGame() && regionBitflip([3, 0x578995]))
 achievement("[Hoverless] Surf and Turf", "Collect all 19 Blue Coins in Delfino Plaza", 25, !inGameState("Loading") && prev(delfinoPlazaBlueCoins) == 18 && measured(delfinoPlazaBlueCoins == 19, when=notBooting() && !inCourse("Title Screen/Credits")))
 achievement("[Hoverless] Get Rich or Die Trying", "Collect all 10 Blue Coins in Corona Mountain", 25, !inGameState("Loading") && prev(coronaMountainBlueCoins) == 9 && measured(coronaMountainBlueCoins == 10, when=notBooting() && !inCourse("Title Screen/Credits")))
-achievement("[Hoverless] Red Coin Waterworks", "Collect the Shine Sprite in Delfino Airstrip after visiting Corona Mountain", 3, inGame() && regionBitflip([0, 0x578993]))
-achievement("[Hoverless] Melty Block", "Collect the Blue Coin in Delfino Airstrip after visiting Corona Mountain", 2, inGame() && regionBitflip([0, 0x578997]))
+achievement("[Hoverless] Red Coin Waterworks", "Collect the Shine Sprite in the Delfino Airstrip after visiting Corona Mountain", 3, inGame() && regionBitflip([0, 0x578993]))
+achievement("[Hoverless] Melty Block", "Collect the Blue Coin in the Delfino Airstrip after visiting Corona Mountain", 2, inGame() && regionBitflip([0, 0x578997]))
 achievement("[Hoverless] Shine On!", "Collect all 120 Shine Sprites", 50, !inGameState("Loading") && prev(shines()) < 120 && measured(shines() == 120, when=notBooting() && !inCourse("Title Screen/Credits")) || prev(shines()) < 120 && measured(shines() == 120, when=inCourse("Title Screen/Credits") && inGameState("Cutscene")))
 achievement("[Hoverless] Tanuki Time", "Collect all 240 Blue Coins", 50, !inGameState("Loading") && prev(allBlueCoins) == 239 && measured(allBlueCoins == 240, when=notBooting() && !inCourse("Title Screen/Credits")))
 
@@ -506,5 +513,5 @@ for mainCourseName in mainCourseNames
 	}
 }
 
-for level in range(0, 2) leaderboard("[Hoverless] Box Game " + level + 1 + " Speedrun (IGT)", "Break all the crates in the " + iterations[level] + " formation as fast as possible in Delfino Plaza", inCourse("Delfino Plaza") && boxGame(level) && timerWasActive() && winBoxGame(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
+for level in range(0, 2) leaderboard("[Hoverless] Box Game " + level + 1 + " Speedrun (IGT)", "Break all the crates in the " + iterations[level] + " formation as fast as possible in Delfino Plaza", inCourse("Delfino Plaza") && boxGame(level) && timerWasActive() && winBoxGame(level), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
 leaderboard("[Hoverless] Airstrip Reds Speedrun (IGT)", "Collect all 8 red coins as fast as possible in Delfino Airstrip", inCourse("Delfino Plaza - Delfino Airstrip") && timerWasActive() && allRedCoins(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)

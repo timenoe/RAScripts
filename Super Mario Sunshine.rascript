@@ -217,7 +217,12 @@ courseStateIDs =
 	"Episode 6": 0x05,
 	"Episode 7": 0x06,
 	"Episode 8": 0x07,
+	"pinnaParco0": 0x00,
+	"pinnaParco1": 0x01,
 	"pinnaParco2": 0x02,
+	"pinnaParco3": 0x03,
+	"pinnaParco4": 0x04,
+	"pinnaParco5": 0x05,
 	"pinnaBoss1": 0x01,
 	"delfino0": 0x00,
 	"casino0": 0x00,
@@ -238,6 +243,8 @@ gameStateIDs =
 }
 objectIDs = 
 {
+	"Cataquack": 0x10000015,
+	"Bob-omb": 0x1000001e,
 	"Spring": 0x40000017,
 	"Pole": 0x4000002f,
 	"Silver Fence": 0x40000069,
@@ -332,11 +339,11 @@ shineIDs =
 	"Noki Gold Bird": 0x003b,
 
 	"Pianta 1": 0x003c,
-	"Pianta 2": 0x003d,
+	"Pianta 4": 0x003d,
 	"Pianta 3": 0x003e,
-	"Pianta 4": 0x003f,
+	"Pianta 6": 0x003f,
 	"Pianta 5": 0x0040,
-	"Pianta 6": 0x0041,
+	"Pianta 2": 0x0041,
 	"Pianta 7": 0x0042,
 	"Pianta 8": 0x0043,
 	"Pianta 5 Reds": 0x0044,
@@ -380,11 +387,13 @@ marioStateIDs =
 	"Hang Idle": 0x00200349,
 	"Hang Move": 0x0020054a,
 	"Slide": 0x00800456,
+	"Ride Blooper": 0x00810446,
 	"Wall Kick": 0x02000886,
+	"Jump Blooper": 0x0281089a,
 	"Sleep": 0x0c000203,
 	"Climb Move": 0x30000569,
 	"Climb Idle": 0x38000368,
-	"Throw Object": 0x820008ab,
+	"Throw Object": 0x820008ab
 }
 marioAnimationIDs = 
 {
@@ -432,6 +441,8 @@ enemyAnimationIDs =
 surfaceIDs = 
 {
 	"Sand": 0x05,
+	"Wood": 0x07,
+	"Dirt": 0x08,
 	"Tree Trunk": 0x09,
 	"Metal Platform": 0x0c,
 	"Tree Leaf": 0x0e,
@@ -462,10 +473,10 @@ enemyOffsets =
 	"Chain Chomplet 1" : 0x00000160,
 	"Chain Chomplet 2" : 0x00000164,
 	"Chain Chomplet 3" : 0x00000168,
-	"Chain Chomp": 0x000013d8,
-	"Monty Pinna 2": 0x000034c0,
-	"Gooper Ricco 5": 0x00005dc0,
-	"Petey Bianco 5": 0x0000fbfc
+	// "Chain Chomp": 0x000013d8,
+	// "Monty Pinna 2": 0x000034c0,
+	// "Gooper Ricco 5": 0x00005dc0, 
+	// "Petey Bianco 5": 0x0000fbfc
 }
 
 // #endregion
@@ -477,7 +488,7 @@ plazaOneUps =
 	"dolpic0": [0x280, 0x284, 0x288, 0x3a0],
 	"dolpic1": [0x280, 0x284, 0x288, 0x3a4],
 	"dolpic5": [0x234, 0x238, 0x23c, 0x368],
-	"dolpic6": [0x280, 0x284, 0x288, 0x3b4],
+	"dolpic6": [0x280, 0x284, 0x288, 0x3b8],
 	"dolpic7": [0x280, 0x284, 0x288, 0x3b8],
 	"dolpic8": [0x298, 0x29c, 0x2a0, 0x3d0]
 }
@@ -537,12 +548,12 @@ pinnaBeachOneUps =
 }
 pinnaParkOneUps = 
 {
-	"Episode 1": [0x1bc],
-	"Episode 3": [0x1e4],
-	"Episode 5": [0x1b4],
-	"Episode 6": [0x1b8],
-	"Episode 7": [0x1b4],
-	"Episode 8": [0x204],
+	"pinnaParco0": [0x1bc], // Episode 1
+	"pinnaParco1": [0x1e4], // Episode 3
+	"pinnaParco2": [0x1b4], // Episode 5
+	"pinnaParco3": [0x1b8], // Episode 6
+	"pinnaParco4": [0x1b4], // Episode 7
+	"pinnaParco5": [0x204], // Episode 8
 }
 cannonSecretOneUps = 
 {
@@ -597,7 +608,7 @@ piantaOneUps =
 }
 piantaUniqueOneUp = 
 {
-	"Episode 3": [0x184], // Individual achievement (only appears in Episode 3 on top of a cage)
+	"Episode 3": [0x1a4], // Individual achievement (only appears in Episode 3 on top of a cage)
 }
 villageSecretOneUps = 
 {
@@ -788,7 +799,12 @@ function regionCheck(region)
 	else if (region == "Europe") return ascii_string_equals(3, "P")
 	else if (region == "Japan (Rev 1)") return ascii_string_equals(3, "J")
 }
-
+function gpCamera(region)
+{
+	if (region == "USA/Korea") return dword_be(0x40d0a8) & ptrMask
+	else if (region == "Europe") return dword_be(0x404808) & ptrMask
+	else if (region == "Japan (Rev 1)") return dword_be(0x3ffa38) & ptrMask
+}
 function gpCameraMario(region)
 {
 	if (region == "USA/Korea") return dword_be(0x40d0b0) & ptrMask
@@ -854,6 +870,7 @@ function gpMarioOriginal(region)
 
 // #region Pointer
 
+function statePtr() => dword_be(regionPtr() + 0x20) & ptrMask
 function bitflagPtr() => dword_be(regionPtr() + 0x34) & ptrMask
 function collectedShinePtr() => dword_be(gamePtr() + 0x25c) & ptrMask
 function gamePtr() => dword_be(regionPtr() + 4) & ptrMask
@@ -870,6 +887,12 @@ function holdPtr(region) => dword_be(gpMarioOriginal(region) + 0x6c) & ptrMask
 function platformPtr(region) => dword_be(gpMarioOriginal(region) + 0x2c0) & ptrMask
 function yoshiPtr(region) => dword_be(gpMarioOriginal(region) + 0x3f0) & ptrMask
 
+function enemyPtr(region, enemyName)
+{
+	if (enemyName == "Petey Bianco 5") return dword_be(dword_be(gpCamera(region) + 0x2a0) & ptrMask) & ptrMask
+	else if (enemyName == "Gooper Ricco 5") return dword_be(gpCamera(region) + 0x2a8) & ptrMask
+	else return dword_be(gpPoolManager(region) + enemyOffsets[enemyName]) & ptrMask
+}
 function kingBooPtr(region) => dword_be(gpCurObject(region) + 0x1a0) & ptrMask
 
 // #endregion
@@ -924,6 +947,8 @@ function enterAnyCourseEpisode(courseName, courseStateNames)
 }
 function enterCourse(courseName) => once(inCourse(courseName) && inGameState("Enter"))
 function enterCourseEpisode(courseName, episode) => once(inCourseAndEpisode(courseName, episode) && inGameState("Enter"))
+function enterPlaza() => once(wasInGameState("Loading") && inCourse("Delfino Plaza"))
+function enterUnfloodedPlaza() => once(wasInGameState("Loading") && inCourse("Delfino Plaza") && !inCourseState("dolpic9"))
 function enterSubArea(courseName, subAreaName) => once(wasInGameState("Loading") && inCourse(courseName) && inCourseState(subAreaName))
 function inAnyCourse(courseNames)
 {
@@ -946,8 +971,18 @@ function inGameState(gameStateName) => gameState() == gameStateIDs[gameStateName
 function notBooting() => dword_be(regionPtr() + 0x34) != 0 // bitflagPtr check
 function reachRaceFlag() => regionBit([5, 0x578a6c]) > prev(regionBit([5, 0x578a6c]))
 function spawnAnyShine() => regionBit([0, 0x578a6c]) > prev(regionBit([0, 0x578a6c]))
-function spawnShine(shineName) => spawnAnyShine() && word_be((dword_be(nearbyShinesPtr()) & ptrMask) + 0x136) == shineIDs[shineName]
-function talkToNpc(npcName) => word_be(nearbyNpcPtr() + objectOffsets["Key Code"]) == keyCodes[npcName] && byte(nearbyNpcPtr() + 0xf1) == 0x0a
+function spawnShine(shineName)
+{
+	trigger = always_false()
+	for offset in [0x00, 0x10, 0x20, 0x30]
+	{
+		trigger = trigger || word_be((dword_be(nearbyShinesPtr() + offset) & ptrMask) + 0x136) == shineIDs[shineName]
+	}
+
+	return spawnAnyShine() && __ornext(trigger)
+}
+function talkToNpc() => bit3(statePtr() + 0xe3) > prev(bit3(statePtr() + 0xe3))
+function talkToSpecificNpc(npcName) => talkToNpc() && word_be(nearbyNpcPtr() + objectOffsets["Key Code"]) == keyCodes[npcName]
 function timerActive() => byte(hudPtr() + 0x4a) == 1
 function timerWasActive() => prev(byte(hudPtr() + 0x4a)) == 1
 function warpToCourse(courseName) => inGameState("Warp") && nextCourse() == courseIDs[courseName]
@@ -962,11 +997,14 @@ function watchingCutscene(cutsceneName) => cutscene() == cutsceneIDs[cutsceneNam
 
 function endBeachCleaning() => prev(word_be(scriptPtr() + 0x372)) == 0x1c3 && word_be(scriptPtr() + 0x372) == 0x2cd
 function finishBlooperRace() => prev(word_be(scriptPtr() + 0x372)) == 0x38a && word_be(scriptPtr() + 0x372) == 0x46e
-function winBoxGame()
+function winBoxGame(formation)
 {
-	return __ornext(inAnyCourseState(["dolpic6", "dolpic7", "dolpic10"])) && prev(word_be(scriptPtr() + 0xf2e)) == 0x470 && word_be(scriptPtr() + 0xf2e) == 0x32f || 
-					inCourseState("dolpic8") && prev(word_be(scriptPtr() + 0x124a)) == 0x470 && word_be(scriptPtr() + 0x124a) == 0x32f || 
-					inCourseState("dolpic5") && prev(word_be(scriptPtr() + 0x1566)) == 0x470 && word_be(scriptPtr() + 0x1566) == 0x32f
+	if (formation == 0) preScript = 0x48d
+	else preScript = 0x470
+
+	return __ornext(inAnyCourseState(["dolpic6", "dolpic7", "dolpic10"])) && prev(word_be(scriptPtr() + 0xf2e)) == preScript && word_be(scriptPtr() + 0xf2e) == 0x32f || 
+					inCourseState("dolpic8") && prev(word_be(scriptPtr() + 0x124a)) == preScript && word_be(scriptPtr() + 0x124a) == 0x32f || 
+					inCourseState("dolpic5") && prev(word_be(scriptPtr() + 0x1566)) == preScript && word_be(scriptPtr() + 0x1566) == 0x32f
 }
 function winFirstMonteRace(courseName)
 {
@@ -996,6 +1034,7 @@ function climbObject(region, objectName) => dword_be(climbPtr(region) + objectOf
 function grabAnything(region) => dword_be(gpMarioOriginal(region) + 0x384) != 0
 function grounded(region) => yCoordinate(region) == float_be(gpMarioOriginal(region) + 0xec)
 function hasFludd(region) => bit7(gpMarioOriginal(region) + 0x11a) == 1
+function hasWater(region) => dword_be(fluddPtr(region) + 0x1c80) != 0
 function holdAnything(region) => dword_be(gpMarioOriginal(region) + 0x6c) != 0
 function holdFruit(region) => fluddState(region) == 2
 function holdObject(region, objectName) => dword_be(holdPtr(region) + objectOffsets["ID"]) == objectIDs[objectName]
@@ -1063,32 +1102,33 @@ function wasUsingFludd(region) => prev(fluddState(region)) == 0
 // #region Enemy
 
 function defeatEnemy(region, enemyName) => prev(enemyHealth(region, enemyName)) > 0 && enemyHealth(region, enemyName) == 0
-function enemyDistance(region, enemyName) => float_be((dword_be(gpPoolManager(region) + enemyOffsets[enemyName]) & ptrMask) + 0x134)
-function enemyHealth(region, enemyName) => byte((dword_be(gpPoolManager(region) + enemyOffsets[enemyName]) & ptrMask) + 0x13c)
-function enemyHits(region, enemyName) => byte((dword_be(gpPoolManager(region) + enemyOffsets[enemyName]) & ptrMask) + 0x153)
-function enemyInAnimation(region, enemyName, animationName) => byte((dword_be((dword_be(gpPoolManager(region) + enemyOffsets[enemyName]) & ptrMask) + 0x74) & ptrMask) + 0x63) == enemyAnimationIDs[enemyName][animationName]
-function enemyStatus(region, enemyName) => (dword_be(gpPoolManager(region) + enemyOffsets[enemyName]) & ptrMask) + 0xf3
-function enemyXSpeed(region, enemyName) => float_be((dword_be(gpPoolManager(region) + enemyOffsets[enemyName]) & ptrMask) + 0xac)
-function enemyZCoordinate(region, enemyName) => float_be((dword_be(gpPoolManager(region) + enemyOffsets[enemyName]) & ptrMask) + 0x18)
-function enemyZSpeed(region, enemyName) => float_be((dword_be(gpPoolManager(region) + enemyOffsets[enemyName]) & ptrMask) + 0xb4)
+function enemyDistance(region, enemyName) => float_be((enemyPtr(region, enemyName)) + 0x134)
+function enemyHealth(region, enemyName) => byte((enemyPtr(region, enemyName)) + 0x13c)
+function enemyHits(region, enemyName) => byte((enemyPtr(region, enemyName)) + 0x153)
+function enemyInAnimation(region, enemyName, animationName) => byte((dword_be((enemyPtr(region, enemyName)) + 0x74) & ptrMask) + 0x63) == enemyAnimationIDs[enemyName][animationName]
+function enemyStatus(region, enemyName) => (enemyPtr(region, enemyName)) + 0xf3
+function enemyXSpeed(region, enemyName) => float_be((enemyPtr(region, enemyName)) + 0xac)
+function enemyZCoordinate(region, enemyName) => float_be((enemyPtr(region, enemyName)) + 0x18)
+function enemyZSpeed(region, enemyName) => float_be((enemyPtr(region, enemyName)) + 0xb4)
 
 // #endregion
 
 // #region Bird
 
 function birdHealth(region, birdOffset) => byte((dword_be(gpEffectObjManager(region) + birdOffset) & ptrMask) + 0x13c)
-function defeatAllBirds(birdOffsets)
+function birdIsGreen(region, birdOffset) => dword_be((dword_be(gpEffectObjManager(region) + birdOffset) & ptrMask) + 0x180) == 1
+function defeatGreenBird(region, birdOffset) => birdIsGreen(region, birdOffset) && prev(birdHealth(region, birdOffset)) > 0 && birdHealth(region, birdOffset) == 0
+function defeatAllGreenBirds(startOffset, totalBirdCount, greenBirdCount)
 {
 	trigger = always_false()
 	for region in regions
 	{
 		birdsDefeated = []
-		for birdOffset in birdOffsets array_push(birdsDefeated, once(defeatBird(region, birdOffset)))
-		trigger = trigger || measured(tally(length(birdsDefeated), birdsDefeated), when=regionCheck(region))
+		for birdOffset in range(startOffset, startOffset + 4 * (totalBirdCount - 1), 4) array_push(birdsDefeated, once(defeatGreenBird(region, birdOffset)))
+		trigger = trigger || measured(tally(greenBirdCount, birdsDefeated), when=regionCheck(region))
 	}
 	return trigger
 }
-function defeatBird(region, birdOffset) => prev(birdHealth(region, birdOffset)) > 0 && birdHealth(region, birdOffset) == 0
 
 // #endregion
 
@@ -1115,6 +1155,15 @@ function collectOneUps(region, oneUpOffsets)
 	return sum_of(collectedOneUps, s => s)
 }
 function oneUpCollectState(region, oneUpOffset) => byte((dword_be(gpItemManager(region) + oneUpOffset) & ptrMask) + 0x13a)
+function oneUpMovementCheck(region, oneUpOffset, movementType)
+{
+	// 0xd0 is stationary and in view, 0x40 is repel and in view, 0xc0 is attract and in view
+	if (movementType == "Stationary") val = 0xd
+	else if (movementType == "Repel") val = 0x4
+	else if (movementType == "Attract") val = 0xc
+
+	return  prev(high4((dword_be(gpItemManager(region) + oneUpOffset) & ptrMask) + 0xf3)) == val
+}
 
 // Check for matching offset entries in the dictionary for different course states and optimize checks accordingly
 function collectAllOneUps(oneUpOffsets, courseName)
@@ -1166,7 +1215,7 @@ function collectAllOneUps(oneUpOffsets, courseName)
 }
 
 // Check for matching offset entries in the dictionary for different course states and optimize checks accordingly
-function collectAnyHiddenOneUps(oneUpOffsets)
+function collectAnyHiddenOneUps(oneUpOffsets, movementType)
 {
 	trigger = always_false()
 	for courseName in oneUpOffsets
@@ -1203,7 +1252,7 @@ function collectAnyHiddenOneUps(oneUpOffsets)
 					if (courseStateName == "N/A") courseStateCheck = always_true()
 					else courseStateCheck = inAnyCourseState(courseStates)
 					
-					for oneUpOffset in oneUpOffsets[courseName][courseStateName] trigger = trigger || regionCheck(region) && inCourse(courseName) && courseStateCheck && collectHiddenOneUp(region, oneUpOffset)
+					for oneUpOffset in oneUpOffsets[courseName][courseStateName] trigger = trigger || regionCheck(region) && inCourse(courseName) && courseStateCheck && oneUpMovementCheck(region, oneUpOffset, movementType) && collectHiddenOneUp(region, oneUpOffset)
 				}
 			}
 		}
@@ -1255,7 +1304,26 @@ plazaDurians =
 
 function boatNotMoving() => inAnyCourseState(["dolpic0", "dolpic1", "dolpic5"])
 function boxGame(formation) => countRegionBits([6, 0x578993], 2) == formation
-function earlyCourseChallenge(requirement, courseName) => inCourse("Delfino Plaza") && wasInGameState("Active") && requirement && trigger_when(warpToCourse(courseName))
+function earlyCourseChallenge(course)
+{
+	plazaCheck = enterUnfloodedPlaza()
+	if (course == "Pianta Village")
+	{
+		plazaCheck = enterPlaza() && prevCourse() != courseIDs["Pianta Village"] && prevCourse() != courseIDs["Pianta Village - Secret of the Village Underside"]
+	}
+	
+	trigger = always_false()
+	for region in regions
+	{
+		extraRequirement = always_false()
+		if (course == "Delfino Plaza - Pachinko Game")
+		{
+			extraRequirement = touchPlatform(region, "Delfino Boat")
+		}
+		trigger = trigger || unless(!regionCheck(region)) && never(useAnyNozzle(region, ["Rocket", "Turbo"]) || rideYoshi(region) || extraRequirement)
+	}
+	return trigger && never(inGameState("Loading")) && plazaCheck && wasInGameState("Active") && trigger_when(warpToCourse(course))
+}
 function yoshiBefriended() => regionBit([7, 0x5789f9]) == 1
 function plazaRocketNozzleUnlocked() => regionBit([6, 0x5789f4]) == 1
 
@@ -1321,7 +1389,7 @@ function durianChallenge()
 					}
 					
 					durianPtr = dword_be(gpItemManager(region) + durianOffset) & ptrMask
-					durianGrounded = float_be(durianPtr + objectOffsets["y Coordinate"]) == float_be(durianPtr + 0xc8)
+					durianGrounded = float_be(durianPtr + objectOffsets["y Coordinate"]) - float_be(durianPtr + 0xc8) <= 5.0
 					hitDurian = immobilityTimer(region) != 0
 					durianBounce = float_be(durianPtr + 0x98) > prev(float_be(durianPtr + 0x98))
 					trigger = trigger || unless(!regionCheck(region) || !inAnyCourseState(plazaStates)) && measured(tally(10, never(durianGrounded) && !grounded(region) && hitDurian && durianBounce))
@@ -1353,8 +1421,15 @@ function pineappleChallenge()
 
 // #endregion
 
-function defeatPlazaBirds() => never(!inCourse("Delfino Plaza") || !inAnyCourseState(["dolpic9", "dolpic10"]) || inGameState("Loading")) && defeatAllBirds(plazaGreenBirds)
-function eastBellChallenge() => inCourse("Delfino Plaza") && inGameState("Active") && yoshiBefriended() && !plazaRocketNozzleUnlocked() && prev(regionBit([1, 0x578994])) == 0 && trigger_when(regionBit([1, 0x578994]) == 1)
+//function defeatPlazaBirds() => never(!inCourse("Delfino Plaza") || !inAnyCourseState(["dolpic9", "dolpic10"]) || inGameState("Loading")) && defeatAllGreenBirds(plazaGreenBirds)
+function defeatPlazaBirds() => never(!inCourse("Delfino Plaza") || !inAnyCourseState(["dolpic9", "dolpic10"]) || inGameState("Loading")) && defeatAllGreenBirds(0x00005758, 20, 17)
+function eastBellChallenge()
+{
+	
+	trigger = always_false()
+	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(useAnyNozzle(region, ["Rocket", "Hover"]))
+	return trigger && never(inGameState("Loading")) && enterPlaza() && inGameState("Active") && prev(regionBit([1, 0x578994])) == 0 && trigger_when(regionBit([1, 0x578994]) == 1)
+}
 function goldBirdChallenge()
 {
 	trigger = always_false()
@@ -1380,7 +1455,13 @@ function turboTrackChallenge()
 	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(useAnyNozzle(region, ["Rocket", "Turbo"]))
 	return trigger && never(inGameState("Loading")) && enterCourse("Delfino Plaza - Turbo Track") && inGameState("Active") && trigger_when(collectShine("Turbo Track"))
 }
-function westBellChallenge() => inCourse("Delfino Plaza") && inGameState("Active") && !yoshiBefriended() && prev(regionBit([0, 0x578994])) == 0 && trigger_when(regionBit([0, 0x578994]) == 1)
+function westBellChallenge()
+{
+	
+	trigger = always_false()
+	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(useAnyNozzle(region, ["Rocket", "Hover", "Turbo"]) || rideYoshi(region))
+	return trigger && never(inGameState("Loading")) && enterPlaza() && inGameState("Active") && prev(regionBit([0, 0x578994])) == 0 && trigger_when(regionBit([0, 0x578994]) == 1)
+}
 
 // #endregion
 
@@ -1431,7 +1512,7 @@ function bianco6Challenge2()
 function dirtyPiantaChallenge()
 {
 	npcEncounters = []
-	for courseStateName in ["Episode 3", "Episode 4", "Episode 5", "Episode 6", "Episode 7", "Episode 8"] array_push(npcEncounters, once(inCourseState(courseStateName) && talkToNpc("Dirty Bianco Pianta")))
+	for courseStateName in ["Episode 3", "Episode 4", "Episode 5", "Episode 6", "Episode 7", "Episode 8"] array_push(npcEncounters, once(inCourseState(courseStateName) && talkToSpecificNpc("Dirty Bianco Pianta")))
 	
 	return unless(!inCourse("Bianco Hills")) && measured(tally(6, npcEncounters))
 }
@@ -1460,8 +1541,8 @@ function collectDuckRingRiderOneUp()
 function ricco2Challenge()
 {
 	trigger = always_false()
-	for region in regions trigger = trigger || regionCheck(region) && rideBlooper(region, "Purple")
-	return trigger && inCourse("Ricco Harbor - Blooper Surfing Safari") && inGameState("Active") && trigger_when(spawnAnyShine())
+	for region in regions trigger = trigger || regionCheck(region) && rideBlooper(region, "Purple") && once(inState(region, "Ride Blooper"))
+	return trigger && never(inGameState("Loading")) && inCourse("Ricco Harbor - Blooper Surfing Safari") && inGameState("Active") && trigger_when(spawnAnyShine())
 }
 function ricco3Challenge()
 {
@@ -1478,7 +1559,7 @@ function ricco4Challenge1()
 function ricco4Challenge2()
 {
 	trigger = always_false()
-	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(!wasUsingFludd(region)) && once(xCoordinate(region) < startingAreaXThreshold && useNozzle(region, "Turbo")) && trigger_when(inState(region, "Collect Shine"))
+	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(!wasUsingFludd(region) || !hasWater(region)) && once(xCoordinate(region) < startingAreaXThreshold && useNozzle(region, "Turbo")) && trigger_when(inState(region, "Collect Shine"))
 	return trigger && never(inGameState("Loading")) && inCourse("Ricco Harbor - The Secret of Ricco Tower") && inGameState("Active") 
 }
 function ricco5Challenge()
@@ -1507,8 +1588,9 @@ function rallyCataquacks(region)
 	cataquacks = []
 	for cataquackOffset in range(0x140, 0x140+4*26, 4)
 	{
+		isCataquack = dword_be((dword_be(gpPoolManager(region) + cataquackOffset) & ptrMask) + objectOffsets["ID"]) == objectIDs["Cataquack"]
 		cataquackState = byte((dword_be(gpPoolManager(region) + cataquackOffset) & ptrMask) + 0x15f)
-		array_push(cataquacks, once(never(cataquackState != 0) && cataquackState == 0))
+		array_push(cataquacks, once(never(!isCataquack || cataquackState != 0) && cataquackState == 0))
 	}
 	return measured(tally(10, cataquacks))
 }
@@ -1518,8 +1600,9 @@ function sinkCataquacks(region)
 	cataquacks = []
 	for cataquackOffset in range(0x140, 0x140+4*26, 4)
 	{
+		isCataquack = dword_be((dword_be(gpPoolManager(region) + cataquackOffset) & ptrMask) + objectOffsets["ID"]) == objectIDs["Cataquack"]
 		cataquackState = byte((dword_be(gpPoolManager(region) + cataquackOffset) & ptrMask) + 0x15f)
-		array_push(cataquacks, once(never(cataquackState != 3 && cataquackState != 4) && cataquackState == 3 || cataquackState == 4))
+		array_push(cataquacks, once(never(!isCataquack || cataquackState != 3 && cataquackState != 4) && cataquackState == 3 || cataquackState == 4))
 	}
 	return measured(tally(15, cataquacks))
 }
@@ -1538,7 +1621,7 @@ function gelato5Challenge()
 {
 	trigger = always_false()
 	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(touchSurface(region, "Grass") || useFludd(region))
-	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Gelato Beach", 5) && inGameState("Active") && timerWasActive() && trigger_when(winFirstMonteRace("Gelato Beach"))
+	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Gelato Beach", 5) && inGameState("Active") && trigger_when(winFirstMonteRace("Gelato Beach"))
 }
 function gelato8Challenge1()
 {
@@ -1577,14 +1660,14 @@ function pinna1Challenge()
 function pinna2Challenge()
 {
 	trigger = always_false()
-	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(defeatEnemy(region, "Monty Pinna 2"))
+	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(holdObject(region, "Bob-omb"))
 	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Pinna Park - Beach", 2) && wasInGameState("Active") && trigger_when(warpToCourse("Pinna Park - The Beach Cannon's Secret"))
 }
 function pinna5Challenge()
 {
 	trigger = always_false()
 	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(inAnyAnimation(region, ["Grab Fence (From Ground)", "Grab Fence (From Air)"]))
-	return trigger && never(inGameState("Loading")) && enterSubArea("Pinna Park - Park", "pinnaParco2") && inGameState("Active") && trigger_when(collectShine("Pinna 3"))
+	return trigger && never(inGameState("Loading")) && enterSubArea("Pinna Park - Park", "pinnaParco2") && inGameState("Active") && trigger_when(collectShine("Pinna 5"))
 }
 
 // #endregion
@@ -1624,7 +1707,7 @@ function sirena6Challenge()
 {
 	trigger = always_false()
 	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(refillFludd(region))
-	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Sirena Beach - Beach", 6) && inGameState("Active") && timer() >= 6000 && timerWasActive() && trigger_when(endBeachCleaning())
+	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Sirena Beach - Beach", 6) && inGameState("Active") && timer() >= 6000 && trigger_when(endBeachCleaning())
 }
 
 // #endregion
@@ -1663,7 +1746,7 @@ function noki5Challenge()
 {
 	trigger = always_false()
 	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(swim(region) || useNozzle(region, "Hover"))
-	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Noki Bay", 5) && inGameState("Active") && timerWasActive() && trigger_when(winFirstMonteRace("Noki Bay"))
+	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Noki Bay", 5) && inGameState("Active") && trigger_when(winFirstMonteRace("Noki Bay"))
 }
 function noki6Challenge1()
 {
@@ -1686,9 +1769,11 @@ function noki6Challenge2()
 
 // #region Helper
 
-firstPiantaZBoundary = 10025.0
-villageUndersideYBoundary = -1000.0
 bridgeZBoundary = 11550.0
+firstPiantaZBoundary = 10025.0
+villageUndersideYBoundary = -1100.0
+shinePlatformYBoundary = 9500.0
+spaZBoundary = -5500.0
 
 function allPiantasRescued() => prev(piantasRescued()) == 9 && piantasRescued() == 10
 function piantaDay() => inCourse("Pianta Village") && inAnyCourseState(["Episode 2", "Episode 4", "Episode 6", "Episode 8"])
@@ -1702,8 +1787,8 @@ function stunChainChomplet(region)
 	}
 	return __ornext(trigger)
 }
-function chainChompRoaming(region) => bit4(enemyStatus(region, "Chain Chomp")) == 0
-function chainChompDive(region) => bit7(enemyStatus(region, "Chain Chomp")) > prev(bit7(enemyStatus(region, "Chain Chomp")))
+// function chainChompRoaming(region) => bit4(enemyStatus(region, "Chain Chomp")) == 0
+// function chainChompDive(region) => bit7(enemyStatus(region, "Chain Chomp")) > prev(bit7(enemyStatus(region, "Chain Chomp")))
 function enrageAnyNpc()
 {
 	enragedNpcs = always_false()
@@ -1718,7 +1803,7 @@ function enrageAnyNpc()
 function piantaDiveChallenge()
 {
 	trigger = always_false()
-	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(grounded(region) || repeated(3, !inAnimation(region, "Slide"))) && once(wasGrounded(region)) && prev(exactLastGroundedYCoordinate(region)) == 0x4618bc94 && trigger_when(lastGroundedYCoordinate(region) == 450.0)
+	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(touchAnyOtherSurface(region, ["Wood"]) || useFludd(region)) && once(yCoordinate(region) >= shinePlatformYBoundary && touchSurface(region, "Wood")) && trigger_when(zCoordinate(region) <= spaZBoundary && swim(region))
 	return trigger && piantaDay()
 }
 function pianta1Challenge()
@@ -1731,26 +1816,26 @@ function pianta2Challenge()
 {
 	trigger = always_false()
 	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(zCoordinate(region) < firstPiantaZBoundary && touchAnyOtherSurface(region, ["Tree Trunk"]))
-	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Pianta Village", 2) && inGameState("Active") && timerWasActive() && trigger_when(reachRaceFlag())
+	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Pianta Village", 2) && inGameState("Active") && trigger_when(reachRaceFlag())
 }
 function pianta3Challenge()
 {
 	trigger = always_false()
-	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(yCoordinate(region) < villageUndersideYBoundary && grounded(region))
+	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(yCoordinate(region) < villageUndersideYBoundary && grounded(region) || takeDamage(region))
 	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Pianta Village", 3) && inGameState("Active") && trigger_when(collectShine("Pianta 3"))
 }
 function pianta4Challenge()
 {
 	trigger = always_false()
-	for region in regions trigger = trigger || regionCheck(region) && zCoordinate(region) > enemyZCoordinate(region, "Chain Chomp") && chainChompRoaming(region) && trigger_when(chainChompDive(region))
-	return trigger && inCourseAndEpisode("Pianta Village", 4) && inGameState("Active")
+	for region in regions trigger = trigger || regionCheck(region) && touchSurface(region, "Dirt")
+	return trigger && inCourseAndEpisode("Pianta Village", 4) && inGameState("Active") && trigger_when(spawnAnyShine())
 }
 function pianta5Challenge() => never(inGameState("Loading") || enrageAnyNpc()) && enterCourse("Pianta Village - Secret of the Village Underside") && trigger_when(collectShine("Pianta 5"))
 function pianta6Challenge()
 {
 	trigger = always_false()
 	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(zCoordinate(region) < bridgeZBoundary && touchAnyOtherSurface(region, ["Tree Leaf", "Rope/Rigid Tree Leaf", "Mushroom"]))
-	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Pianta Village", 6) && inGameState("Active") && timerWasActive() && trigger_when(allPiantasRescued())
+	return trigger && never(inGameState("Loading")) && enterCourseEpisode("Pianta Village", 6) && inGameState("Active") && trigger_when(allPiantasRescued())
 }
 
 // #endregion
@@ -1764,13 +1849,13 @@ function pianta6Challenge()
 function flatSurfaceSlide()
 {
 	trigger = always_false()
-	for region in regions trigger = trigger || regionCheck(region) && inState(region, "Slide") && onFlatSurface(region) && horizontalVelocity(region) >= 100.0
+	for region in regions trigger = trigger || unless(!regionCheck(region)) && never(!inState(region, "Slide")) && repeated(60, onFlatSurface(region) && horizontalVelocity(region) >= 100.0)
 	return trigger && inGameState("Active")
 }
 function refillFluddSlide()
 {
 	trigger = always_false()
-	for region in regions trigger = trigger || regionCheck(region) && prev(dword_be(fluddPtr(region) + 0x1c80)) == 0 && inState(region, "Slide") && dword_be(fluddPtr(region) + 0x1c80) != 0
+	for region in regions trigger = trigger || regionCheck(region) && prev(!hasWater(region)) && inState(region, "Slide") && hasWater(region)
 	return trigger && inGameState("Active")
 }
 function yoshiChuckster()
@@ -1841,6 +1926,10 @@ for mainCourseName in mainCourseNames
 	
 	blueCoins = countRegionBits(mainCourseBlueCoinsAddr, 30)
 	mainCourseBlueCoins = mainCourseBlueCoins + blueCoins
+
+	if (mainCourseName == "Noki Bay") mainCourseName = "Pianta Village"
+	else if (mainCourseName == "Pianta Village") mainCourseName = "Noki Bay"
+
 	achievement(mainCourseBlueCoinsTitle[mainCourseName], "Collect all 30 Blue Coins in " + mainCourseName, 25, !inGameState("Loading") && prev(blueCoins) == 29 && measured(blueCoins == 30, when=notBooting() && !inCourse("Title Screen/Credits")))
 	for i in range(1, 50) mainCourseBlueCoinsAddr = nextBit(mainCourseBlueCoinsAddr)
 }
@@ -1886,7 +1975,7 @@ for bitBlock in range(0, length(tradeShineBaseAddrs) - 1)
 delfinoPlazaBlueCoins = countRegionBits([1, 0x578997], 19)
 coronaMountainBlueCoins = countRegionBits([4, 0x5789cb], 10)
 allBlueCoins = mainCourseBlueCoins + delfinoPlazaBlueCoins + coronaMountainBlueCoins + regionBit([0, 0x578997])
-achievement("Inequivalent Exchange", "Trade all 240 Blue Coins for 24 Shine Sprites in the boathouse of Delfino Plaza", 25, !inGameState("Loading") && prev(tradedBlueCoins) < 240 && measured(tradedBlueCoins == 240, when=notBooting() && !inCourse("Title Screen/Credits")))
+achievement("Inequivalent Exchange", "Trade all 240 Blue Coins for 24 Shine Sprites in the boathouse of Delfino Plaza", 10, !inGameState("Loading") && prev(tradedBlueCoins) < 240 && measured(tradedBlueCoins == 240, when=notBooting() && !inCourse("Title Screen/Credits")))
 achievement("Easy Way or the Hard Way", "Gather 100 coins and collect the Shine Sprite in Delfino Plaza, the Red Coin Field, or the Delfino Airstrip", 5, inGame() && regionBitflip([3, 0x578995]))
 achievement("Surf and Turf", "Collect all 19 Blue Coins in Delfino Plaza", 25, !inGameState("Loading") && prev(delfinoPlazaBlueCoins) == 18 && measured(delfinoPlazaBlueCoins == 19, when=notBooting() && !inCourse("Title Screen/Credits")))
 achievement("Get Rich or Die Trying", "Collect all 10 Blue Coins in Corona Mountain", 10, !inGameState("Loading") && prev(coronaMountainBlueCoins) == 9 && measured(coronaMountainBlueCoins == 10, when=notBooting() && !inCourse("Title Screen/Credits")))
@@ -1920,16 +2009,16 @@ achievement("Lily Pad Pilot", "Collect the 1-Up in the Lily Pad Ride", 3, collec
 achievement("Chasing the Bag", "Defeat all 17 Green Birds in Delfino Plaza during the flood or after visiting Corona Mountain in one visit", 5, defeatPlazaBirds())
 
 achievement("Get Dunked On!", "Throw a coconut into the orange Pianta's basket during a terminal velocity Ground Pound in Delfino Plaza", 5, coconutChallenge())
-achievement("Half-Court Contest", "Throw a pineapple into the yellow Pianta's basket from behind the third line in Delfino Plaza", 10, pineappleChallenge(), id=396838)
+achievement("Half-Court Contest", "Throw a pineapple into the yellow Pianta's basket from behind the third line in Delfino Plaza", 10, pineappleChallenge())
 achievement("Putting on a Show", "Juggle a durian 10 times by jumping in Delfino Plaza", 10, durianChallenge())
 achievement("Backflip Bananza", "Throw bananas into the purple Pianta's basket while backflipping off the roof in Delfino Plaza", 5, bananaChallenge())
 
 achievement("Pianta Paradox", "Obtain a Blue Coin from the Pianta with mushrooms on his back on your first visit to Delfino Plaza", 10, mushroomPiantaChallenge(), type="missable")
-achievement("You Have to Improvise", "Enter Pachinko Game from Delfino Plaza before the boat's in service", 10, earlyCourseChallenge(boatNotMoving(), "Delfino Plaza - Pachinko Game"), type="missable")
-achievement("Back to Basics", "Enter Pianta Village from Delfino Plaza before befriending Yoshi", 5, earlyCourseChallenge(!yoshiBefriended(), "Pianta Village"), type="missable")
-achievement("Leap Across the Leaves", "Enter the Red Coin Field from Delfino Plaza before befriending Yoshi", 5, earlyCourseChallenge(!yoshiBefriended(), "Delfino Plaza - Red Coin Field"), type="missable")
-achievement("Peak 2 Peak", "Collect the West Bell Shine Sprite before befriending Yoshi", 5, westBellChallenge(), type="missable")
-achievement("I'll Help You Carry On", "Collect the East Bell Shine Sprite with the help of Yoshi before unlocking the Rocket Nozzle in Delfino Plaza", 10, eastBellChallenge(), type="missable")
+achievement("You Have to Improvise", "Enter Pachinko Game from an unflooded Delfino Plaza using only the Hover Nozzle", 10, earlyCourseChallenge("Delfino Plaza - Pachinko Game"))
+achievement("Back to Basics", "Enter Pianta Village from Delfino Plaza using only the Hover Nozzle", 5, earlyCourseChallenge("Pianta Village"))
+achievement("Leap Across the Leaves", "Enter the Red Coin Field from an unflooded Delfino Plaza using only the Hover Nozzle", 5, earlyCourseChallenge("Delfino Plaza - Red Coin Field"))
+achievement("Peak to Peak", "Collect the West Bell Shine Sprite in Delfino Plaza using only the Spray Nozzle", 5, westBellChallenge(), type="missable")
+achievement("I'll Help You Carry On", "Collect the East Bell Shine Sprite in Delfino Plaza using only Yoshi", 10, eastBellChallenge(), type="missable")
 
 achievement("We Still Got It", "Collect the 100-coin Shine Sprite while riding Yoshi in an unflooded Delfino Plaza without using the boats", 10, plazaOneHundredChallenge())
 achievement("Who Needs a Hover Nozzle?", "Collect the Golden Bird Shine Sprite in an unflooded Delfino Plaza using only the Turbo Nozzle", 5, goldBirdChallenge())
@@ -1944,13 +2033,13 @@ achievement("The Butterflies and the Bees", "Collect all 3 1-Ups in Episode 8 of
 achievement("Nine Inch Nails", "Collect both 1-Ups in The Hillside Cave Secret in one visit", 5, collectAllOneUps(oneUps, "Bianco Hills - The Hillside Cave Secret"))
 achievement("Shoot For the Stars", "Collect both 1-Ups in The Secret of the Dirty Lake in one visit", 5, collectAllOneUps(oneUps, "Bianco Hills - The Secret of the Dirty Lake"))
 
-achievement("Traveling Shower Service", "Clean and talk to the dirty Pianta that rewards a Blue Coin in all 6 episodes that he appears in Bianco Hills in one session", 5, dirtyPiantaChallenge())
+achievement("Traveling Shower Service", "Clean and talk to the Pianta with a brown hat that rewards a Blue Coin in all 6 episodes that he appears in Bianco Hills in one session", 5, dirtyPiantaChallenge())
 
 achievement("Whuzzah!? Whozat?!", "Complete Episode 2 in Episode 1 of Bianco Hills", 5, bianco1Challenge())
-achievement("Spin Cycle", "Initiate the fight with Petey Piranha in Episode 1 or 2 of Bianco Hills without using the windmill platforms or the Hover Nozzle", 10, bianco2Challenge())
+achievement("Spin Cycle", "Initiate the fight with Petey Piranha in Episode 1 or 2 of Bianco Hills without using the windmill platforms or the Hover Nozzle", 25, bianco2Challenge())
 achievement("Cube Shuffle", "Collect the normal Shine Sprite in The Hillside Cave Secret without jumping or using F.L.U.D.D.", 5, bianco3Challenge())
-achievement("Slumber Party", "Fall asleep next to Petey Piranha while he's sleeping in Episode 5 of Bianco Hills", 5, bianco5Challenge())
-achievement("Dive Bomb", "Enter The Secret of the Dirty Lake in Episode 6 of Bianco Hills without swimming or using F.L.U.D.D.", 10, bianco6Challenge1())
+achievement("Slumber Party", "Fall asleep with Petey Piranha in Episode 5 of Bianco Hills", 5, bianco5Challenge())
+achievement("Dry-Clean", "Enter The Secret of the Dirty Lake in Episode 6 of Bianco Hills without swimming or using F.L.U.D.D.", 10, bianco6Challenge1())
 achievement("Up, Up and Away", "Collect the normal Shine Sprite in The Secret of the Dirty Lake without touching any moving platforms for more than 1 second or using the Rocket Storage glitch", 10, bianco6Challenge2())
 
 // #endregion
@@ -1964,7 +2053,7 @@ achievement("Wall-Kick Sandwich", "Collect both 1-Ups in The Secret of Ricco Tow
 achievement("Tame the Beast", "Earn the Shine Sprite in Blooper Surfing Safari while riding the purple Blooper Racer", 5, ricco2Challenge())
 achievement("Started from the Bottom", "Complete Episode 3 of Ricco Harbor without using the metal scaffolding or the Rocket Nozzle", 5, ricco3Challenge())
 achievement("Any Way the Wind Blows", "Enter The Secret of Ricco Tower in Episode 4 of Ricco Harbor without using F.L.U.D.D.", 5, ricco4Challenge1())
-achievement("Trial of the Particular Mushroom", "Collect the normal Shine Sprite in The Secret of Ricco Tower without letting go of the Turbo Nozzle past the starting area", 25, ricco4Challenge2())
+achievement("Trial of the Particular Mushroom", "Collect the normal Shine Sprite in The Secret of Ricco Tower without letting go of the Turbo Nozzle or running out of water past the starting area", 25, ricco4Challenge2())
 achievement("Humane Treatment", "Defeat Gooper Blooper in Episode 5 of Ricco Harbor without ripping off any of his tentacles", 5, ricco5Challenge())
 achievement("The Power of Juice", "Complete Episode 8 of Ricco Harbor without stepping on any grass or metal platforms while riding Yoshi or using the Rocket Nozzle", 10, ricco8Challenge())
 
@@ -1991,8 +2080,8 @@ achievement("Look Out Below", "Collect both 1-Ups in The Beach Cannon's Secret i
 achievement("Under the Arch", "Collect all 3 1-Ups in The Yoshi-Go-Round's Secret in one visit", 5, collectAllOneUps(oneUps, "Pinna Park - The Yoshi-Go-Round's Secret"))
 
 achievement("Star Attraction", "Defeat Mecha-Bowser in Episode 1 of Pinna Park within one lap of the Roller Coaster", 5, pinna1Challenge())
-achievement("Nice Place You Got Here", "Enter The Beach Cannon's Secret in Episode 2 of Pinna Park without defeating Monty Mole", 10, pinna2Challenge())
-achievement("Power Nap", "Complete Episode 5 of Pinna Park without climbing on any fences", 5, pinna5Challenge())
+achievement("Nice Place You Got Here", "Enter The Beach Cannon's Secret in Episode 2 of Pinna Park without picking up a Bob-omb", 10, pinna2Challenge())
+achievement("Power Nap", "Complete Episode 5 of Pinna Park without climbing on any vertical fences", 5, pinna5Challenge())
 
 // #endregion
 
@@ -2033,10 +2122,10 @@ achievement("Rush to Relaxation", "Dive into the hot spring directly from the Sh
 
 achievement("Remember, Always Be Kind to Your Pets!", "Complete Episode 1 of Pianta Village without stunning any Chain Chomplets", 5, pianta1Challenge())
 achievement("Pianta-line", "Reach the flagpole in Episode 2 of Pianta Village while only touching tree trunks past the first Pianta", 25, pianta2Challenge())
-achievement("Improvise, Adapt, Overcome", "Complete Episode 3 of Pianta Village without going under the village", 5, pianta3Challenge())
-achievement("Chain Chomp Whisperer", "Have the Chain Chomp jump into the spa in Episode 4 of Pianta Village without pulling it directly into the spa", 10, pianta4Challenge())
+achievement("Improvise, Adapt, Overcome", "Complete Episode 3 of Pianta Village without going under the village or taking damage", 5, pianta3Challenge())
+achievement("Chain Chomp Whisperer", "Have the Chain Chomp jump into the spa in Episode 4 of Pianta Village while standing on the dirt path", 10, pianta4Challenge())
 achievement("Common Courtesy", "Collect the Shine Sprite in Secret of the Village Underside without enraging any Chucksters", 5, pianta5Challenge())
-achievement("Horticulture Hero", "Rescue all the Piantas in Episode 6 of Pianta Village while only touching trees past the bridge", 25, pianta6Challenge())
+achievement("Horticulture Hero", "Rescue all the Piantas in Episode 6 of Pianta Village while only touching treetops and mushrooms past the bridge", 25, pianta6Challenge())
 
 // #endregion
 
@@ -2048,12 +2137,12 @@ achievement("Moment of Reprieve", "Collect all 3 1-Ups in Corona Mountain in one
 
 // #region Miscellaneous
 
-achievement("Silly Stus, 1-Ups Are for Mario!", "Stomp on 3 Strollin' Stus at once after flipping them and collect the 1-Up reward", 3, collectAnyHiddenOneUps(stuOneUps))
-achievement("Diamond Under Pressure", "Ground Pound 3 Strollin' Stus at once after flipping them and collect the 1-Up reward", 5, collectAnyHiddenOneUps(secondStuOneUps))
-achievement("Jackpot!", "Ground Pound many Strollin' Stus at once after flipping them in the King Boo arena or The Hotel Lobby's Secret and collect the 1-Up reward", 10, collectAnyHiddenOneUps(thirdStuOneUps))
-achievement("Hot-Headed", "Stomp on 3 Smolderin' Stus at once after flipping them and collect the 1-Up reward", 5, collectAnyHiddenOneUps(smolderStuOneUps))
-achievement("Peak Enemy Design", "Spray a Coo Coo and collect the 1-Up reward", 5, collectAnyHiddenOneUps(plurpOneUps))
-achievement("Old School Style", "Stomp on a Guided Bullet Bill in Corona Mountain and collect the 1-Up reward", 3, collectAnyHiddenOneUps(guidedBulletBillOneUps))
+achievement("Silly Stus, 1-Ups Are for Mario!", "Stomp on 3 Strollin' Stus at once after flipping them and collect the 1-Up reward", 3, collectAnyHiddenOneUps(stuOneUps, "Stationary"))
+achievement("Diamond Under Pressure", "Ground Pound 3 Strollin' Stus at once after flipping them and collect the 1-Up reward", 5, collectAnyHiddenOneUps(secondStuOneUps, "Stationary"))
+achievement("Jackpot!", "Ground Pound many Strollin' Stus at once after flipping them in Sirena Beach and collect the 1-Up reward", 10, collectAnyHiddenOneUps(thirdStuOneUps, "Stationary"))
+achievement("Hot-Headed", "Stomp on 3 Smolderin' Stus at once after flipping them in Pinna Park and collect the 1-Up reward", 5, collectAnyHiddenOneUps(smolderStuOneUps, "Stationary"))
+achievement("Peak Enemy Design", "Spray a Coo Coo and collect the 1-Up reward", 5, collectAnyHiddenOneUps(plurpOneUps, "Repel"))
+achievement("Old School Style", "Stomp on a Guided Bullet Bill in Corona Mountain and collect the 1-Up reward", 3, collectAnyHiddenOneUps(guidedBulletBillOneUps, "Stationary"))
 
 achievement("Water is Wet", "Reach maximum sliding speed on a completely flat surface", 1, flatSurfaceSlide())
 achievement("Tactical Reload", "Refill F.L.U.D.D. from empty while sliding", 1, refillFluddSlide())
@@ -2092,7 +2181,7 @@ for mainCourseName in mainCourseNames
 	}
 }
 
-for level in range(0, 2) leaderboard("Box Game " + level + 1 + " Speedrun (IGT)", "Break all the crates in the " + iterations[level] + " formation as fast as possible in Delfino Plaza", inCourse("Delfino Plaza") && boxGame(level) && timerWasActive() && winBoxGame(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
+for level in range(0, 2) leaderboard("Box Game " + level + 1 + " Speedrun (IGT)", "Break all the crates in the " + iterations[level] + " formation as fast as possible in Delfino Plaza", inCourse("Delfino Plaza") && boxGame(level) && timerWasActive() && winBoxGame(level), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
 leaderboard("Airstrip Reds Speedrun (IGT)", "Collect all 8 red coins as fast as possible in Delfino Airstrip", inCourse("Delfino Plaza - Delfino Airstrip") && timerWasActive() && allRedCoins(), always_false(), always_true(), timer(), format="MILLISECS", lower_is_better=false)
 
 start = always_false()
