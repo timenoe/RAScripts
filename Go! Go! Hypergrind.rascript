@@ -227,7 +227,7 @@ achievement("Action Packed Show", "Complete a Single Session run having earned t
 // Any Mode
 for stage in range(0, 7) achievement(stages[stage] + " Tour", "Perform " + negative_reaction_counts[stage] + " different Negative Reactions in " + stages[stage] + " in one visit", 10, never(!in_game() || stage() != stage) && measured(all_negative_reactions(negative_reaction_counts[stage])))
 
-achievement("Bullseye!", "Earn 1000 Points during the loading screen minigame", 10, not_booting() && loading_minigame_active() && trigger_when(loading_minigame_score() - prev(loading_minigame_score()) == 1000))
+achievement("Bullseye!", "Earn 1000 Points at once during the loading screen minigame", 10, not_booting() && loading_minigame_active() && trigger_when(loading_minigame_score() - prev(loading_minigame_score()) == 1000))
 
 // For Rich Presence
 // achievement("All Board Designs", "All 40 Board Designs", 0, board_designs == 40)
