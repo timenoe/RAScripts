@@ -147,7 +147,7 @@ for stage in range(0, 7)
 }
 
 /// Completion
-achievement("Student Becomes the Master", "Beat the game a second time and unlock Kevin", 10, in_game() && bit_flip([2, 0x4cc8c8]))
+achievement("Hi Kevin", "Beat the game a second time and unlock Kevin", 10, in_game() && bit_flip([2, 0x4cc8c8]))
 
 // Special Gear items (Story Mode Bonus Prizes)
 special_gear = ["Kaminari", "Samurai", "Geisha", "Rice Cake", "Gears", "Gavel", "Bronze Medal", "Silver Medal", "Gold Medal", "Kevin's Medal"]
@@ -183,7 +183,7 @@ for player in range(0, 9)
 
     achievement(players[player] + "'s Prize", "Collect the first two " + players[player] + " Figures", 10, in_game() && prev(figure_sum) < 2 && measured(figure_sum == 2, when=not_booting()))
 }
-achievement("Hi Kevin", "Collect all three Kevin Figures", 25, in_game() && prev(kevins_figures) < 3 && measured(kevins_figures == 3, when=not_booting()))
+achievement("Student Becomes the Master", "Collect all three Kevin Figures", 25, in_game() && prev(kevins_figures) < 3 && measured(kevins_figures == 3, when=not_booting()))
 
 // Special Movies (Story Mode Endings)
 ending_addr = [2, 0x4cc8c5]
