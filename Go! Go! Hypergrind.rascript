@@ -15,26 +15,16 @@ function prev_bit(addr)
 }
 function next_bit(addr)
 {
-	if (addr[0] == 7) return [0, addr[1] + 1]
+	if (addr[0] == 7) return [0, addr[1] - 1]
 	else return [addr[0] + 1, addr[1]]
 }
-function count_bits_backward(addr, count)
+function count_bits(addr, count)
 {
 	sum = 0
 	for bit in range(1, count)
 	{
 		sum = sum + bit(addr[0], addr[1])
 		addr = prev_bit(addr)
-	}
-	return sum
-}
-function count_bits_forward(addr, count)
-{
-	sum = 0
-	for bit in range(1, count)
-	{
-		sum = sum + bit(addr[0], addr[1])
-		addr = next_bit(addr)
 	}
 	return sum
 }
@@ -59,14 +49,14 @@ story_titles = ["Got Milk?", "Texas Tornado", "Final Fantasy", "Don't Fear the R
 stage_lesson_count = [5, 3, 4, 4, 4, 5, 3, 4]
 negative_reaction_counts = [11, 12, 10, 11, 12, 11, 10, 11]
 
-board_designs = count_bits_backward(board_designs_addr, 40)
-gear = count_bits_backward(gear_addr_1, 50) + count_bits_backward(gear_addr_2, 50)
-boards = count_bits_backward(boards_addr, 12)
-wheel_designs = count_bits_backward(wheel_designs_addr, 16)
-gallery = count_bits_backward(gallery_addr_1, 50) + count_bits_backward(gallery_addr_2, 46)
-figures = count_bits_backward(figures_addr, 33)
+board_designs = count_bits(board_designs_addr, 40)
+gear = count_bits(gear_addr_1, 50) + count_bits(gear_addr_2, 50)
+boards = count_bits(boards_addr, 12)
+wheel_designs = count_bits(wheel_designs_addr, 16)
+gallery = count_bits(gallery_addr_1, 50) + count_bits(gallery_addr_2, 46)
+figures = count_bits(figures_addr, 33)
 kevins_figures = bit(6, 0x4cc8bc) + bit(7, 0x4cc8bc) + bit(0, 0x4cc8bd)
-movies = count_bits_backward(movies_addr, 28)
+movies = count_bits(movies_addr, 28)
 // #endregion
 
 // #region Functions
@@ -75,20 +65,21 @@ function player_ptr() => dword_be(game_ptr() + 0x14) & ptr_mask
 function appeal_ptr() => dword_be(player_ptr() + 0x1834) & ptr_mask
 function stage_ptr() => dword_be(0x2b1244) & ptr_mask
 function lesson_ptr() => dword_be(stage_ptr() + 0x16c) & ptr_mask
+
 function game_state() => dword_be(0x4c4bc0)
 function mode() => dword_be(0x4c504c)
 function player() => dword_be(0x4c50d0)
 function stage() => dword_be(0x4c5058)
+function demo() => dword_be(0x4c508c)
 function difficulty() => dword_be(0x4cc768)
-function round() => dword_be(0x4cc770)
+function story_stage() => dword_be(0x4cc76c)
 function rank_1_points() => dword_be(0x4cc570)
 
 function not_booting() => game_state() >= 3
 function not_cheating() => bitcount(0x4cc8cf) - bit7(0x4cc8cf) == 0
-function in_game() => game_state() >= 7 && not_cheating()
+function not_demo() => demo() == 0
+function in_game() => game_state() >= 7 && not_demo() && not_cheating()
 
-function rank_1_is_player() => dword_be(0x4cc564) == 1
-function beat_round(round) => prev(round()) == round -1 && round() == round
 function complete_lessons(stage, count)
 {
     lessons_sum = 0
@@ -100,6 +91,12 @@ function complete_lessons(stage, count)
     }
     return prev(lessons_sum) == count - 1 && measured(lessons_sum == count, when=game_state() == 7 && stage() == stage)
 }
+function beat_stage(stage)
+{
+    if (stage == 7) return prev(story_stage()) == stage && story_stage() == 9
+    else return prev(story_stage()) == stage && story_stage() == stage + 1
+}
+function rank_1_is_player() => dword_be(0x4cc564) == 1
 
 function all_normal_bonuses() => dword_be(0x4c5100) == 1 && dword_be(0x4c5104) == 1 && dword_be(0x4c5108) == 1 && dword_be(0x4c510c) == 1 && dword_be(0x4c5110) == 1 && dword_be(0x4c512c) == 1 && dword_be(0x4c5130) == 1
 function all_appeal_bonuses(player) => prev(dword_be(0x4c511c) + dword_be(0x4c5120) + dword_be(0x4c5124) + dword_be(0x4c5128)) < 4 && measured(dword_be(0x4c511c) + dword_be(0x4c5120) + dword_be(0x4c5124) + dword_be(0x4c5128) == 4, when=player() == player && game_state() == 8)
@@ -132,18 +129,21 @@ function credits_minigame_hits() => dword_be(credits_minigame_ptr() + 0x512c)
 /// Progression
 achievement("Chase Your Dreams", "Finish the Skill Test in Story Mode for the first time", 3, in_game() && bit_flip([2, 0x4cc8c7]), type="progression")
 
-story_progress = 5
 for stage in range(0, 7)
 {
     desc = "Complete " + stages[stage] + " in Story Mode"
-    if (stages[stage] == "Hong Kong Night") desc = "Complete Hong Kong Night in Story Mode and unlock Vert"
     points = 5
-    if (story_progress >= 25) points = 10
     type = "progression"
-    if (stages[stage] == "Hong Kong Night") type = "win_condition"
 
-    achievement(story_titles[stage], desc, points, in_game() && beat_round(story_progress), type=type)
-    story_progress = story_progress + 5
+    if (stage >= 4) points = 10
+    
+    if (stages[stage] == "Hong Kong Night")
+    {
+        desc = "Complete Hong Kong Night in Story Mode and unlock Vert"
+        type = "win_condition"
+    }
+
+    achievement(story_titles[stage], desc, points, in_game() && beat_stage(stage), type=type)
 }
 
 /// Completion
@@ -203,18 +203,16 @@ achievement("Movie Buff", "Collect all 28 Movies", 10, in_game() && prev(movies)
 
 /// Miscellaneous/Challenges
 // Story Mode
-story_progress = 5
 for stage in range(0, 7)
 {
     // 3 in western, 4 in fantasy, 4 in haunted, 4 in factory, 5 in jungle, 3 in ninja, 4 in hong kong
     achievement(stages[stage] + " Rookie", "Complete all " + stage_lesson_count[stage] + " Lessons in " + stages[stage] + " in Story Mode", 5, in_game() && complete_lessons(stage, stage_lesson_count[stage]))
 
     points = 10
-    if (story_progress >= 25) points = 25
-    achievement(stages[stage] + " Expert", "Complete " + stages[stage] + " on Expert difficulty in Story Mode", points, in_game() && difficulty() == 2 && beat_round(story_progress))
-    story_progress = story_progress + 5
+    if (stage >= 4) points = 25
+    achievement(stages[stage] + " Expert", "Complete " + stages[stage] + " on Expert difficulty in Story Mode", points, in_game() && difficulty() == 2 && beat_stage(stage))
 }
-achievement("A-List Actor", "Beat the game with 480 total Points", 25, in_game() && rank_1_is_player() && rank_1_points() == 480 && beat_round(40))
+achievement("A-List Actor", "Beat the game with 480 total Points", 25, in_game() && rank_1_is_player() && rank_1_points() == 480 && beat_stage(7))
 
 // Freeride Mode
 achievement("Quick Change Artist", "Start Freeride Mode using an alternate Player pallete", 2, in_game() && prev(game_state()) == 5 && dword_be(0x4c5140) > prev(dword_be(0x4c5140)))
