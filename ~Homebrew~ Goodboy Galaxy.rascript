@@ -126,7 +126,7 @@ mapTitles =
 	"Rumbly Jungle": "Watch for Falling Rocks",
 	"Wytchberg": "Beware of Bats",
 	"Totummy Temples": "Trial and Error",
-	"Grand Zootel": "Interactive Beastiary",
+	"Grand Zootel": "Interactive Bestiary",
 	"Resonarion": "High Score Haven",
 	"Lunar Penitentiary": "Prison Break",
 	"Echelon L. Central": "Commuter Crossing",
@@ -161,7 +161,7 @@ mapTotals =
 versionOffset = 
 {
 	1.2: 0,
-	//1.3: ?
+	1.3: 0x10
 }
 
 // Functions - Common
@@ -172,12 +172,12 @@ function trueBit(offset, addr) => bit(addr[0], addr[1] + offset) == 1
 function trueBits(offset, addr, count) => sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == count
 
 function findBit(offset, addr, map) => map(offset) == map && hyperBeamLocked(offset) && bitFlip([addr[0], addr[1] + offset])
-function findBits(offset, addr, sum) => prev(sum_of(addr, s => s)) == sum - 1 && measured(sum_of(addr, s => s) == sum, when = maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
+function findBits(offset, addr, sum) => prev(sum_of(addr, s => s)) == sum - 1 && measured(sum_of(addr, s => s) == sum, when = versionIdFromOffset(offset) && maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
 function findConsecutiveBits(offset, addr, count, sum, maps, measured)
 {
 	if (maps[0] == 0)
 	{
-		if (measured == 1) return prev(sum_of(getBits([addr[0], addr[1] + offset], count), s => s)) == sum - 1 && measured(sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == sum, when = maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
+		if (measured == 1) return prev(sum_of(getBits([addr[0], addr[1] + offset], count), s => s)) == sum - 1 && measured(sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == sum, when = versionIdFromOffset(offset) && maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
 		else return maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset) && prev(sum_of(getBits([addr[0], addr[1] + offset], count), s => s)) == sum - 1 && sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == sum
 	}
 	else
@@ -193,8 +193,32 @@ function findConsecutiveBits(offset, addr, count, sum, maps, measured)
 		mapCheck = always_false()
 		for id in maps mapCheck = __ornext(mapCheck || map(offset) == id)
 
-		if (measured == 1) return mapCheck && prev(sum_of(getBits([addr[0], addr[1] + offset], count), s => s)) == sum - 1 && measured(sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == sum, when = mission && inGame(offset) && hyperBeamCheck)
+		if (measured == 1) return mapCheck && prev(sum_of(getBits([addr[0], addr[1] + offset], count), s => s)) == sum - 1 && measured(sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == sum, when = versionIdFromOffset(offset) && mission && inGame(offset) && hyperBeamCheck)
 		else return mapCheck && hyperBeamCheck && prev(sum_of(getBits([addr[0], addr[1] + offset], count), s => s)) == sum - 1 && sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == sum
+	}
+}
+function findConsecutiveBitsUnexact(offset, addr, count, sum, maps, measured)
+{
+	if (maps[0] == 0)
+	{
+		if (measured == 1) return prev(sum_of(getBits([addr[0], addr[1] + offset], count), s => s)) < sum && measured(sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == sum, when = versionIdFromOffset(offset) && maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
+		else return maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset) && prev(sum_of(getBits([addr[0], addr[1] + offset], count), s => s)) < sum && sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == sum
+	}
+	else
+	{
+		hyperBeamCheck = hyperBeamLocked(offset)
+		if (maps[0] == 0x03)
+		{
+			mission = cropettsMission(offset)
+			hyperBeamCheck = always_true()
+		}
+		else mission = maxwellsMission(offset)
+		
+		mapCheck = always_false()
+		for id in maps mapCheck = __ornext(mapCheck || map(offset) == id)
+
+		if (measured == 1) return mapCheck && prev(sum_of(getBits([addr[0], addr[1] + offset], count), s => s)) < sum && measured(sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == sum, when = versionIdFromOffset(offset) && mission && inGame(offset) && hyperBeamCheck)
+		else return mapCheck && hyperBeamCheck && prev(sum_of(getBits([addr[0], addr[1] + offset], count), s => s)) < sum && sum_of(getBits([addr[0], addr[1] + offset], count), s => s) == sum
 	}
 }
 function reachCount(offset, value, count, map, measured, exact)
@@ -203,7 +227,7 @@ function reachCount(offset, value, count, map, measured, exact)
 	{
 		if (measured == 1)
 		{
-			if (exact == 1) return prev(value(offset)) == count - 1 && measured(value(offset) == count, when = maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
+			if (exact == 1) return prev(value(offset)) == count - 1 && measured(value(offset) == count, when = versionIdFromOffset(offset) && maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
 			else return prev(value(offset)) < count && measured(value(offset) == count, when = maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
 			
 		}
@@ -225,7 +249,7 @@ function reachCount(offset, value, count, map, measured, exact)
 		
 		if (measured == 1)
 		{
-			if (exact == 1) return map(offset) == map && prev(value(offset)) == count - 1 && measured(value(offset) == count, when = mission && hyperBeamCheck)
+			if (exact == 1) return map(offset) == map && prev(value(offset)) == count - 1 && measured(value(offset) == count, when = versionIdFromOffset(offset) && mission && hyperBeamCheck)
 			else return map(offset) == map && prev(value(offset)) < count && measured(value(offset) == count, when = mission && hyperBeamCheck)
 		}
 		else
@@ -238,49 +262,93 @@ function reachCount(offset, value, count, map, measured, exact)
 function valueIncrease(offset, value) => value(offset) > prev(value(offset))
 
 // Functions - Addresses
+// function albyProgress(offset) => byte(0xe5dc + offset)
+// function animation(offset) => word(0x4f44 + offset)
+// function bossHealth(offset, boss) => word(tbyte(0x5100 + offset) + boss)
+// function burgerdogPtr(offset) => tbyte(0x52cc + offset)
+// function burgerdogFinalScore(offset) => tbyte(0x1063d + offset)
+// function burgerdogScore(offset) => word(burgerdogPtr(offset) + 0x8001)
+// function councilProgress(offset) => byte(0xe569 + offset)
+// function creditsTextPtr(offset) => tbyte(0x5360 + offset)
+// function cropettsMissionCompletePtr(offset) => tbyte(0x11178 + offset)
+// function dialogueActive(offset) => byte(0x4768 + offset)
+// function difficulty(offset) => byte(0xe291 + offset)
+// function file(offset) => byte(0xe27c + offset)
+// function finaleProgress(offset) => byte(0xe525 + offset)
+// function friends(offset) => byte(0xe300 + offset)
+// function gizmoShards(offset) => dword(0xf3f4 + offset) + dword(0xf408 + offset)
+// function items(offset) => byte(0xe3dc + offset)
+// function lilacForcePtr(offset) => tbyte(0x532c + offset)
+// function lilacForceScore(offset) => dword(lilacForcePtr(offset) + 0x8000)
+// function map(offset) => byte(0x50d4 + offset)
+// function music(offset) => byte(0x8a10 + offset)
+// function navSysPtr(offset) => tbyte(0x5288 + offset)
+// function nearbyNpcPtr(offset) => tbyte(0x5094 + offset)
+// function outfit(offset) => byte(0x2c9c + offset)
+// function pawsOsPtr(offset) => tbyte(0x4a6c + offset)
+// function pawsOsTheme(offset) => byte(0xe5de + offset)
+// function planet(offset) => byte(0x50d8 + offset)
+// function poopSweeperPtr(offset) => tbyte(0x4a54 + offset)
+// function poopSweeperTime(offset) => word(poopSweeperPtr(offset) + 0x80a4)
+// function poopSweeperWins(offset) => word(0xe58c + offset)
+// function prisonProgress(offset) => byte(0xe546 + offset)
+// function rhythmGamePtr(offset) => tbyte(0x5340 + offset)
+// function rhythmGameFinalScore(offset) => tbyte(0x110dd + offset)
+// function rhythmGameScore(offset) => tbyte(rhythmGamePtr(offset) + 0x81d1)
+// function secondsPlayed(offset) => dword(0x50ec + offset) / 59.7275
+// function shards(offset) => word(0xe2fc + offset)
+// function shieldRechargeTimer(offset) => word(0x4f54 + offset)
+// function shotsLeft(offset) => byte(0x4fc8 + offset)
+// function starbiPtr(offset) => tbyte(0xeb74 + offset)
+// function weaponMode(offset) => byte(0xe56b + offset)
+// function witchPtr(offset) => tbyte(0xe9bc + offset)
+// function xenolithProgress(offset) => byte(0xe568 + offset)
+// function xPos(offset) => dword(0x4fe8 + offset)
+// function yPos(offset) => dword(0x4fec + offset)
+
 function albyProgress(offset) => byte(0xe5dc + offset)
-function animation(offset) => word(0x4f44 + offset)
-function bossHealth(offset, boss) => word(tbyte(0x5100 + offset) + boss)
-function burgerdogPtr(offset) => tbyte(0x52cc + offset)
+function animation(offset) => word(0x4f44)
+function bossHealth(offset, boss) => word(tbyte(0x5100) + boss)
+function burgerdogPtr(offset) => tbyte(0x52cc)
 function burgerdogFinalScore(offset) => tbyte(0x1063d + offset)
 function burgerdogScore(offset) => word(burgerdogPtr(offset) + 0x8001)
 function councilProgress(offset) => byte(0xe569 + offset)
-function creditsTextPtr(offset) => tbyte(0x5360 + offset)
+function creditsTextPtr(offset) => tbyte(0x5360)
 function cropettsMissionCompletePtr(offset) => tbyte(0x11178 + offset)
-function dialogueActive(offset) => byte(0x4768 + offset)
+function dialogueActive(offset) => byte(0x4768)
 function difficulty(offset) => byte(0xe291 + offset)
 function file(offset) => byte(0xe27c + offset)
 function finaleProgress(offset) => byte(0xe525 + offset)
 function friends(offset) => byte(0xe300 + offset)
 function gizmoShards(offset) => dword(0xf3f4 + offset) + dword(0xf408 + offset)
 function items(offset) => byte(0xe3dc + offset)
-function lilacForcePtr(offset) => tbyte(0x532c + offset)
+function lilacForcePtr(offset) => tbyte(0x532c)
 function lilacForceScore(offset) => dword(lilacForcePtr(offset) + 0x8000)
-function map(offset) => byte(0x50d4 + offset)
-function music(offset) => byte(0x8a10 + offset)
-function navSysPtr(offset) => tbyte(0x5288 + offset)
-function nearbyNpcPtr(offset) => tbyte(0x5094 + offset)
-function outfit(offset) => byte(0x2c9c + offset)
-function pawsOsPtr(offset) => tbyte(0x4a6c + offset)
+function map(offset) => byte(0x50d4)
+function music(offset) => byte(0x8a10)
+function navSysPtr(offset) => tbyte(0x5288)
+function nearbyNpcPtr(offset) => tbyte(0x5094)
+function outfit(offset) => byte(0x2c9c)
+function pawsOsPtr(offset) => tbyte(0x4a6c)
 function pawsOsTheme(offset) => byte(0xe5de + offset)
-function planet(offset) => byte(0x50d8 + offset)
-function poopSweeperPtr(offset) => tbyte(0x4a54 + offset)
+function planet(offset) => byte(0x50d8)
+function poopSweeperPtr(offset) => tbyte(0x4a54)
 function poopSweeperTime(offset) => word(poopSweeperPtr(offset) + 0x80a4)
 function poopSweeperWins(offset) => word(0xe58c + offset)
 function prisonProgress(offset) => byte(0xe546 + offset)
-function rhythmGamePtr(offset) => tbyte(0x5340 + offset)
+function rhythmGamePtr(offset) => tbyte(0x5340)
 function rhythmGameFinalScore(offset) => tbyte(0x110dd + offset)
 function rhythmGameScore(offset) => tbyte(rhythmGamePtr(offset) + 0x81d1)
-function secondsPlayed(offset) => dword(0x50ec + offset) / 59.7275
+function secondsPlayed(offset) => dword(0x50ec) / 59.7275
 function shards(offset) => word(0xe2fc + offset)
-function shieldRechargeTimer(offset) => word(0x4f54 + offset)
-function shotsLeft(offset) => byte(0x4fc8 + offset)
+function shieldRechargeTimer(offset) => word(0x4f54)
+function shotsLeft(offset) => byte(0x4fc8)
 function starbiPtr(offset) => tbyte(0xeb74 + offset)
 function weaponMode(offset) => byte(0xe56b + offset)
 function witchPtr(offset) => tbyte(0xe9bc + offset)
 function xenolithProgress(offset) => byte(0xe568 + offset)
-function xPos(offset) => dword(0x4fe8 + offset)
-function yPos(offset) => dword(0x4fec + offset)
+function xPos(offset) => dword(0x4fe8)
+function yPos(offset) => dword(0x4fec)
 
 // Functions - Helpers
 function allLaserdrillShardRocks(offset)
@@ -301,28 +369,47 @@ function checkDifficulty(offset, diff)
 }
 function commenceDialogue(offset) => valueIncrease(offset, dialogueActive)
 function cropettsMission(offset) => file(offset) == 3
-function dying(offset) => byte(0x4f1c + offset) == 0x2
-function endMinigame(offset) => prev(byte(0x9a84 + offset)) == 3 && byte(0x9a84 + offset) == 4
+function dying(offset) => byte(0x4f1c) == 0x2
+function endMinigame(offset)
+{
+	if (offset == 0x10) offset = 0x1c
+	return prev(byte(0x9a84 + offset)) == 3 && byte(0x9a84 + offset) == 4
+}
 function exitBoss(offset) => dying(offset) || notInGame(offset)
 function falling(offset) => animation(offset) == 0x850
-function grounded(offset) => byte(0x54c4 + offset) == 1
+function grounded(offset) => byte(0x54c4) == 1
 function henchmenDefeated(offset) => prev(bossHealth(offset, boss1)) > 0x11 && bossHealth(offset, boss1) == 0x11
 function hyperBeamLocked(offset) => falseBit(offset, hyperBeamAddr)
 function inArea(offset, x1, x2, y1, y2) => xPos(offset) >= x1 && xPos(offset) <= x2 && yPos(offset) >= y1 && yPos(offset) <= y2
 function inGame(offset) => planet(offset) != 0
 function inPlanet(offset) => navSysPtr(offset) == 0
+function installedApps(offset) => bit4(0xe5da + offset) + bit5(0xe5da + offset) + bit7(0xe5da + offset)
 function mapArea(offset, map)
 {
 	mapCheck = always_false()
 	for id in mapIds[map] mapCheck = __ornext(mapCheck || map(offset) == id)
 
 	mapSum = 0
-	for mapAddr in mapAddrs[map] mapSum = mapSum + bitcount(mapAddr) 
+	for mapAddr in mapAddrs[map] mapSum = mapSum + bitcount(mapAddr + offset) 
 
-	return mapCheck && prev(mapSum) == mapTotals[map] - 1 && measured(mapSum == mapTotals[map], when = maxwellsMission(offset) && inGame(offset), format = "percent")
+	return mapCheck && prev(mapSum) == mapTotals[map] - 1 && measured(mapSum == mapTotals[map], when = versionIdFromOffset(offset) && maxwellsMission(offset) && inGame(offset), format = "percent")
 }
 function maxwellsMission(offset) => file(offset) != 3
-function nearNpc(offset, npcID) => nearbyNpcPtr(offset) != 0 && dword(nearbyNpcPtr(offset)) == npcID
+function nearNpc(offset, npcID)
+{
+	if (offset == 0x10) // v1.3 changes
+	{
+		if (npcID == 0x9e82864) npcID = 0x9e80114 // Starbi
+		else if (npcID == 0x9e82a50) npcID = 0x9e80300 // Useless Sign
+		else if (npcID == 0x9e7ec68) npcID = 0x9e7c574 // Kapparama
+		else if (npcID == 0x9e829a8) npcID = 0x9e80258 // Totummy Guard
+		else if (npcID == 0x9e821b4) npcID = 0x9e7fa64 // Jenovi
+		else if (npcID == 0x9e81d50) npcID = 0x9e7f600 // Chopo
+	}
+
+	return nearbyNpcPtr(offset) != 0 && dword(nearbyNpcPtr(offset)) == npcID
+}
+function newApps(offset) => bit0(0xe592 + offset) + bit0(0xe5b8 + offset) + bit1(0xe5b8 + offset) + bit2(0xe5b8 + offset) + bit3(0xe5b8 + offset) + bit0(0xe5c8 + offset) + bit2(0xe5c8 + offset) + bit4(0xe5d8 + offset) + bit5(0xe5d8 + offset)
 function normalDifficulty(offset) => difficulty(offset) == normal
 function notInGame(offset) => planet(offset) == 0
 function npcCommenceDialogue(offset, npcID) => wasNearNpc(offset, npcID) && commenceDialogue(offset)
@@ -343,15 +430,28 @@ function startMamacuda2Boss(offset, diff, hyperBeamStatus) => checkDifficulty(of
 function startSlimerBoss(offset, diff, hyperBeamStatus) => checkDifficulty(offset, diff) && map(offset) == 0x1f && checkBit(offset, hyperBeamAddr, hyperBeamStatus) && prev(music(offset)) != 6 && music(offset) == 6
 function threeBossesDefeated(offset) => prev(bossHealth(offset, boss1)) + prev(bossHealth(offset, boss2)) + prev(bossHealth(offset, boss3)) > 0 && bossHealth(offset, boss1) + bossHealth(offset, boss2) + bossHealth(offset, boss3) == 0
 function tookDamage(offset) => shieldRechargeTimer(offset) > 0
-function trackCameraTarget(offset, cameraTarget) => dword(0x97d0 + offset) == 0x400 && dword(0x97f0 + offset) == cameraTarget[0] && dword(0x97f4 + offset) == cameraTarget[1]
+function trackCameraTarget(offset, cameraTarget) => dword(0x97d0) == 0x400 && dword(0x97f0) == cameraTarget[0] && dword(0x97f4) == cameraTarget[1]
 function useWeapon(offset, mode) => weaponMode(offset) == mode && shootBlaster(offset)
 function versionIdentifier(version)
 {
-	if (version == 1.2) return always_true()
-	else if (version == 1.3) return always_true()
+	if (version == 1.2) return ascii_string_equals(0xe284, "GbGa")
+	else if (version == 1.3) return ascii_string_equals(0xe294, "GbGa")
 	// Add more cases if needed
 }
-function wasNearNpc(offset, npcID) => prev(nearbyNpcPtr(offset)) != 0 && prev(dword(nearbyNpcPtr(offset))) == npcID
+function wasNearNpc(offset, npcID)
+{
+	if (offset == 0x10) // v1.3 changes
+	{
+		if (npcID == 0x9e82864) npcID = 0x9e80114 // Starbi
+		else if (npcID == 0x9e82a50) npcID = 0x9e80300 // Useless Sign
+		else if (npcID == 0x9e7ec68) npcID = 0x9e7c574 // Kapparama
+		else if (npcID == 0x9e829a8) npcID = 0x9e80258 // Totummy Guard
+		else if (npcID == 0x9e821b4) npcID = 0x9e7fa64 // Jenovi
+		else if (npcID == 0x9e81d50) npcID = 0x9e7f600 // Chopo
+	}
+
+	return prev(nearbyNpcPtr(offset)) != 0 && prev(dword(nearbyNpcPtr(offset))) == npcID
+}
 
 // Functions - Achievements
 function bountyHuntersChallenge(offset) => never(shootBlaster(offset) || dying(offset) || notInGame(offset)) && once(checkDifficulty(offset, normal) && map(offset) == 0x12 && prev(music(offset)) != 0x4a && music(offset) == 0x4a) && trigger_when(befriendBountyHunters(offset))
@@ -359,21 +459,23 @@ function changeTheme(offset) => inGame(offset) && pawsed(offset) && trigger_when
 function changeOutfit(offset) => map(offset) == 0x0e && trackCameraTarget(offset, nuyuCameraTarget) && trigger_when(outfit(offset) != prev(outfit(offset)))
 function councilChallenge(offset) => never(outOfOrderCouncil(offset) || dying(offset) || notInGame(offset)) && once(startCouncilBoss(offset, normal, hyperBeamLocked)) && trigger_when(chadCouncilDefeated(offset))
 function cropettSpeedrun(offset) => cropettsMission(offset) && inGame(offset) && secondsPlayed(offset) <= 600 && trigger_when(beatCropettsMission(offset))
-function dangerNut(offset) => never(xPos(offset) > 0x6f9 && xPos(offset) < 0x727 || yPos(offset) > 0x650 || dying(offset)) && once(map(offset) == 0x31 && hyperBeamLocked(offset) && prev(nearbyNpcPtr(offset)) == tbyte(0xf3bc + offset) && npcCommenceDialogue(offset, 0x9e81d50)) && trigger_when(xPos(offset) >= 0x140 && xPos(offset) <= 0x200 && grounded(offset))
+function dangerNut(offset) => never(xPos(offset) > 0x6f9 && xPos(offset) < 0x727 || yPos(offset) > 0x650 || dying(offset) || shipWarpReset(offset)) && once(map(offset) == 0x31 && hyperBeamLocked(offset) && prev(nearbyNpcPtr(offset)) == tbyte(0xf3bc + offset) && npcCommenceDialogue(offset, 0x9e81d50)) && trigger_when(xPos(offset) >= 0x140 && xPos(offset) <= 0x200 && grounded(offset))
 function dayThreeBombParts(offset) => planet(offset) == 0xa && inPlanet(offset) && byte(0xe548 + offset) <= 3 && prev(sum_of(getBits([7, 0xe336 + offset], 5), s => s)) < 5 && trigger_when(sum_of(getBits([7, 0xe336 + offset], 5), s => s) == 5)
 function fallFromHeaven(offset) => map(offset) == 0x11 && xPos(offset) == 0x417 && prev(animation(offset)) == 0x850 && animation(offset) == 0x3d0
-function findAeliesBabies(offset) => map(offset) == 0x04 && prev(sum_of(getBits([5,0xe528], 4), s => s)) < 4 && measured(sum_of(getBits([5,0xe528], 4), s => s) == 4, when = maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
+//function findAeliesBabies(offset) => map(offset) == 0x04 && prev(sum_of(getBits([5,0xe528], 4), s => s)) < 4 && measured(sum_of(getBits([5,0xe528], 4), s => s) == 4, when = maxwellsMission(offset) && inGame(offset) && hyperBeamLocked(offset))
+function findAeliesBabies() => versionTrigger(findConsecutiveBits, [[5,0xe528], 4, 4, [0x04], measured])
 function findPodly(offset) => inPlanet(offset) && map(offset) == 0x0f && trueBit(offset, hyperBeamAddr) && trigger_when(inArea(offset, 0x54a, 0x559, 0x0b3, 0x0b3))
 function flexOnGuard(offset) => map(offset) == 0x2b && trueBit(offset, [4,0xe540]) && trigger_when(npcCommenceDialogue(offset, 0x9e829a8))
 function get10kShards(offset) => maxwellsMission(offset) && inGame(offset) && prev(shards(offset)) < 10000 && shards(offset) >= 10000
 function henchmenChallenge(offset) => never(tookDamage(offset) || notInGame(offset)) && once(startHenchmenBoss(offset, normal)) && trigger_when(henchmenDefeated(offset))
-function hideInBox(offset) => map(offset) == 0x1c && prisonProgress(offset) > 8 && trigger_when(prev(byte(0x004f1c + offset)) == 9 && byte(0x004f1c + offset) == 0xa)
+function hideInBox(offset) => map(offset) == 0x1c && prisonProgress(offset) > 8 && trigger_when(prev(byte(0x4f1c)) == 9 && byte(0x4f1c) == 0xa)
 function hugJenovi(offset) => inPlanet(offset) && map(offset) == 0x22 && trueBit(offset, [5,0xe305]) && trigger_when(npcCommenceDialogue(offset, 0x9e821b4))
-function installNewApp(offset) => inGame(offset) && pawsed(offset) && sum_of(newAppAddrs, s => s) > 0 && prev(sum_of(installedAppAddrs, s => s)) == 0 && trigger_when(sum_of(installedAppAddrs, s => s) == 1)
+//function installNewApp(offset) => inGame(offset) && pawsed(offset) && sum_of(newAppAddrs, s => s) > 0 && prev(sum_of(installedAppAddrs, s => s)) == 0 && trigger_when(sum_of(installedAppAddrs, s => s) == 1)
+function installNewApp(offset) => inGame(offset) && pawsed(offset) && newApps(offset) > 0 && prev(installedApps(offset)) == 0 && trigger_when(installedApps(offset) == 1)
 function laserdrillChallenge(offset) => prev(sum_of(allLaserdrillShardRocks(offset), s => s)) < 93 && measured(sum_of(allLaserdrillShardRocks(offset), s => s) >= 93, when = difficulty(offset) == normal && map(offset) == 0x05 && music(offset) == 0x1d)
 function mamacuda1Challenge(offset) => never(dying(offset) || notInGame(offset)) && never(once(startMamacuda1Boss(offset, normal, hyperBeamLocked)) && repeated(1201, always_true())) && once(startMamacuda1Boss(offset, normal, hyperBeamLocked)) && trigger_when(bossDefeated(offset, boss1))
 function mamacuda2Challenge(offset) => never(useWeapon(offset, warpBolt) || dying(offset) || notInGame(offset)) && once(startMamacuda2Boss(offset, normal, hyperBeamLocked)) && trigger_when(bossDefeated(offset, boss1))
-function mamacudaSaysHi(offset) => inPlanet(offset) && map(offset) == 0x31 && trueBit(offset, [2,0xe52d]) && prev(byte(0x11172 + offset)) == 0 && trigger_when(byte(0x11172) + offset == 1)
+function mamacudaSaysHi(offset) => inPlanet(offset) && map(offset) == 0x31 && trueBit(offset, [2,0xe52d]) && prev(byte(0x11172 + offset)) == 0 && trigger_when(byte(0x11172 + offset) == 1)
 function mapAchievements(maps, id)
 {
 	for map in maps
@@ -386,7 +488,7 @@ function mapAchievements(maps, id)
 		id = id + 1
 	}
 }
-function petKappa(offset) => map(offset) == 0x2d && wasNearNpc(offset, 0x9e7ec68) && prev(byte(0x4f1c + offset)) == 0 && trigger_when(byte(0x4f1c + offset) == 0x10)
+function petKappa(offset) => map(offset) == 0x2d && wasNearNpc(offset, 0x9e7ec68) && prev(byte(0x4f1c)) == 0 && trigger_when(byte(0x4f1c) == 0x10)
 function plestroChallenge(offset) => inPlanet(offset) && map(offset) == 0x31 && trueBit(offset, [7,0xe401]) && falseBit(offset, [0,0xe402]) && falseBit(offset, [1,0xe402]) && prev(bit0(0xe303 + offset)) == 0 && trigger_when(trueBit(offset, [0,0xe303]))
 function poopThink(offset) => inGame(offset) && poopSweeperPtr(offset) != 0 && never(byte(poopSweeperPtr(offset) + 0x80d8) == 0) && trigger_when(repeated(60, byte(poopSweeperPtr(offset) + 0x80d8) == 1))
 function rankBurgerdog(offset, special, score) => map(offset) == 0x0c && burgerdog(offset, special) && burgerdogPtr(offset) != 0 && burgerdogScore(offset) >= score && trigger_when(burgerdogEnd(offset))
@@ -394,11 +496,33 @@ function rankRhythmGame(offset, game, score, duration) => map(offset) == 0x23 &&
 function readUselessSign(offset) => inPlanet(offset) && map(offset) == 0x31 && trueBit(offset, [4,0xe52d]) && trigger_when(npcCommenceDialogue(offset, 0x9e82a50))
 function revealHyperBeam(offset) => inPlanet(offset) && map(offset) == 0x0f && trueBit(offset, [4,0xe56c]) && prev(byte(0x1116d + offset)) == 0 && trigger_when(byte(0x01116d + offset) == 1)
 function ringDubelleBluePath(offset) => map(offset) == 0x2a && hyperBeamLocked(offset) && music(offset) == 0x27 && trigger_when(trackCameraTarget(offset, dubelleCameraTarget))
-function seeStarbiOutfit(offset, outfit) => map(offset) == 0x32 && npcInOutfit(offset, starbiPtr, outfit) && trigger_when(nearNpc(offset, 0x9e82864))
-function shipWarp(offset) => inGame(offset) && byte(0x509c + offset) < 2 && prev(dword(0x5098 + offset)) == 119 && dword(0x5098 + offset) == 0
+function seeStarbiOutfit(offset, outfit)
+{
+	id = 0x9e82864
+	if (offset == 0x10) // v1.3 changes
+	{
+		id = 0x9e80114
+		if (outfit == dress) outfit = 0x20
+		else if (outfit == eyepatch) outfit = 0x2c
+		else if (outfit == jumpsuit) outfit = 0x38
+	}
+
+	return map(offset) == 0x32 && npcInOutfit(offset, starbiPtr, outfit) && trigger_when(nearNpc(offset, id))
+}
+function shipWarp(offset) => inGame(offset) && byte(0x509c) < 2 && prev(dword(0x5098)) == 119 && dword(0x5098) == 0
+function shipWarpReset(offset) => byte(0x509c) < 2 && prev(dword(0x5098)) == 119 && dword(0x5098) == 0
 function slimerChallenge(offset) => never(repeated(3, spawnHardRocks(offset)) || dying(offset) || notInGame(offset)) && once(startSlimerBoss(offset, normal, hyperBeamLocked)) && trigger_when(bossDefeated(offset, boss1))
 function sPlusRankLilacForce(offset) => map(offset) == 0x0d && lilacForcePtr(offset) != 0 && lilacForceScore(offset) >= 390464 && trigger_when(endMinigame(offset))
-function speakToWitch(offset, mode) => map(offset) == 0x2e && npcInOutfit(offset, witchPtr, mode) && commenceDialogue(offset)
+function speakToWitch(offset, mode)
+{
+	if (offset == 0x10) // v1.3 changes
+	{
+		if (mode == beautyMode) mode = 8
+		else if (mode == beastMode) mode = 0x14
+	}
+
+	return map(offset) == 0x2e && npcInOutfit(offset, witchPtr, mode) && commenceDialogue(offset)
+}
 function sRankPoopSweeper(offset) => inGame(offset) && poopSweeperPtr(offset) != 0 && poopSweeperStarted(offset) && poopSweeperTime(offset) <= 15 && trigger_when(valueIncrease(offset, poopSweeperWins))
 function uncoverGizmo(offset) => map(offset) == 0x0e && prev(gizmoShards(offset)) < 2 && trigger_when(gizmoShards(offset) == 2)
 function unlockHyperBeam(offset) => tbyte(0xe76c + offset) != 0 && byte(tbyte(0xe76c + offset) + 0x840c) > prev(byte(tbyte(0xe76c + offset) + 0x840c)) 
@@ -436,12 +560,18 @@ function versionValue(func)
 	return maxof(values)
 }
 
+function versionIdFromOffset(offset)
+{
+	if (offset == 0) return ascii_string_equals(0xe284, "GbGa")
+	else if (offset == 0x10) return ascii_string_equals(0xe294, "GbGa")
+}
+
 // Achievements
 
 // The Outpost, Orange Dimension
 // Progression
-achievement("Pootooty Salad Slam", "Reclaim your Jetpack after the crash-landing", 1, versionTrigger(findBit, [[2, 0xe335], 0x21]), id=385559) // Progression
-achievement("Junk Retriever", "Find 3 spare parts to fix your ship", 5, versionTrigger(findConsecutiveBits, [[2,0xe343], 4, 3, [0x1f], measured]), id=385560) // Progression
+achievement("Pootooty Salad Slam", "Reclaim your Jetpack after the crash-landing", 1, versionTrigger(findBit, [[2, 0xe335], 0x21]), type="progression", id=385559) // Progression
+achievement("Junk Retriever", "Find 3 spare parts to fix your ship", 5, versionTrigger(findConsecutiveBits, [[2,0xe343], 4, 3, [0x1f], measured]), type="progression", id=385560) // Progression
 // Completion
 achievement("Spare Spare Part", "Find an extra spare part", 3, versionTrigger(findConsecutiveBits, [[2,0xe343], 4, 4, [0x1f], unmeasured]), id=385561)
 achievement("Citrus Surprise", "Find 22 oranges for Azure", 10, versionTrigger(findConsecutiveBits, [[6,0xe339], 30, 22, [noSpecificMap], unmeasured]), id=385562)
@@ -452,26 +582,26 @@ mapAchievements(["The Outpost", "Orange Dimension"], 385566)
 // Miscellaneous
 achievement("Not-So-Alien Fruit", "Meet Azure (oranges are now marked on the map)", 1, versionTrigger(findBit, [[3, 0xe3eb], 0x21]), id=385568)
 // Challenges
-achievement("Target Practice", "Defeat the hidden Slimer while only letting it summon at most 3 Hard-Rocks on Normal difficulty", 10, versionTrigger(slimerChallenge, []), id=385569) // Missable
+achievement("Target Practice", "Defeat the hidden Slimer while only letting it summon at most 3 Hard-Rocks on Normal difficulty", 10, versionTrigger(slimerChallenge, []), type="missable", id=385569) // Missable
 
 // Zandunia, Rumbly Jungle, Croxco Scrapheap, Saltsoup Basin
 // Progression
-achievement("Surf ‘N’ Guns Hut", "Acquire the Rapid Fire Mod", 3, versionTrigger(findBit, [[5,0xe335], 0x31]), id=385570) // Progression
-achievement("Certified Tough-Guy", "Find all 4 articles of tuff-stuff for Crox", 10, versionTrigger(findBits, [tuffStuffAddrs, 4]), id=385571) // Progression
-achievement("Starbi-Fanboy", "Find 5 different Pooki flavours for Starbi", 10, versionTrigger(findConsecutiveBits, [[4,0xe341], 10, 5, [noSpecificMap], unmeasured]), id=385572)
-achievement("Post-Death Body", "Acquire the Tibia", 5, versionTrigger(findBit, [[0,0xe344], 0x06]), id=385573) // Progression
-achievement("Killer Munchies", "Acquire the Blast Module", 5, versionTrigger(findBit, [[6,0xe335], 0x31]), id=385574) // Progression
-achievement("Long Distance Relationship", "Reunite Jeeko and Teeko", 5, versionTrigger(findBit, [[1,0xe339], 0x24]), id=385575) // Progression
-achievement("True Goodest of Lads", "Deliver the Salvage Bulb to Precise", 5, versionTrigger(findBit, [[4,0xe347], 0x25]), id=385576) // Progression
-achievement("Sneaky Saboteur", "Escape from Planck's henchmen and acquire the Laserblade Grip from Jeeko and Teeko", 5, versionTrigger(findBit, [[7,0xe343], 0x24]), id=385577) // Progression
-achievement("Crox Rox", "Escape the Laserdrill and acquire the Laserblade from Crox", 5, versionTrigger(findBit, [[4,0xe335], 0x5]), id=385578) // Progression
+achievement("Surf ‘N’ Guns Hut", "Acquire the Rapid Fire Mod", 3, versionTrigger(findBit, [[5,0xe335], 0x31]), type="progression", id=385570) // Progression
+achievement("Certified Tough-Guy", "Find all 4 articles of tuff-stuff for Crox", 10, versionTrigger(findBits, [tuffStuffAddrs, 4]), type="progression", id=385571) // Progression
+achievement("Starbi-Fanboy", "Find 5 different Pooki flavours for Starbi", 10, versionTrigger(findConsecutiveBits, [[4,0xe341], 10, 5, [noSpecificMap], unmeasured]), type="progression", id=385572)
+achievement("Post-Death Body", "Acquire the Tibia", 5, versionTrigger(findBit, [[0,0xe344], 0x06]), type="progression", id=385573) // Progression
+achievement("Killer Munchies", "Acquire the Blast Module", 5, versionTrigger(findBit, [[6,0xe335], 0x31]), type="progression", id=385574) // Progression
+achievement("Long Distance Relationship", "Reunite Jeeko and Teeko", 5, versionTrigger(findBit, [[1,0xe339], 0x24]), type="progression", id=385575) // Progression
+achievement("True Goodest of Lads", "Deliver the Salvage Bulb to Precise", 5, versionTrigger(findBit, [[4,0xe347], 0x25]), type="progression", id=385576) // Progression
+achievement("Sneaky Saboteur", "Escape from Planck's henchmen and acquire the Laserblade Grip from Jeeko and Teeko", 5, versionTrigger(findBit, [[7,0xe343], 0x24]), type="progression", id=385577) // Progression
+achievement("Crox Rox", "Escape the Laserdrill and acquire the Laserblade from Crox", 5, versionTrigger(findBit, [[4,0xe335], 0x5]), type="progression", id=385578) // Progression
 // Completion
 achievement("Maxwell D. Goodboy", "Safely cross the channel on the raft", 3, versionTrigger(findBit, [[4,0xe402], 0x31]), id=385579)
 achievement("Top the Charts", "Find all 10 different Pooki flavours for Starbi", 10, versionTrigger(findConsecutiveBits, [[4,0xe341], 10, 10, [noSpecificMap], measured]), id=385580)
 achievement("Door-to-Door Pooki Salesman", "Clear the Zandunia warehouse of beasties, or find a way out", 5, versionTrigger(findConsecutiveBits, [[7,0xe401], 3, 1, [0x33], unmeasured]), id=385581)
 achievement("Plestro's Guard Dog", "Defeat Mamacuba in the Zandunia warehouse", 5, versionTrigger(findBit, [[2,0xe52d], 0x33]), id=385582)
-//achievement("Little Lost Souls", "Find and return all 4 of Aelia's missing babies", 5, versionTrigger(findConsecutiveBits, [[5,0xe528], 4, 4, [0x04], measured]), id=385583)
-achievement("Little Lost Souls", "Find and return all 4 of Aelia's missing babies", 5, versionTrigger(findAeliesBabies, []))
+// achievement("Little Lost Souls", "Find and return all 4 of Aelia's missing babies", 5, versionTrigger(findConsecutiveBits, [[5,0xe528], 4, 4, [0x04], measured]), id=385583)
+achievement("Little Lost Souls", "Find and return all 4 of Aelia's missing babies", 5, versionTrigger(findConsecutiveBitsUnexact, [[5,0xe528], 4, 4, [0x04], measured]))
 achievement("Fish Fear You", "Catch all 12 fish", 10, versionTrigger(findConsecutiveBits, [[0,0xe590], 12, 12, [0x13], measured]), id=385584)
 mapAchievements(["Zandunia", "Rumbly Jungle", "Croxco Scrapheap"], 385585)
 // Miscellaneous
@@ -483,19 +613,19 @@ achievement("Jumpsuit Jams", "Approach Starbi when she is wearing the jumpsuit",
 achievement("Imposter Among Us", "That pattern on the wall is suspect...", 1, versionTrigger(findBit, [[0,0xe33a], 0x32]), id=385593)
 // Challenges
 achievement("Small-Brain Danger-Nut", "Disregard Chopo's advice and cross the gap", 5, versionTrigger(dangerNut, []), id=385594)
-achievement("Tastes Like Remorse", "Escape the warehouse without defeating any beasties and then return to Plestro", 10, versionTrigger(plestroChallenge, []), id=385595) // Missable
-achievement("Rottweiler Tier Guard Dog", "Defeat Mamacuda in Zandunia within 20s on Normal difficulty", 10, versionTrigger(mamacuda1Challenge, []), id=385596) // Missable
-achievement("The Bear Necessities", "Defeat Planck's henchmen without taking damage on Normal difficulty", 25, versionTrigger(henchmenChallenge, []), id=385597) // Missable
-achievement("Laserdrill Certified", "Have the Laserdrill destroy 93 Shard-Rocks on Normal difficulty", 25, versionTrigger(laserdrillChallenge, []), id=385598) // Missable
+achievement("Tastes Like Remorse", "Escape the warehouse without defeating any beasties and then return to Plestro", 10, versionTrigger(plestroChallenge, []), type="missable", id=385595) // Missable
+achievement("Rottweiler Tier Guard Dog", "Defeat Mamacuda in Zandunia within 20s on Normal difficulty", 10, versionTrigger(mamacuda1Challenge, []), type="missable", id=385596) // Missable
+achievement("The Bear Necessities", "Defeat Planck's henchmen without taking damage on Normal difficulty", 25, versionTrigger(henchmenChallenge, []), type="missable", id=385597) // Missable
+achievement("Laserdrill Certified", "Have the Laserdrill destroy 93 Shard-Rocks on Normal difficulty", 25, versionTrigger(laserdrillChallenge, []), type="missable", id=385598) // Missable
 
 // Wytchberg, Totummy Temples, Grand Zootel, Resonarion
 // Progression
-achievement("I’d Buy That for a Thousand Shards", "Buy the Shrink Module", 3, versionTrigger(findBit, [[7,0xe335], 0x2d]), id=385599) // Progression
-achievement("5 Star Rating Alert!", "Collect 5 herbs for Witch", 10, versionTrigger(findConsecutiveBits, [[0,0xe338], 8, 5, [noSpecificMap], unmeasured]), id=385600) // Progression
-achievement("Secret of Totummy Temple", "Ring all 3 bells to meet the requirement to open the locked temple door", 5, versionTrigger(findConsecutiveBits, [[0,0xe406], 3, 3, [0x2a], measured]), id=385601) // Progression
-achievement("The Gift of Teleportation", "Acquire the Teleport Module", 3, versionTrigger(findBit, [[0, 0xe336], 0x28]), id=385602) // Progression
-achievement("Worthy One", "Clear all 3 Totummy trials", 5, versionTrigger(findConsecutiveBits, [[1,0xe540], 3, 3, [0x28], measured]), id=385603) // Progression
-achievement("Pirate Goonsquad Initiation", "Defeat Mamacuda in Totummy Temples", 5, versionTrigger(findBit, [[6, 0xe541], 0x2a]), id=385604) // Progression
+achievement("I’d Buy That for a Thousand Shards", "Buy the Shrink Module", 3, versionTrigger(findBit, [[7,0xe335], 0x2d]), type="progression", id=385599) // Progression
+achievement("5 Star Rating Alert!", "Collect 5 herbs for Witch", 10, versionTrigger(findConsecutiveBits, [[0,0xe338], 8, 5, [noSpecificMap], unmeasured]), type="progression", id=385600) // Progression
+achievement("Secret of Totummy Temple", "Ring all 3 bells to meet the requirement to open the locked temple door", 5, versionTrigger(findConsecutiveBits, [[0,0xe406], 3, 3, [0x2a], measured]), type="progression", id=385601) // Progression
+achievement("The Gift of Teleportation", "Acquire the Teleport Module", 3, versionTrigger(findBit, [[0, 0xe336], 0x28]), type="progression", id=385602) // Progression
+achievement("Worthy One", "Clear all 3 Totummy trials", 5, planet(0) == 7 &&  versionTrigger(findConsecutiveBits, [[1,0xe540], 3, 3, [noSpecificMap], measured]), type="progression", id=385603) // Progression
+achievement("Pirate Goonsquad Initiation", "Defeat Mamacuda in Totummy Temples", 5, versionTrigger(findBit, [[6, 0xe541], 0x2a]), type="progression", id=385604) // Progression
 // Completion
 achievement("You Monster...", "Catch a Kapparama for Grand Zootel", 3, versionTrigger(findBit, [[0,0xe57a], 0x2d]), id=385605)
 achievement("Return of the Predecessor", "Rescue Wilbo from his stupid job", 5, versionTrigger(findBit, [[6,0xe352], 0x2d]), id=385606)
@@ -516,7 +646,7 @@ achievement("Real Recognize Real", "After clearing the \"cancelled\" Totummy tri
 achievement("Love Hurts", "Hug Jenovi after stacking all of his Barrel Cacti", 1, versionTrigger(hugJenovi, []), id=385623)
 // Challenges
 achievement("Dodge This Dubelle", "Ring Dubelle on the blue Ancient Gate route", 5, versionTrigger(ringDubelleBluePath, []), id=385624)
-achievement("Softlock Key", "Defeat Mamacuda in Totummy Temples without using the Warp Bolt on Normal difficulty", 10, versionTrigger(mamacuda2Challenge, []), id=385625) // Missable
+achievement("Softlock Key", "Defeat Mamacuda in Totummy Temples without using the Warp Bolt on Normal difficulty", 10, versionTrigger(mamacuda2Challenge, []), type="missable", id=385625) // Missable
 achievement("Who Let the Dogs Out", "Get an S rank in Woofer", 10, versionTrigger(rankRhythmGame, [woofer, wooferSRankScore, wooferDuration]), id=385626)
 achievement("Make Gramma Proud", "Get an S rank in Tweeter", 10, versionTrigger(rankRhythmGame, [tweeter, tweeterSRankScore, tweeterDuration]), id=385627)
 achievement("The Intense Voice of Maxwell", "Get an S rank in Special 1", 25, versionTrigger(rankRhythmGame, [special1, special1SRankScore, special1Duration]), id=385628)
@@ -524,12 +654,12 @@ achievement("Through the Woofs and the Tweets", "Get an S rank in Special 2", 25
 
 // Lunar Penitentiary, Echelon Lower
 // Progression
-achievement("Drill Doger", "Acquire the Drill Module", 1, versionTrigger(findBit, [[3, 0xe335], 0x18]), id=385630) // Progression
-achievement("Incendiary Greatness", "Find all 5 bomb parts for Bomsae", 5, versionTrigger(findConsecutiveBits, [[7,0xe336], 5, 5, [0x14,0x15,0x16,0x17], measured]), id=385631) // Progression
-achievement("Professional Escape", "Escape from Lunar Penitentiary with the gang", 5, versionTrigger(reachCount, [prisonProgress, 10, 0x1d, unmeasured, exact]), id=385632) // Progression
-achievement("Pocket Full of Shards", "Collect 10k shards", 10, versionTrigger(get10kShards, []), id=385633) // Progression
-achievement("Sorry I'm Late", "Fix the trains that go to the residential and industrial districts in Echelon L. Central", 5, versionTrigger(findBit, [[5, 0xe558], 0x0f]), id=385634) // Progression
-achievement("Elevation Station", "Find all 4 keycards to open the entrance to the Echelon Upper elevator", 10, versionTrigger(findConsecutiveBits, [[2,0xe336], 4, 4, [0x0b,0x0f], measured]), id=385635) // Progression
+achievement("Drill Doger", "Acquire the Drill Module", 1, versionTrigger(findBit, [[3, 0xe335], 0x18]), type="progression", id=385630) // Progression
+achievement("Incendiary Greatness", "Find all 5 bomb parts for Bomsae", 5, versionTrigger(findConsecutiveBits, [[7,0xe336], 5, 5, [0x14,0x15,0x16,0x17], measured]), type="progression", id=385631) // Progression
+achievement("Professional Escape", "Escape from Lunar Penitentiary with the gang", 5, versionTrigger(reachCount, [prisonProgress, 10, 0x1d, unmeasured, exact]), type="progression", id=385632) // Progression
+achievement("Pocket Full of Shards", "Collect 10k shards", 10, versionTrigger(get10kShards, []), type="progression", id=385633) // Progression
+achievement("Sorry I'm Late", "Fix the trains that go to the residential and industrial districts in Echelon L. Central", 5, versionTrigger(findBit, [[5, 0xe558], 0x0f]), type="progression", id=385634) // Progression
+achievement("Elevation Station", "Find all 4 keycards to open the entrance to the Echelon Upper elevator", 10, versionTrigger(findConsecutiveBits, [[2,0xe336], 4, 4, [0x0b,0x0f], measured]), type="progression", id=385635) // Progression
 // Completion
 achievement("Banana Drama", "Finally help Alby find his bananas", 10, versionTrigger(reachCount, [albyProgress, 8, 0x0c, unmeasured, exact]), id=385636)
 achievement("Hide ‘N’ Seek Tryhard", "Help Banban find Tootie", 3, versionTrigger(findBit, [[0, 0xe409], 0x0d]), id=385637)
@@ -543,25 +673,25 @@ achievement("Boxwell", "Hide inside the box in Cropett's prison cell", 1, versio
 achievement("R.I.P. Gizmo", "Collect the two shards covering the portrait of Rik's old dog Gizmo", 1, versionTrigger(uncoverGizmo, []), id=385647)
 achievement("Looking Sharp!", "Change your outfit at Nuyu's New You", 1, versionTrigger(changeOutfit, []), id=385648)
 // Challenges
-achievement("Get Shafted", "Find all 5 bomb parts for Bomsae within 3 days", 10, versionTrigger(dayThreeBombParts, []), id=385649) // Missable
+achievement("Get Shafted", "Find all 5 bomb parts for Bomsae within 3 days", 10, versionTrigger(dayThreeBombParts, []), type="missable", id=385649) // Missable
 achievement("Welcome to Burgerdog...", "Get a MAX rank in Burgerdog", 5, versionTrigger(rankBurgerdog, [normal, burgerdogMaxRankScore]), id=385650)
 achievement("VOID", "VOID", 0, always_false(), id=385651) // Unofficial
-achievement("...Home of the Burgerdog", "Get an S rank in Burgerdog (Special)", 25, versionTrigger(rankBurgerdog, [special, burgerdogSpecialSRankScore]), id=386653) // Core
+achievement("...Home of the Burgerdog", "Get an S rank in Burgerdog (Special)", 25, versionTrigger(rankBurgerdog, [special, burgerdogSpecialSRankScore]), id=386653)
 achievement("PyroPyro's Pinnacle", "Get an S+ rank in Lilac Force", 25, versionTrigger(sPlusRankLilacForce, []), id=385652)
 
 // Echelon Upper, Xenolith
 // Progression
-achievement("New Leash on Life", "Defeat then befriend the Bounty Hunters", 5, versionTrigger(findBit, [[2, 0xe308], 0x12]), id=385653) // Progression
-achievement("This Is Weird", "Find a way to escape from Xenolith", 5, versionTrigger(reachCount, [xenolithProgress, 5, 0x11, unmeasured, exact]), id=385654) // Progression
-achievement("Cherub's Choice", "Make 50 friends to meet the requirement to enter the Council Chamber", 25, versionTrigger(reachCount, [friends, 50, noSpecificMap, unmeasured, exact]), id=385655) // Progression
-achievement("Pirate Goonsquad Barage", "Open the gate to the Council Chamber", 1, versionTrigger(findBit, [[4, 0xe408], 0x11]), id=385656) // Progression
-achievement("That Escalated Quickly", "Destroy The Council", 25, versionTrigger(reachCount, [councilProgress, 4, 0x10, unmeasured, exact]), id=385657) // Win Condition
+achievement("New Leash on Life", "Defeat then befriend the Bounty Hunters", 5, versionTrigger(findBit, [[2, 0xe308], 0x12]), type="progression", id=385653) // Progression
+achievement("This Is Weird", "Find a way to escape from Xenolith", 5, versionTrigger(reachCount, [xenolithProgress, 5, 0x11, unmeasured, exact]), type="progression", id=385654) // Progression
+achievement("Cherub's Choice", "Make 50 friends to meet the requirement to enter the Council Chamber", 25, versionTrigger(reachCount, [friends, 50, noSpecificMap, unmeasured, exact]), type="progression", id=385655) // Progression
+achievement("Pirate Goonsquad Barage", "Open the gate to the Council Chamber", 1, versionTrigger(findBit, [[4, 0xe408], 0x11]), type="progression", id=385656) // Progression
+achievement("That Escalated Quickly", "Destroy The Council", 25, versionTrigger(reachCount, [councilProgress, 4, 0x10, unmeasured, exact]), type="win_condition", id=385657) // Win Condition
 // Completion
 mapAchievements(["Echelon Upper", "Xenolith"], 385658)
 // Miscellaneous
 achievement("Staff Use Only!", "Fall down from heaven", 1, versionTrigger(fallFromHeaven, []), id=385660)
 // Challenges
-achievement("Barking up the Wrong Tree", "Defeat then befriend the Bounty Hunters without shooting the Blaster on Normal difficulty", 10, versionTrigger(bountyHuntersChallenge, []), id=385661) // Missable
+achievement("Barking up the Wrong Tree", "Defeat then befriend the Bounty Hunters without shooting the Blaster on Normal difficulty", 10, versionTrigger(bountyHuntersChallenge, []), type="missable", id=385661) // Missable
 achievement("Canis Major Chad", "Destroy The Council in the order of blue, yellow, then red on Normal difficulty", 25, versionTrigger(councilChallenge, []), id=385662)
 
 // Overall Completion
