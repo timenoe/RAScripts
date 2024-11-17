@@ -243,15 +243,7 @@ function stage_lbs(expert)
             {
                 title = format("{0}{1} {2} Speedrun", expert_str(expert), l_key, stage_str(s))
                 desc = format("Clear {0}{1} {2} as fast as possible", expert_str(expert), l_key, stage_str(s))
-                // if (expert == 1)
-                // {
-                //     desc = format("Clear {0} {1} (Expert) as fast as possible", l_key, stage_str(s))
-                // }
-                // else
-                // {
-                //     desc = format("Clear {0} {1} as fast as possible", l_key, stage_str(s))
-                // }
-                
+ 
                 leaderboard(title, desc, stage_clear(expert, l, s), always_false(), always_true(), g_clear_time, format="SECS", lower_is_better=true)
             }
         }  
