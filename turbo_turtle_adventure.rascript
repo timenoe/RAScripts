@@ -19,18 +19,19 @@ LEVEL_EXIT_NORMAL = 1
 LEVEL_EXIT_BONUS = 2
 LEVEL_STATE_ACTIVE = 0
 LEVEL_STATE_COMPLETE = 1
-LEVEL_TOTAL = 60
+LEVEL_TOTAL = 59
 TIME_ROUND_ADD = 0.5
+TRAINING_END = 9
 
 LEVELS = ["1-1", "1-2", "1-3", "1-4", "1-5", "1-6", "1-7", "1-? (Right)", "1-? (Left)",
           "2-1", "2-2", "2-3", "2-4", "2-5", "2-6", "2-7", "2-? (Top)", "2-? (Bottom)", "2-? (Right)",
           "3-1", "3-2", "3-3", "3-4", "3-5", "3-6", "3-7", "3-? (Right)", "3-? (Left)",
           "4-1", "4-2", "4-3", "4-4", "4-5", "4-6", "4-7", "4-?",
-          "5-1", "5-2", "5-3", "5-4", "5-5", "5-6", "5-7", "5-?",
+          "5-1", "5-2", "5-3", "5-4", "5-5", "5-6", "5-7", "5-?", // 5-? is unaccessible due to dev oversight
           "6-1", "6-2", "6-3", "6-4", "6-5", "6-6", "6-7", "6-?",
           "7-1", "7-2", "7-3", "7-4", "7-5", "7-6", "7-7", "7-?"]
 
-LEVEL_BONUS = ["1-4", "1-7", "2-3", "2-5", "2-7", "3-2", "3-4", "4-5", "5-7", "6-4", "7-4"]
+LEVEL_BONUS = ["1-4", "1-7", "2-3", "2-5", "2-7", "3-2", "3-4", "4-5", "5-6", "5-7", "6-4", "7-4"] // 5-7 should have a Bonus exit, but instead 5-6 does but it does nothing...
 LEVEL_COUNT = [9, 10, 9, 8, 8, 8, 8]
 
 // Functions
@@ -67,6 +68,7 @@ function pearl_progression(count)
         return mode() == MODE_START && prev(pearls()) == count - 1 && pearls() == count
     }
 }
+function training_completion() => mode() == MODE_TRAINING && level() == TRAINING_END && clear()
 function level_completion(level)
 {
     addr = [0, 0x47e0a]
@@ -94,7 +96,10 @@ function level_completion(level)
         addr = next_bit(addr)
     }
 
-    return prev(sum) == LEVEL_COUNT[level] - 1 && measured(sum == LEVEL_COUNT[level], when=mode() == MODE_START)
+    count = LEVEL_COUNT[level]
+    if (level == 4) count = count - 1 // 5-? is unaccessible due to dev oversight
+
+    return prev(sum) == count - 1 && measured(sum == count, when=mode() == MODE_START)
 }
 
 function full_completion()
@@ -134,7 +139,10 @@ function hard_challenge(level)
         id = id + 1
     }
 
-    return never(mode() > MODE_TRAINING) && measured(tally(LEVEL_COUNT[level], clears))
+    count = LEVEL_COUNT[level]
+    if (level == 4) count = count - 1 // 5-? is unaccessible due to dev oversight
+
+    return never(mode() > MODE_TRAINING) && measured(tally(count, clears))
 }
 
 achievement("Beach Trip", "Collect 3 Pearls", 5, pearl_progression(3), type="progression")
@@ -145,20 +153,22 @@ achievement("Hot in Here", "Collect 30 Pearls", 10, pearl_progression(30), type=
 achievement("Echolocation", "Collect 42 Pearls", 10, pearl_progression(42), type="progression")
 achievement("Turbotastic", "Beat the game", 25, beat_game(), type="win_condition")
 
+achievement("Turtle's First Turbo", "Clear Training mode", 5, training_completion())
+
 achievement("Ruins Explorer", format("Clear all {0} levels in Jungle Ruins", LEVEL_COUNT[0]), 5, level_completion(0))
 achievement("Lagoon Explorer", format("Clear all {0} levels in Lagoon", LEVEL_COUNT[1]), 5, level_completion(1))
 achievement("Woodland Explorer", format("Clear all {0} levels in Woodlands", LEVEL_COUNT[2]), 5, level_completion(2))
 achievement("Space Explorer", format("Clear all {0} levels in Space Station", LEVEL_COUNT[3]), 10, level_completion(3))
-achievement("Glacier Explorer", format("Clear all {0} levels in Glacier", LEVEL_COUNT[4]), 10, level_completion(4))
+achievement("Glacier Explorer", format("Clear {0} levels in Glacier", LEVEL_COUNT[4] - 1), 10, level_completion(4))
 achievement("Volcano Explorer", format("Clear all {0} levels in Volcano", LEVEL_COUNT[5]), 10, level_completion(5))
 achievement("Cavern Explorer", format("Clear all {0} levels in Bat Cavern", LEVEL_COUNT[6]), 10, level_completion(6))
-achievement("It's Turbo Time!", format("Clear all {0} levels", LEVEL_TOTAL), 25, prev(full_completion()) == LEVEL_TOTAL - 1 && measured(full_completion() == LEVEL_TOTAL, when=mode() == MODE_START))
+achievement("It's Turbo Time!", format("Clear {0} levels", LEVEL_TOTAL), 25, prev(full_completion()) == LEVEL_TOTAL - 1 && measured(full_completion() == LEVEL_TOTAL, when=mode() == MODE_START))
 
 achievement("Ruins Master", format("Clear all {0} levels in Jungle Ruins on Hard Difficulty in one session", LEVEL_COUNT[0]), 10, hard_challenge(0))
 achievement("Lagoon Master", format("Clear all {0} levels in Lagoon on Hard Difficulty in one session", LEVEL_COUNT[1]), 10, hard_challenge(1))
 achievement("Woodland Master", format("Clear all {0} levels in Woodlands on Hard Difficulty in one session", LEVEL_COUNT[2]), 10, hard_challenge(2))
 achievement("Space Master", format("Clear all {0} levels in Space Station on Hard Difficulty in one session", LEVEL_COUNT[3]), 25, hard_challenge(3))
-achievement("Glacier Master", format("Clear all {0} levels in Glacier on Hard Difficulty in one session", LEVEL_COUNT[4]), 25, hard_challenge(4))
+achievement("Glacier Master", format("Clear {0} levels in Glacier on Hard Difficulty in one session", LEVEL_COUNT[4] - 1), 25, hard_challenge(4))
 achievement("Volcano Master", format("Clear all {0} levels in Volcano on Hard Difficulty in one session", LEVEL_COUNT[5]), 25, hard_challenge(5))
 achievement("Cavern Master", format("Clear all {0} levels in Bat Cavern on Hard Difficulty in one session", LEVEL_COUNT[6]), 25, hard_challenge(6))
 
